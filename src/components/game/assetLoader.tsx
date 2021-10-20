@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, createContext } from "react";
 import { loadAsset, AssetType } from "../../core/mapAssetLoader";
 import { mapData } from "../../data/map";
-import { GameMap, GameMapProps } from "../../core/MapObject";
+import { GameMap, GameMapProps, GameMapType } from "../../core/MapObject";
 
 interface Props {
 	children?: React.ReactNode;
@@ -45,15 +45,42 @@ const createDataObjects = async () => {
 		return { mapObjects };
 	} catch (err) {
 		console.error(err);
+		throw err;
 	}
 };
 
-const AssetLoader = ({}: Props) => {
+const AssetLoader = ({ children }: Props) => {
 	// loads all assets and creates puts them into a
 	// context
 	const [loading, isLoading] = useState(true);
+	const [gameMapObject, setGameMapObject] = useState<GameMapType[] | undefined>(
+		undefined
+	);
+	const [error, setError] = useState<any>(null);
 
-	return loading ? <>loading...</> : <></>;
+	const MapContext = createContext<GameMapType[] | undefined>(undefined);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const { mapObjects } = await createDataObjects();
+				setGameMapObject(mapObjects);
+				isLoading(false);
+			} catch (err) {
+				setError(err);
+			}
+		})();
+	}, []);
+
+	return loading ? (
+		<>loading...</>
+	) : (
+		<>
+			<MapContext.Provider value={gameMapObject}>
+				{children}
+			</MapContext.Provider>
+		</>
+	);
 };
 
 export { AssetLoader };
