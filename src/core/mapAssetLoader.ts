@@ -3,13 +3,21 @@ const createRegExp = (extensions: string) =>
 
 const imageRegExp = createRegExp("jpg|png|gif");
 
+export type AssetType = HTMLImageElement;
+
+/**
+ * the user is receives a promise which resolves to a
+ * a HTML Asset Element (HTMLImageElement)
+ */
 export const loadAsset = (url: string) => {
-	return new Promise<HTMLImageElement>((resolve, reject) => {
+	return new Promise<AssetType>((resolve, reject) => {
 		// temp func to load images from assets dir
 		// not sure how this is less efficient than loading with cdn
+		// we can go with this itself and chuck the cdn
+		//
 		// TODO: make it load even audio
 
-		let asset: HTMLImageElement;
+		let asset: AssetType;
 		if (imageRegExp.test(url)) asset = new Image();
 		else return console.error("Trying to load a invalid file ", url);
 
