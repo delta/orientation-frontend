@@ -2,6 +2,7 @@ import React from "react";
 import "./styles/output.css";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { HomePage } from "./pages/home";
+import { GamePage } from "./pages/game";
 
 function App() {
 	return (
@@ -12,7 +13,7 @@ function App() {
 						<HomePage />
 					</Route>
 					<Route path="/game">
-						<h1>Game Route</h1>
+						<GamePage />
 					</Route>
 				</Switch>
 			</Router>

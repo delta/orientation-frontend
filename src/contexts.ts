@@ -13,3 +13,11 @@ import { GameMapType } from "./core/MapObject";
  * When the user uses this context, he is guaranteed to get the Map Image and its size
  */
 export const MapContext = createGameContext<GameMapType[]>();
+
+/**
+ *
+ * Context for the canvas where the map is rendered.
+ *
+ * ...
+ */
+export const MapCanvasContext = createGameContext<HTMLCanvasElement | null>();

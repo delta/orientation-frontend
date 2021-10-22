@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-interface Props {
+interface SceneManagerProps {
 	children?: React.ReactNode;
 }
 
@@ -20,7 +20,7 @@ export interface UserPosition {
  * User Position is set only here and set to the GameObject as props, Only the UserGameObject
  * wil be able to change the user position. others GameObjects can only read them
  */
-const SceneManager = ({ children }: Props) => {
+const SceneManager: React.FC<SceneManagerProps> = ({ children }) => {
 	const [userPosition, setUserPosition] = useState<UserPosition>({
 		x: 0,
 		y: 0,
