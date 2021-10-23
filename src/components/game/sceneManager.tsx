@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { MapGameObject } from "./GameObjects/mapGameObject";
 
 interface SceneManagerProps {
 	children?: React.ReactNode;
@@ -33,11 +34,12 @@ const SceneManager: React.FC<SceneManagerProps> = ({ children }) => {
 		//
 		// We also need to check if the the user is active in another websocket connection
 		// if he is active, we have to show some error message saying he can only play the game in 1 tab
+		console.log("scene manager!!");
 	}, []);
 
 	return (
 		<>
-			<h1>Scene Manager</h1>
+			<MapGameObject userPosition={userPosition} />
 		</>
 	);
 };
