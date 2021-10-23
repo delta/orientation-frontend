@@ -10,11 +10,11 @@ export interface GameMapProps {
 	imageObject: HTMLImageElement | null;
 }
 
-export interface GameMapMethods extends GameMapProps {
+export interface GameMapMethods {
 	// get the next map
 }
 
-export interface GameMapType extends GameMapMethods {}
+export interface GameMapType extends GameMapMethods, GameMapProps {}
 
 export class GameMap implements GameMapType {
 	zoom = MAP_ZOOM;
