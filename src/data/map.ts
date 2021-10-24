@@ -18,7 +18,8 @@ const mapData = [
 			[0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
 		],
-		source: "../assets/map1.png",
+		source:
+			"https://www.dreamincode.net/forums/uploads/post-242958-1246321970.jpg",
 	},
 ];
 
