@@ -2,7 +2,6 @@ import { GameMap } from "./MapObject";
 
 export interface GameObjectConstructorType {
 	canvas: HTMLCanvasElement | null;
-	src: HTMLImageElement | null;
 	obj: GameMap;
 	audio?: HTMLAudioElement;
 }
@@ -29,10 +28,10 @@ export class BaseGameObject {
 	audio?: HTMLAudioElement;
 	isAudio = false;
 	// ctx: number
-	constructor({ canvas, src, obj, audio }: GameObjectConstructorType) {
+	constructor({ canvas, obj, audio }: GameObjectConstructorType) {
 		this.canvas = canvas as HTMLCanvasElement;
 		this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
-		this.src = src as HTMLImageElement;
+		this.src = obj.imageObject as HTMLImageElement;
 		this.width = obj.width;
 		this.height = obj.height;
 		this.audio = audio;

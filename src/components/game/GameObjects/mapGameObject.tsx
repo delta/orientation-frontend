@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { UserPosition } from "../sceneManager";
 import { MapCanvasContext, MapContext } from "../../../contexts";
-import { MapGameObject as MapGame } from "../../../core/mapGameObject";
+import { MapGameObject as MapGame } from "../../../core/mapGameObjectClass";
 
 interface Props {
 	userPosition: UserPosition;
@@ -28,7 +28,6 @@ export const MapGameObject = ({ userPosition }: Props) => {
 			canvas: mapCanvas,
 			grid: mapContext.grid,
 			obj: mapContext,
-			src: mapContext.imageObject,
 		});
 		console.log(map);
 		map.renderObject(0, 0);
