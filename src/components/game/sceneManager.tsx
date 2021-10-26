@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MapGameObject } from "./GameObjects/mapGameObject";
+import { UserGameObject } from "./GameObjects/userGameObject";
 
 interface SceneManagerProps {
 	children?: React.ReactNode;
@@ -37,9 +38,26 @@ const SceneManager: React.FC<SceneManagerProps> = ({ children }) => {
 		console.log("scene manager!!");
 	}, []);
 
+	const handleChange = () => {
+		setUserPosition((prev) => {
+			console.log("button is clickeed");
+			return { x: prev.x + 1, y: prev.y + 1 };
+		});
+	};
+
 	return (
 		<>
 			<MapGameObject userPosition={userPosition} />
+			<UserGameObject
+				userPosition={userPosition}
+				setUserPosition={setUserPosition}
+			/>
+			<button
+				className="p-4 bg-green-600 rounded-lg font-bold text-white mt-5 hover:bg-gray-600"
+				onClick={handleChange}
+			>
+				Button
+			</button>
 		</>
 	);
 };

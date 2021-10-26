@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { loadAsset, AssetType } from "../../core/assetLoader";
 import { mapData } from "../../data/map";
-import { GameMap, GameMapProps, GameMapType } from "../../core/MapObject";
+import { GameMap } from "../../core/MapObject";
 import { MapContext } from "../../contexts";
 
 interface AssetLoaderProps {
@@ -10,7 +10,7 @@ interface AssetLoaderProps {
 
 interface MapContextProviderProps {
 	children?: React.ReactNode;
-	gameMapObject: GameMapType[] | null;
+	gameMapObject: GameMap[] | null;
 }
 
 /**
@@ -82,9 +82,7 @@ const MapContextProvider: React.FC<MapContextProviderProps> = ({
 const AssetLoader: React.FC<AssetLoaderProps> = ({ children }) => {
 	// loads all assets and puts them into a
 	const [loading, isLoading] = useState(true);
-	const [gameMapObject, setGameMapObject] = useState<GameMapType[] | null>(
-		null
-	);
+	const [gameMapObject, setGameMapObject] = useState<GameMap[] | null>(null);
 	const [error, setError] = useState<any>(null);
 
 	useEffect(() => {
