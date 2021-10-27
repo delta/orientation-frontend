@@ -3,7 +3,7 @@
  */
 
 import { createGameContext } from "./utils/contextCreator";
-import { GameMapType } from "./core/MapObject";
+import { GameMap } from "./core/MapObject";
 
 /**
  *
@@ -12,7 +12,7 @@ import { GameMapType } from "./core/MapObject";
  * It contains an array of all the map objects with fetched images
  * When the user uses this context, he is guaranteed to get the Map Image and its size
  */
-export const MapContext = createGameContext<GameMapType[]>();
+export const MapContext = createGameContext<GameMap[]>();
 
 /**
  *
