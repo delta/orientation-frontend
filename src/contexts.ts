@@ -21,3 +21,10 @@ export const MapContext = createGameContext<GameMap[]>();
  * ...
  */
 export const MapCanvasContext = createGameContext<HTMLCanvasElement | null>();
+
+/**
+ * Context for the canvas where the User and the intractable objects are rendered
+ *
+ * ...
+ */
+export const UserCanvasContext = createGameContext<HTMLCanvasElement | null>();
