@@ -1,6 +1,6 @@
 const MAP_ZOOM = 1;
 
-export interface GameMapProps {
+export interface GameMapConstructorType {
 	zoom: number;
 	startX: number;
 	startY: number;
@@ -10,13 +10,7 @@ export interface GameMapProps {
 	imageObject: HTMLImageElement | null;
 }
 
-export interface GameMapMethods {
-	// get the next map
-}
-
-export interface GameMapType extends GameMapMethods, GameMapProps {}
-
-export class GameMap implements GameMapType {
+export class GameMap {
 	zoom = MAP_ZOOM;
 	startX = 0;
 	startY = 0;
@@ -31,7 +25,7 @@ export class GameMap implements GameMapType {
 		startX,
 		startY,
 		grid,
-	}: GameMapProps) {
+	}: GameMapConstructorType) {
 		this.height = height;
 		this.width = width;
 		this.startX = startX;
