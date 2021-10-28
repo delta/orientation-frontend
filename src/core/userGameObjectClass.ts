@@ -5,13 +5,16 @@ import {
 import { Queue } from "../utils/queue";
 
 enum DirectionEnum {
-	UP,
+	UP = 1,
 	DOWN,
 	LEFT,
 	RIGHT,
 }
 interface PlayerGameObjectConstructorType extends GameObjectConstructorType {
 	grid: number[][];
+
+	x: number;
+	y: number;
 }
 
 /**
@@ -26,6 +29,9 @@ class PlayerMovement {
 
 export class PlayerGameObject extends BaseGameObject {
 	grid!: number[][];
+
+	x!: number;
+	y!: number;
 
 	cellWidth!: number;
 	cellHeight!: number;
@@ -45,6 +51,9 @@ export class PlayerGameObject extends BaseGameObject {
 	constructor(data: PlayerGameObjectConstructorType) {
 		super(data);
 		this.grid = data.grid;
+
+		this.x = data.x;
+		this.y = data.y;
 
 		this.cellHeight = this.width / this.grid.length;
 		this.cellWidth = this.height / this.grid[0].length;
@@ -125,8 +134,40 @@ export class PlayerGameObject extends BaseGameObject {
 		);
 	}
 
-	// check collision and move to the next square
-	checkCollision() {}
+	/**
+	 * Gets the current cell the user is in, and checks
+	 * if the user can move to the specified block
+	 */
+	checkCollision(dir: DirectionEnum) {
+		const cellX = Math.floor(this.x / this.cellWidth);
+		const cellY = Math.floor(this.y / this.cellHeight);
+
+		if (cellY >= this.grid.length || cellX >= this.grid[0].length) {
+			// this should not happen
+			//
+			// Adding a case to make sure this doesn't throw any error
+			return true;
+			// if the user goes out of the map, we just do not let him move
+		}
+
+		let doesCollide = false;
+		switch (dir) {
+			case DirectionEnum.UP:
+				doesCollide = this.grid[cellX][cellY - 1] === 1;
+				break;
+			case DirectionEnum.DOWN:
+				doesCollide = this.grid[cellX][cellY + 1] === 1;
+				break;
+			case DirectionEnum.LEFT:
+				doesCollide = this.grid[cellX - 1][cellY] === 1;
+				break;
+			case DirectionEnum.RIGHT:
+				doesCollide = this.grid[cellX + 1][cellY] === 1;
+				break;
+		}
+
+		return doesCollide;
+	}
 }
 
 export {};
