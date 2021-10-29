@@ -3,6 +3,8 @@ import {
 	GameObjectConstructorType,
 } from "./baseGameObjectClass";
 import { Queue } from "../utils/queue";
+import { Dispatch, SetStateAction } from "react";
+import { UserPosition } from "../components/game/sceneManager";
 
 enum DirectionEnum {
 	UP = 1,
@@ -15,6 +17,8 @@ interface PlayerGameObjectConstructorType extends GameObjectConstructorType {
 
 	x: number;
 	y: number;
+
+	userPositionDispatcher: Dispatch<SetStateAction<UserPosition>>;
 }
 
 /**
@@ -36,17 +40,50 @@ export class PlayerGameObject extends BaseGameObject {
 	cellWidth!: number;
 	cellHeight!: number;
 
+	/**
+	 * A Dispatch event to set the user state in scene manager
+	 */
+	userPositionDispatcher!: Dispatch<SetStateAction<UserPosition>>;
+
 	// keyHeldDown = false;
 	// used to check for key held down movement events
 	isKeyBeingHeldDown = false;
 
 	// Arbitrary number included to add data to the movement queue
+	// TODO: Move this to a config
 	private readonly KEY_HOLD_DOWN_TIMEOUT = 400;
 
 	// Since movement is not instantaneous
 	// we push keyboard events to a queue and the
 	// the movement is pop-ed for the queue after it takes place
 	movementQueue = new Queue<PlayerMovement>();
+
+	isPlayerMoving = false;
+	// the direction the player is facing
+	playDirection = DirectionEnum.RIGHT;
+
+	// a timer to determine how long it takes for the user to change their direction
+	// TODO: Move it to config
+	private readonly PLAYER_DIRECTION_CHANGER_TIMEOUT = 150;
+
+	/**
+	 * no of steps the player has to take to move to the next cell
+	 */
+	// TODO: Move it to config
+	private readonly PLAYER_STEPS_TO_NEXT_BLOCK = 10;
+	// keeping it a high val, so movement feels organic
+	// Note: Try keeping it a non prime number, for prevent rounding off errors
+
+	// distance travelled by a user during a single step
+	private PLAYER_STEP_DISTANCE_X_AXIS!: number;
+	private PLAYER_STEP_DISTANCE_Y_AXIS!: number;
+
+	// TODO: Move it to config
+	/**
+	 * time taken for a user to complete a step
+	 */
+	private readonly PLAYER_STEP_TIME = 50;
+	// IDEALLY ==>> a movement from to an adjacent block should take ~800ms, and ALWAYS < 1200
 
 	constructor(data: PlayerGameObjectConstructorType) {
 		super(data);
@@ -57,6 +94,153 @@ export class PlayerGameObject extends BaseGameObject {
 
 		this.cellHeight = this.width / this.grid.length;
 		this.cellWidth = this.height / this.grid[0].length;
+
+		this.PLAYER_STEP_DISTANCE_X_AXIS =
+			this.cellWidth / this.PLAYER_STEPS_TO_NEXT_BLOCK;
+		this.PLAYER_STEP_DISTANCE_Y_AXIS =
+			this.cellHeight / this.PLAYER_STEPS_TO_NEXT_BLOCK;
+	}
+
+	/**
+	 * All the brains and logic behind the movement GameObject
+	 *
+	 * pops an a movement request from the queue
+	 * checks for collision and moves the player to the required block
+	 *
+	 * after moving he player, it pops the next element from the queue, until
+	 * the queue is empty
+	 */
+	async movePlayer(): Promise<void> {
+		this.isPlayerMoving = true;
+
+		const nextMove = this.movementQueue.pop();
+		if (!nextMove) {
+			// the queue is empty
+			return;
+		}
+
+		const canMove = this.checkCollision(nextMove.direction);
+
+		await this.changeDirection(nextMove.direction);
+
+		const stepDistance =
+			nextMove.direction === DirectionEnum.UP ||
+			nextMove.direction === DirectionEnum.DOWN
+				? this.PLAYER_STEP_DISTANCE_Y_AXIS
+				: this.PLAYER_STEP_DISTANCE_X_AXIS;
+
+		if (canMove) await this.moveOneBlock(nextMove.direction, stepDistance);
+		else await this.pseudoMoveBlock(nextMove.direction);
+
+		// if the queue is empty, stop the movement
+		// else call movePlayer again
+		if (this.movementQueue.isEmpty()) {
+			this.isPlayerMoving = false;
+			return;
+		}
+		// it will be called recursively until the queue is empty
+		return await this.movePlayer();
+	}
+
+	/**
+	 * Moves the user 1 block in the given direction
+	 *
+	 * this function takes care updating the user position in sceneManager,
+	 * and updating sprites. Only collision needs to be checked before calling this
+	 * function
+	 */
+	async moveOneBlock(dir: DirectionEnum, stepDistance: number) {
+		let ctr = 0;
+		this.changeSprite("Moving user 1 block in " + dir);
+		await new Promise<void>((resolve) => {
+			let xStep = 0,
+				yStep = 0;
+			if (dir === DirectionEnum.UP) yStep = -stepDistance;
+			else if (dir === DirectionEnum.DOWN) yStep = stepDistance;
+			else if (dir === DirectionEnum.LEFT) xStep = -stepDistance;
+			else xStep = stepDistance;
+
+			const timer = setInterval(() => {
+				ctr++;
+				this.moveSingleStep(this.x + xStep, this.y + yStep);
+
+				// if we have many sprites, we can create
+				// change sprite when ctr is odd or even ...
+
+				if (ctr === this.PLAYER_STEPS_TO_NEXT_BLOCK) {
+					clearInterval(timer);
+					// after the interval is cleared the function will finish running,
+					// it won't just terminate
+					resolve();
+				}
+			}, this.PLAYER_STEP_TIME);
+		});
+		this.changeSprite("Moved user 1 block in " + dir + "direction");
+	}
+
+	/**
+	 * Just creates an illusion of the player moving,
+	 * (aka player has movement animation in the same block)
+	 */
+	async pseudoMoveBlock(_dir: DirectionEnum) {
+		// the user cannot move to the next block,
+		// we change direction and show moving animation (call it "moonwalk")
+		// for the walk duration and complete the movement
+		this.changeSprite("moonwalk start");
+
+		// rn the moonwalk animation cannot be paused
+		// but generally in games, the movement animation stops
+		// and the user starts moving in the required direction,
+		// if another valid (moveable) key press is done
+		//
+		// we can implement it if time suffices
+		await new Promise((resolve) =>
+			setTimeout(
+				resolve,
+				this.PLAYER_STEP_TIME * this.PLAYER_STEPS_TO_NEXT_BLOCK
+			)
+		);
+
+		this.changeSprite("moonwalk ends");
+	}
+
+	/**
+	 * Moves the user to the specified (x,y) co-ordinate and updates the user
+	 * position in SceneManager with event dispatcher
+	 *
+	 * A single point of control for all position changes
+	 */
+	moveSingleStep(x: number, y: number) {
+		this.x = x;
+		this.y = y;
+		this.userPositionDispatcher({ x, y });
+	}
+
+	/**
+	 * returns a promise which resolves after the directionChanges
+	 */
+	changeDirection(dir: DirectionEnum) {
+		return new Promise<void>((resolve, _reject) => {
+			// if the user is facing the right direction we resolve immediately
+			if (dir === this.playDirection) resolve();
+			setTimeout(() => {
+				// TODO: we currently do not have any user sprites
+				// need to add them here for changing direction
+				this.playDirection = dir;
+				resolve();
+			}, this.PLAYER_DIRECTION_CHANGER_TIMEOUT);
+		});
+	}
+
+	/**
+	 * Changes the sprite to the given sprite
+	 *
+	 * Making it a separate func to  have a single point of control
+	 * for changing the image being rendered
+	 */
+	changeSprite(data: any) {
+		// still have not figured what to do with sprite placeholder lol
+		console.log("changing sprite to : ", data);
 	}
 
 	/**
@@ -93,7 +277,7 @@ export class PlayerGameObject extends BaseGameObject {
 	 * The only things its responsible for are
 	 * 1. Check if the movement queue is full
 	 * 2. Handle case for if the keyIsHeldDown
-	 *
+	 * 3. Call movePlayer method if it isn't already running
 	 *
 	 */
 	registerMovement(dir: DirectionEnum, isKeyHeldDown: boolean) {
@@ -112,13 +296,12 @@ export class PlayerGameObject extends BaseGameObject {
 				// timeout is still running, we do not consider this events
 				return;
 			}
-
 			this.movementQueue.push(new PlayerMovement(dir));
-			this.isKeyBeingHeldDown = true;
 			this.keyDownResetCountDown();
 		} else {
 			this.movementQueue.push(new PlayerMovement(dir));
 		}
+		if (!this.isPlayerMoving) this.movePlayer();
 	}
 
 	/**
@@ -128,6 +311,7 @@ export class PlayerGameObject extends BaseGameObject {
 	 * per second if the user holds the movement key )
 	 */
 	keyDownResetCountDown() {
+		this.isKeyBeingHeldDown = true;
 		setTimeout(
 			() => (this.isKeyBeingHeldDown = false),
 			this.KEY_HOLD_DOWN_TIMEOUT
@@ -143,7 +327,7 @@ export class PlayerGameObject extends BaseGameObject {
 		const cellY = Math.floor(this.y / this.cellHeight);
 
 		if (cellY >= this.grid.length || cellX >= this.grid[0].length) {
-			// this should not happen
+			// this should not happen man tf
 			//
 			// Adding a case to make sure this doesn't throw any error
 			return true;
@@ -169,5 +353,3 @@ export class PlayerGameObject extends BaseGameObject {
 		return doesCollide;
 	}
 }
-
-export {};
