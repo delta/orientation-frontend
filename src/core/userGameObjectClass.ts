@@ -5,6 +5,7 @@ import {
 import { Queue } from "../utils/queue";
 import { Dispatch, SetStateAction } from "react";
 import { UserPosition } from "../components/game/sceneManager";
+import { config } from "../config/config";
 
 enum DirectionEnum {
 	UP = 1,
@@ -50,8 +51,8 @@ export class PlayerGameObject extends BaseGameObject {
 	isKeyBeingHeldDown = false;
 
 	// Arbitrary number included to add data to the movement queue
-	// TODO: Move this to a config
-	private readonly KEY_HOLD_DOWN_TIMEOUT = 400;
+	private readonly KEY_HOLD_DOWN_TIMEOUT =
+		config.userGameObjectConfig.KEY_HOLD_DOWN_TIMEOUT;
 
 	// Since movement is not instantaneous
 	// we push keyboard events to a queue and the
@@ -63,14 +64,14 @@ export class PlayerGameObject extends BaseGameObject {
 	playDirection = DirectionEnum.RIGHT;
 
 	// a timer to determine how long it takes for the user to change their direction
-	// TODO: Move it to config
-	private readonly PLAYER_DIRECTION_CHANGER_TIMEOUT = 150;
+	private readonly PLAYER_DIRECTION_CHANGER_TIMEOUT =
+		config.userGameObjectConfig.PLAYER_DIRECTION_CHANGER_TIMEOUT;
 
 	/**
 	 * no of steps the player has to take to move to the next cell
 	 */
-	// TODO: Move it to config
-	private readonly PLAYER_STEPS_TO_NEXT_BLOCK = 10;
+	private readonly PLAYER_STEPS_TO_NEXT_BLOCK =
+		config.userGameObjectConfig.PLAYER_STEPS_TO_NEXT_BLOCK;
 	// keeping it a high val, so movement feels organic
 	// Note: Try keeping it a non prime number, for prevent rounding off errors
 
@@ -78,11 +79,11 @@ export class PlayerGameObject extends BaseGameObject {
 	private PLAYER_STEP_DISTANCE_X_AXIS!: number;
 	private PLAYER_STEP_DISTANCE_Y_AXIS!: number;
 
-	// TODO: Move it to config
 	/**
 	 * time taken for a user to complete a step
 	 */
-	private readonly PLAYER_STEP_TIME = 50;
+	private readonly PLAYER_STEP_TIME =
+		config.userGameObjectConfig.PLAYER_STEP_TIME;
 	// IDEALLY ==>> a movement from to an adjacent block should take ~800ms, and ALWAYS < 1200
 
 	constructor(data: PlayerGameObjectConstructorType) {
@@ -269,7 +270,7 @@ export class PlayerGameObject extends BaseGameObject {
 	}
 
 	/**
-	 * registers a movement to pushes it to a movement queue
+	 * registers a movement and pushes it to a movement queue
 	 *
 	 * this function is only responsible for adding the movement to a queue,
 	 * It does not check for collisions,
