@@ -47,6 +47,8 @@ export class Queue<T> {
 		this.tail = this.tail.next;
 		this.size--;
 
+		if (this.size === 0) this.head = null;
+
 		return val;
 	}
 
