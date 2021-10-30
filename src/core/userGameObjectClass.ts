@@ -3,9 +3,10 @@ import {
 	GameObjectConstructorType,
 } from "./baseGameObjectClass";
 import { Queue } from "../utils/queue";
-import { Dispatch, SetStateAction } from "react";
+// import { Dispatch, SetStateAction } from "react";
 import { UserPosition } from "../components/game/sceneManager";
 import { config } from "../config/config";
+import { GameObjectRender } from "./render";
 
 enum DirectionEnum {
 	UP = 1,
@@ -20,7 +21,12 @@ export interface PlayerGameObjectConstructorType
 	x: number;
 	y: number;
 
-	userPositionDispatcher: Dispatch<SetStateAction<UserPosition>>;
+	addUserToRenderer: (data: GameObjectRender) => number;
+
+	userPositionUpdater: (
+		position: UserPosition,
+		renderingGameObjectIndex: number
+	) => void;
 }
 
 /**
@@ -42,10 +48,17 @@ export class PlayerGameObject extends BaseGameObject {
 	cellWidth!: number;
 	cellHeight!: number;
 
+	// Rendering Engine Data
+	rendererObject!: GameObjectRender;
+	renderObjectKey!: number;
+
 	/**
 	 * A Dispatch event to set the user state in scene manager
 	 */
-	userPositionDispatcher!: Dispatch<SetStateAction<UserPosition>>;
+	userPositionUpdater!: (
+		position: UserPosition,
+		renderingGameObjectIndex: number
+	) => void;
 
 	// keyHeldDown = false;
 	// used to check for key held down movement events
@@ -89,6 +102,7 @@ export class PlayerGameObject extends BaseGameObject {
 
 	constructor(data: PlayerGameObjectConstructorType) {
 		super(data);
+		console.log("user game object constructor");
 		this.grid = data.grid;
 
 		this.x = data.x;
@@ -97,11 +111,25 @@ export class PlayerGameObject extends BaseGameObject {
 		this.cellHeight = this.width / this.grid.length;
 		this.cellWidth = this.height / this.grid[0].length;
 
-		//
+		// user goes in the middle of the cell
 		this.x = this.cellWidth / 2;
 		this.y = this.cellHeight / 2;
 
-		this.userPositionDispatcher = data.userPositionDispatcher;
+		// creating a new Game Renderer Object with the given data
+		this.rendererObject = new GameObjectRender({
+			x: this.x,
+			y: this.y,
+			animationDuration: 0,
+			animator: () => {},
+			isAnimationEnabled: false,
+			height: 40,
+			width: 40,
+			src: new Image(),
+		});
+		// initially the userPosition will be 0,0
+		// the player has to move to change their position to (this.x, this.y)
+		this.userPositionUpdater = data.userPositionUpdater;
+		this.renderObjectKey = data.addUserToRenderer(this.rendererObject);
 		// this.userPositionDispatcher({ x: this.x, y: this.y });
 
 		this.PLAYER_STEP_DISTANCE_X_AXIS =
@@ -233,7 +261,7 @@ export class PlayerGameObject extends BaseGameObject {
 	moveSingleStep(x: number, y: number) {
 		this.x = x;
 		this.y = y;
-		this.userPositionDispatcher({ x, y });
+		this.userPositionUpdater({ x, y }, this.renderObjectKey);
 	}
 
 	/**
@@ -352,7 +380,7 @@ export class PlayerGameObject extends BaseGameObject {
 	checkCollision(dir: DirectionEnum) {
 		const cellX = Math.floor(this.x / this.cellWidth);
 		const cellY = Math.floor(this.y / this.cellHeight);
-
+		console.log(this.grid.length);
 		if (cellY >= this.grid.length || cellX >= this.grid[0].length) {
 			// this should not happen man tf
 			//
@@ -373,7 +401,7 @@ export class PlayerGameObject extends BaseGameObject {
 				doesCollide = this.grid[cellX][cellY - 1] === 1;
 				break;
 			case DirectionEnum.DOWN:
-				if (cellY === this.grid.length) {
+				if (cellY === this.grid.length + 1) {
 					doesCollide = true;
 					break;
 				}
@@ -387,7 +415,7 @@ export class PlayerGameObject extends BaseGameObject {
 				doesCollide = this.grid[cellX - 1][cellY] === 1;
 				break;
 			case DirectionEnum.RIGHT:
-				if (cellX === this.grid[0].length) {
+				if (cellX === this.grid[0].length - 1) {
 					doesCollide = true;
 					break;
 				}

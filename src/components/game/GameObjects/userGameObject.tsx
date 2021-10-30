@@ -11,11 +11,16 @@ import {
 	PlayerGameObject,
 	PlayerGameObjectConstructorType,
 } from "../../../core/userGameObjectClass";
+import { GameObjectRender } from "../../../core/render";
 import { mapData } from "../../../data/map";
 import { GameMap } from "../../../core/MapObject";
 interface Props {
 	userPosition: UserPosition;
-	setUserPosition: Dispatch<SetStateAction<UserPosition>>;
+	setUserPosition: (
+		position: UserPosition,
+		renderingGameObjectIndex: number
+	) => void;
+	addUserToRenderer: (data: GameObjectRender) => number;
 }
 
 /**
@@ -26,17 +31,18 @@ interface Props {
 const UserGameObject = (props: Props) => {
 	const userCanvas = useContext(UserCanvasContext);
 	const mapContextArray = useContext(MapContext);
-	useEffect(() => {}, []);
 	const memo = useMemo(() => {
 		return new PlayerGameObject({
 			canvas: userCanvas as HTMLCanvasElement,
 			grid: mapData[0].grid,
 			x: props.userPosition.x,
 			y: props.userPosition.y,
-			userPositionDispatcher: props.setUserPosition,
+			userPositionUpdater: props.setUserPosition,
 			obj: (mapContextArray as GameMap[])[0],
+			addUserToRenderer: props.addUserToRenderer,
 		});
 	}, []);
+
 	useEffect(() => {
 		window.addEventListener("keydown", (e) => {
 			memo.listenForPlayerMovement(e);

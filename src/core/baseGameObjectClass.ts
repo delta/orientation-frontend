@@ -40,7 +40,7 @@ export class BaseGameObject {
 	}
 
 	// renders the object with given dimensions
-	renderObject(x: number, y: number) {
+	paintObject(x: number, y: number) {
 		this.ctx.drawImage(this.src, x, y, this.width, this.height);
 	}
 }

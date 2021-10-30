@@ -30,7 +30,7 @@ export const MapGameObject = ({ userPosition }: Props) => {
 			obj: mapContext,
 		});
 		// console.log(map);
-		map.renderObject(0, 0);
+		map.paintObject(0, 0);
 		mapRef.current = map;
 	}, []);
 

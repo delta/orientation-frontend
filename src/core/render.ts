@@ -9,6 +9,7 @@ export interface IGameObjectRenderConstructor {
 	height: number;
 	src: HTMLImageElement;
 	audio?: HTMLAudioElement;
+	isAnimationEnabled: boolean;
 	animationDuration: number;
 	animator: () => void;
 }
@@ -28,6 +29,7 @@ export class GameObjectRender {
 	// TODO: add support for SVG Rendering (Path2D)
 	src!: HTMLImageElement;
 	// Audio sound cue if present (How to conditionally display audio on certain events ?)
+	// TODO: Figure this shit out
 	audio?: HTMLAudioElement;
 	isAudioCue = false; // tells if this Object has a audio cue or not
 
@@ -41,6 +43,7 @@ export class GameObjectRender {
 	// TODO: add necessary utility type / access modifier to prevent user manipulation
 	// HACK: If the element has no animation, pass it an empty function for animator
 	private animator!: () => void;
+	isAnimationEnabled!: boolean;
 	animatorKey!: NodeJS.Timeout; // keys uses to end the setInterval;
 
 	constructor(data: IGameObjectRenderConstructor) {
@@ -57,8 +60,11 @@ export class GameObjectRender {
 
 		// saving it coz, its easier to understand / we might need it later
 		this.animator = data.animator;
+		this.isAnimationEnabled = data.isAnimationEnabled;
 
-		this.animatorKey = setInterval(this.animator, data.animationDuration);
+		if (data.isAnimationEnabled)
+			this.animatorKey = setInterval(this.animator, data.animationDuration);
+		// else this.animatorKey = new NodeJS.Timeout();
 	}
 
 	/**
@@ -71,10 +77,19 @@ export class GameObjectRender {
 		animator: () => void;
 		interval: number;
 	}): void {
-		clearInterval(this.animatorKey);
+		if (this.isAnimationEnabled) clearInterval(this.animatorKey);
+		this.isAnimationEnabled = true;
 		this.animator = animator;
 		this.animatorKey = setInterval(this.animator, interval);
 		return;
+	}
+
+	/**
+	 * Stops existing animation
+	 */
+	clearAnimation() {
+		if (this.isAnimationEnabled) clearInterval(this.animatorKey);
+		this.isAnimationEnabled = false;
 	}
 
 	/**
@@ -84,6 +99,7 @@ export class GameObjectRender {
 	 */
 	render(ctx: CanvasRenderingContext2D) {
 		// using fillRect rn because I dont have any sprites : (
+		// TODO: Load sprites
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 }
@@ -105,7 +121,7 @@ export class Renderer {
 	//
 	// !! Note: Once a gameObjectRender is added to the mapObject, it should not be removed,
 	// to enforce this rule, the mapObjects property is private
-	private mapObjects = Array<GameObjectRender>();
+	mapObjects = Array<GameObjectRender>();
 	canvas!: HTMLCanvasElement;
 	ctx!: CanvasRenderingContext2D;
 	// canvas dimensions
@@ -132,7 +148,9 @@ export class Renderer {
 	 * want to edit it.
 	 */
 	add(data: GameObjectRender) {
+		console.log("before adding : ", this.mapObjects);
 		this.mapObjects.push(data);
+		console.log("after adding : ", this.mapObjects);
 		return this.mapObjects.length - 1;
 	}
 
@@ -149,7 +167,7 @@ export class Renderer {
 		if (!this.shouldRender) return;
 		this.ctx.clearRect(0, 0, this.width, this.height);
 		this.mapObjects.forEach((m) => m.render(this.ctx));
-		requestAnimationFrame(this.draw);
+		requestAnimationFrame(this.draw.bind(this));
 	}
 
 	endAnimation() {

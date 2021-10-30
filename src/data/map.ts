@@ -3,8 +3,8 @@ const mapData = [
 		name: "First Map",
 		startX: 0,
 		startY: 0,
-		height: 100,
-		width: 100,
+		height: 500,
+		width: 500,
 		// Each grid => 10 x 10
 		grid: [
 			[0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
@@ -23,4 +23,17 @@ const mapData = [
 	},
 ];
 
-export { mapData };
+const userSpriteData = {
+	assets: {
+		left: "",
+		right: "",
+		up: "",
+		down: "",
+		leftAnimation: "",
+		rightAnimation: "",
+		upAnimation: "",
+		downAnimation: "",
+	},
+};
+
+export { mapData, userSpriteData };
