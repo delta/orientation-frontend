@@ -1,4 +1,4 @@
-const config_example = {
+export const config_example = {
 	userGameObjectConfig: {
 		KEY_HOLD_DOWN_TIMEOUT: 400,
 		PLAYER_DIRECTION_CHANGER_TIMEOUT: 150,
@@ -6,5 +6,3 @@ const config_example = {
 		PLAYER_STEP_TIME: 50,
 	},
 };
-
-export {};

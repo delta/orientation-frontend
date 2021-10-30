@@ -13,7 +13,8 @@ enum DirectionEnum {
 	LEFT,
 	RIGHT,
 }
-interface PlayerGameObjectConstructorType extends GameObjectConstructorType {
+export interface PlayerGameObjectConstructorType
+	extends GameObjectConstructorType {
 	grid: number[][];
 
 	x: number;
@@ -96,6 +97,13 @@ export class PlayerGameObject extends BaseGameObject {
 		this.cellHeight = this.width / this.grid.length;
 		this.cellWidth = this.height / this.grid[0].length;
 
+		//
+		this.x = this.cellWidth / 2;
+		this.y = this.cellHeight / 2;
+
+		this.userPositionDispatcher = data.userPositionDispatcher;
+		// this.userPositionDispatcher({ x: this.x, y: this.y });
+
 		this.PLAYER_STEP_DISTANCE_X_AXIS =
 			this.cellWidth / this.PLAYER_STEPS_TO_NEXT_BLOCK;
 		this.PLAYER_STEP_DISTANCE_Y_AXIS =
@@ -112,15 +120,23 @@ export class PlayerGameObject extends BaseGameObject {
 	 * the queue is empty
 	 */
 	async movePlayer(): Promise<void> {
+		console.log("moving the player");
+
 		this.isPlayerMoving = true;
 
 		const nextMove = this.movementQueue.pop();
 		if (!nextMove) {
 			// the queue is empty
+			console.log("movement queue is empty");
+			this.isPlayerMoving = false;
 			return;
 		}
 
-		const canMove = this.checkCollision(nextMove.direction);
+		console.log("the next move is : ", nextMove);
+
+		const doesCollide = this.checkCollision(nextMove.direction);
+
+		console.log("does collide : ", doesCollide);
 
 		await this.changeDirection(nextMove.direction);
 
@@ -130,8 +146,10 @@ export class PlayerGameObject extends BaseGameObject {
 				? this.PLAYER_STEP_DISTANCE_Y_AXIS
 				: this.PLAYER_STEP_DISTANCE_X_AXIS;
 
-		if (canMove) await this.moveOneBlock(nextMove.direction, stepDistance);
-		else await this.pseudoMoveBlock(nextMove.direction);
+		console.log("starting movement, does collide : ", doesCollide);
+		if (doesCollide) await this.pseudoMoveBlock(nextMove.direction);
+		else await this.moveOneBlock(nextMove.direction, stepDistance);
+		console.log("ended the movement");
 
 		// if the queue is empty, stop the movement
 		// else call movePlayer again
@@ -139,6 +157,7 @@ export class PlayerGameObject extends BaseGameObject {
 			this.isPlayerMoving = false;
 			return;
 		}
+		console.log("the queue is not empty");
 		// it will be called recursively until the queue is empty
 		return await this.movePlayer();
 	}
@@ -248,23 +267,28 @@ export class PlayerGameObject extends BaseGameObject {
 	 * adds listener for different directions
 	 * and calls registerMovement for different directions
 	 */
-	listenForPlayerMovement(e: KeyboardEvent) {
+	listenForPlayerMovement(e: KeyboardEvent, bind: PlayerGameObject = this) {
+		// this.registerMovement(3, e.repeat);
 		switch (e.key) {
 			case "ArrowLeft":
 				// Left pressed
-				this.registerMovement(DirectionEnum.LEFT, e.repeat);
+				console.log("left movement");
+				bind.registerMovement(DirectionEnum.LEFT, e.repeat);
 				break;
 			case "ArrowRight":
 				// Right pressed
-				this.registerMovement(DirectionEnum.RIGHT, e.repeat);
+				console.log("right movement");
+				bind.registerMovement(DirectionEnum.RIGHT, e.repeat);
 				break;
 			case "ArrowUp":
 				// Up pressed
-				this.registerMovement(DirectionEnum.UP, e.repeat);
+				console.log("up movement");
+				bind.registerMovement(DirectionEnum.UP, e.repeat);
 				break;
 			case "ArrowDown":
 				// Down pressed
-				this.registerMovement(DirectionEnum.DOWN, e.repeat);
+				console.log("down movement");
+				bind.registerMovement(DirectionEnum.DOWN, e.repeat);
 				break;
 		}
 	}
@@ -282,9 +306,11 @@ export class PlayerGameObject extends BaseGameObject {
 	 *
 	 */
 	registerMovement(dir: DirectionEnum, isKeyHeldDown: boolean) {
+		console.log("registering movement, isPlayerMoving : ", this.isPlayerMoving);
 		if (!this.movementQueue.canAdd()) {
 			// the movement queue is full, we cannot add a new
 			// element to the queue, just return
+			console.log("the movement queue is full");
 			return;
 		}
 		// key held down event fires multiple times per second
@@ -334,19 +360,37 @@ export class PlayerGameObject extends BaseGameObject {
 			return true;
 			// if the user goes out of the map, we just do not let him move
 		}
+		console.log("cellX : ", cellX);
+		console.log("cellY : ", cellY);
 
 		let doesCollide = false;
 		switch (dir) {
 			case DirectionEnum.UP:
+				if (cellY === 0) {
+					doesCollide = true;
+					break;
+				}
 				doesCollide = this.grid[cellX][cellY - 1] === 1;
 				break;
 			case DirectionEnum.DOWN:
+				if (cellY === this.grid.length) {
+					doesCollide = true;
+					break;
+				}
 				doesCollide = this.grid[cellX][cellY + 1] === 1;
 				break;
 			case DirectionEnum.LEFT:
+				if (cellX === 0) {
+					doesCollide = true;
+					break;
+				}
 				doesCollide = this.grid[cellX - 1][cellY] === 1;
 				break;
 			case DirectionEnum.RIGHT:
+				if (cellX === this.grid[0].length) {
+					doesCollide = true;
+					break;
+				}
 				doesCollide = this.grid[cellX + 1][cellY] === 1;
 				break;
 		}

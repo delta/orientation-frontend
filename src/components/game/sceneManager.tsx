@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MapGameObject } from "./GameObjects/mapGameObject";
 import { UserGameObject } from "./GameObjects/userGameObject";
+
+import { UserCanvasContext } from "../../contexts";
 
 interface SceneManagerProps {
 	children?: React.ReactNode;
@@ -22,11 +24,27 @@ export interface UserPosition {
  * User Position is set only here and set to the GameObject as props, Only the UserGameObject
  * wil be able to change the user position. others GameObjects can only read them
  */
+
+const InitCanvas = (canvas: HTMLCanvasElement) => {
+	return canvas.getContext("2d") as CanvasRenderingContext2D;
+};
+
 const SceneManager: React.FC<SceneManagerProps> = ({ children }) => {
 	const [userPosition, setUserPosition] = useState<UserPosition>({
 		x: 0,
 		y: 0,
 	});
+
+	const userCanvas = useContext(UserCanvasContext) as HTMLCanvasElement;
+
+	const [ctx, _setCtx] = useState(InitCanvas(userCanvas));
+
+	const render = () => {
+		console.log("x : ", userPosition.x, ", y : ", userPosition.y);
+		ctx.clearRect(0, 0, 1000, 700);
+		ctx.fillRect(userPosition.x - 40, userPosition.y - 40, 40, 40);
+		// requestAnimationFrame(render);
+	};
 
 	useEffect(() => {
 		// TODO: integrate with server
@@ -35,15 +53,8 @@ const SceneManager: React.FC<SceneManagerProps> = ({ children }) => {
 		//
 		// We also need to check if the the user is active in another websocket connection
 		// if he is active, we have to show some error message saying he can only play the game in 1 tab
-		console.log("scene manager!!");
+		render();
 	}, []);
-
-	const handleChange = () => {
-		setUserPosition((prev) => {
-			console.log("button is clickeed");
-			return { x: prev.x + 1, y: prev.y + 1 };
-		});
-	};
 
 	return (
 		<>
@@ -54,7 +65,7 @@ const SceneManager: React.FC<SceneManagerProps> = ({ children }) => {
 			/>
 			<button
 				className="p-4 bg-green-600 rounded-lg font-bold text-white mt-5 hover:bg-gray-600"
-				onClick={handleChange}
+				onClick={render}
 			>
 				Button
 			</button>

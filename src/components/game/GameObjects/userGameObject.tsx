@@ -1,6 +1,18 @@
-import React, { Dispatch, SetStateAction, useEffect, useMemo } from "react";
+import React, {
+	Dispatch,
+	SetStateAction,
+	useEffect,
+	useMemo,
+	useContext,
+} from "react";
 import { UserPosition } from "../sceneManager";
-
+import { UserCanvasContext, MapContext } from "../../../contexts";
+import {
+	PlayerGameObject,
+	PlayerGameObjectConstructorType,
+} from "../../../core/userGameObjectClass";
+import { mapData } from "../../../data/map";
+import { GameMap } from "../../../core/MapObject";
 interface Props {
 	userPosition: UserPosition;
 	setUserPosition: Dispatch<SetStateAction<UserPosition>>;
@@ -12,15 +24,28 @@ interface Props {
  */
 
 const UserGameObject = (props: Props) => {
-	console.log("log from the user object");
+	const userCanvas = useContext(UserCanvasContext);
+	const mapContextArray = useContext(MapContext);
+	useEffect(() => {}, []);
 	const memo = useMemo(() => {
-		return new Date();
+		return new PlayerGameObject({
+			canvas: userCanvas as HTMLCanvasElement,
+			grid: mapData[0].grid,
+			x: props.userPosition.x,
+			y: props.userPosition.y,
+			userPositionDispatcher: props.setUserPosition,
+			obj: (mapContextArray as GameMap[])[0],
+		});
 	}, []);
 	useEffect(() => {
-		console.log("log from use effect with userPosition dependency");
-		console.log(memo.toUTCString());
-	}, [props.userPosition]);
-	useEffect(() => console.log("log from effect without any dependency"), []);
+		window.addEventListener("keydown", (e) => {
+			memo.listenForPlayerMovement(e);
+		});
+		// return window.removeEventListener("keydown", (e) => {
+		// 	console.log(e.key);
+		// 	memo.listenForPlayerMovement(e);
+		// });
+	}, []);
 	return <></>;
 };
 

@@ -20,7 +20,7 @@ export const MapGameObject = ({ userPosition }: Props) => {
 	const mapContextArray = useContext(MapContext);
 	const mapRef = useRef<MapGame | null>(null);
 	useEffect(() => {
-		console.log("mapRef :", mapCanvas);
+		// console.log("mapRef :", mapCanvas);
 		if (!mapContextArray) return;
 		const mapContext = mapContextArray[0];
 		if (!mapCanvas || !mapContext) return;
@@ -29,7 +29,7 @@ export const MapGameObject = ({ userPosition }: Props) => {
 			grid: mapContext.grid,
 			obj: mapContext,
 		});
-		console.log(map);
+		// console.log(map);
 		map.renderObject(0, 0);
 		mapRef.current = map;
 	}, []);

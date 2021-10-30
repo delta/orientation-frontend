@@ -98,7 +98,7 @@ const AssetLoader: React.FC<AssetLoaderProps> = ({ children }) => {
 	}, []);
 
 	return loading ? (
-		// TODO: Add a loading icon / animation
+		// TODO: Add a loading icon / animation (on the canvas)
 		<>loading...</>
 	) : (
 		<>
