@@ -1,11 +1,13 @@
 import React from "react";
+import "./App.css";
 import "./styles/output.css";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { HomePage } from "./pages/home";
+import { AuthPage } from "./pages/auth";
 
 function App() {
 	return (
-		<div className="bg-gray-900 h-full">
+		<div className="min-h-screen">
 			<Router>
 				<Switch>
 					<Route path="/" exact>
@@ -13,6 +15,9 @@ function App() {
 					</Route>
 					<Route path="/game">
 						<h1>Game Route</h1>
+					</Route>
+					<Route path="/auth">
+						<AuthPage />
 					</Route>
 				</Switch>
 			</Router>
