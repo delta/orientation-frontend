@@ -5,7 +5,7 @@ import styles from "./login.module.css";
 
 const DAuthLogin = () => {
 	return (
-		<div className="min-w-screen min-h-screen bg-background flex items-center justify-center px-5 py-5">
+		<div className="min-w-screen min-h-screen flex items-center justify-center px-5 py-5">
 			<div className="bg-base text-gray-500 rounded shadow-2xl py-5 px-5 w-3/5 h-3/4">
 				<div className="flex items-center relative">
 					<div
@@ -26,7 +26,7 @@ const DAuthLogin = () => {
 							cumque quo iusto illum earum rem quos natus. Enim pariatur
 							voluptatibus debitis cumque necessitatibus.
 						</p>
-						<div className={styles.slidingVertical + " block h-20"}>
+						<div className={styles.slidingVertical + " h-20"}>
 							<span>
 								<button className="flex justify-between items-center bg-accent1 p-4 rounded-lg font-bold text-white mt-2 hover:bg-accent2">
 									<a href="/game">Start The Journey</a>
@@ -41,8 +41,8 @@ const DAuthLogin = () => {
 						</div>
 					</div>
 					<div
-						className="pl-10 h-4/6 w-1/2 justify-center justify-items-center"
-						// style={{ border: "1px solid white" }}
+						className="h-4/6 w-1/2 justify-center justify-items-center"
+						// style={{ border: "transform: translate(-10px, 0px);" }}
 					>
 						<img
 							src={clockTower}

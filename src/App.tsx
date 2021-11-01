@@ -7,7 +7,7 @@ import { AuthPage } from "./pages/auth";
 
 function App() {
 	return (
-		<div className="min-h-screen">
+		<div className="min-h-screen bg-background">
 			<Router>
 				<Switch>
 					<Route path="/" exact>
