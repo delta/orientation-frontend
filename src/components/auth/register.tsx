@@ -4,6 +4,8 @@ import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 
+import { useToast } from "../toast/ToastProvider";
+
 interface InputComponentProps {
 	id: number;
 	setData: (value: string) => void;
@@ -175,6 +177,8 @@ const TextComponent = ({ id, isActive }: InputComponentProps) => {
 
 	const [inputValue, setInputValue] = useState("");
 
+	const toast = useToast();
+
 	const listenForEnterKeyPress = (e: KeyboardEvent) => {
 		if (e.key === "Enter") {
 		}
@@ -205,6 +209,7 @@ const TextComponent = ({ id, isActive }: InputComponentProps) => {
 				className="bg-accent1 text-text rounded-sm font-bold tracking-widest text-sm align-top  px-2 py-0.5 mt-5 hover:bg-accent2"
 				// make the element non-focusable
 				tabIndex={-1}
+				onClick={() => {}}
 			>
 				OK
 				<span
