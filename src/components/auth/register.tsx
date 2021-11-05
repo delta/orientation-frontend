@@ -7,6 +7,7 @@ import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 interface InputComponentProps {
 	id: number;
 	setData: (value: string) => void;
+	isActive: boolean;
 	textData: {
 		question: string;
 		label: string;
@@ -21,16 +22,27 @@ const departments = [
 	{ name: "Metallurgy", available: true, code: "YOUR MOM" },
 ];
 
-const formData = [
+const formData: {
+	question: string;
+	userData: "username" | "department" | "aboutMe" | "gender";
+	label: string;
+	placeholder?: string;
+	type: "text" | "select";
+	options?: { name: string; available: boolean; code: string }[];
+}[] = [
 	{
 		question: "What's your name",
+		userData: "username",
 		label: "What should we call you",
 		placeholder: "Enter your name here...",
+		type: "text",
 	},
 	{
 		question: "Which department are you from",
+		userData: "department",
 		label: "Tell us your department",
 		options: departments,
+		type: "select",
 	},
 ];
 
@@ -70,7 +82,7 @@ const SelectComponent = ({
 							leaveFrom="opacity-100 z-0"
 							leaveTo="opacity-0 z-100"
 						>
-							<Listbox.Options className="select-box absolute w-4/5 py-1 mt-8  overflow-auto bg-background rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 ">
+							<Listbox.Options className="select-box absolute w-4/5 py-1 mt-1 overflow-auto bg-background rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 ">
 								{data?.options?.map((dept, deptIdx) => (
 									<Listbox.Option
 										key={deptIdx}
@@ -151,7 +163,23 @@ const SelectComponent = ({
 	);
 };
 
-const TextComponent = ({ id }: InputComponentProps) => {
+const TextComponent = ({ id, isActive }: InputComponentProps) => {
+	useEffect(() => {
+		if (isActive) {
+			window.addEventListener("keypress", listenForEnterKeyPress);
+			return () => {
+				window.removeEventListener("keypress", listenForEnterKeyPress);
+			};
+		}
+	}, [isActive]);
+
+	const [inputValue, setInputValue] = useState("");
+
+	const listenForEnterKeyPress = (e: KeyboardEvent) => {
+		if (e.key === "Enter") {
+		}
+	};
+
 	return (
 		<div className="element p-4">
 			<h1 className="relative text-text text-2xl my-5">
@@ -252,7 +280,7 @@ export const Register = () => {
 		}
 	}, [allElements]);
 
-	// Shifts focus to the next element
+	// Moves to the next element
 	const nextElement = () => {
 		if (currentActiveElement + 1 === allElements.length) return;
 
@@ -262,6 +290,7 @@ export const Register = () => {
 		setCurrentActiveElement((prev) => prev + 1);
 	};
 
+	// Moves to previous element
 	const prevElement = () => {
 		if (currentActiveElement === 0) return;
 
@@ -270,6 +299,25 @@ export const Register = () => {
 		allElements[currentActiveElement - 1].classList.add("active");
 		setCurrentActiveElement((prev) => prev - 1);
 	};
+
+	const addEventListenerForKeyPress = (e: KeyboardEvent) => {
+		// if the user presses Tab or Down Arrow, we move to the next element
+		// !!! The element is not validated, only moved
+		if (e.keyCode === 9 || e.keyCode === 40) {
+			// preventing Tab key's default action
+			e.preventDefault();
+			nextElement();
+		}
+
+		if (e.keyCode === 38) prevElement();
+	};
+
+	useEffect(() => {
+		window.addEventListener("keydown", addEventListenerForKeyPress);
+		return () => {
+			window.removeEventListener("keydown", addEventListenerForKeyPress);
+		};
+	});
 
 	const [userData, setUserData] = useState<{
 		username: string;
@@ -303,16 +351,29 @@ export const Register = () => {
 					console.log("Hello world");
 				}}
 			>
-				<TextComponent
-					id={1}
-					setData={addDataAndProceed("username")}
-					textData={formData[0]}
-				/>
-				<SelectComponent
-					id={2}
-					setData={addDataAndProceed("department")}
-					textData={formData[1]}
-				/>
+				{formData.map((singleFormData, index) => {
+					if (singleFormData.type === "text") {
+						return (
+							<TextComponent
+								id={index + 1}
+								key={index}
+								setData={addDataAndProceed(singleFormData.userData)}
+								isActive={index === currentActiveElement}
+								textData={singleFormData}
+							/>
+						);
+					} else {
+						return (
+							<SelectComponent
+								id={index + 1}
+								key={index}
+								setData={addDataAndProceed(singleFormData.userData)}
+								isActive={index === currentActiveElement}
+								textData={singleFormData}
+							/>
+						);
+					}
+				})}
 
 				<button type="submit" hidden>
 					Submit
