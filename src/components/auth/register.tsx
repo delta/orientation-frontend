@@ -4,7 +4,11 @@ import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 
+import bgImage from "../../assets/images/layered-peaks-haikei.svg";
+
 import { useToast } from "../toast/ToastProvider";
+import { clsx } from "../../utils/clsx";
+import { NONAME } from "dns";
 
 interface InputComponentProps {
 	id: number;
@@ -15,6 +19,7 @@ interface InputComponentProps {
 		label: string;
 		placeholder?: string; // text input
 		options?: { name: string; available: boolean; code: string }[]; // select input
+		buttonText?: string;
 	};
 }
 
@@ -26,12 +31,26 @@ const departments = [
 
 const formData: {
 	question: string;
-	userData: "username" | "department" | "aboutMe" | "gender";
+	userData:
+		| "start"
+		| "username"
+		| "department"
+		| "aboutMe"
+		| "gender"
+		| "submit";
 	label: string;
 	placeholder?: string;
-	type: "text" | "select";
+	buttonText?: string;
+	type: "text" | "select" | "button";
 	options?: { name: string; available: boolean; code: string }[];
 }[] = [
+	{
+		question: "We need some more details before starting ",
+		userData: "start",
+		label: "Answer these following questions",
+		buttonText: "Let's Start !",
+		type: "button",
+	},
 	{
 		question: "What's your name",
 		userData: "username",
@@ -46,14 +65,80 @@ const formData: {
 		options: departments,
 		type: "select",
 	},
+	{
+		question: "Tell us something about yourself",
+		userData: "aboutMe",
+		label: "Dont tell me your fav color",
+		placeholder: "FUCK CATS.",
+		type: "text",
+	},
+	{
+		question: "What is your gender",
+		userData: "gender",
+		label: "Tell us your gender ",
+		options: [
+			{
+				name: "Gender plis",
+				available: false,
+				code: "nth",
+			},
+			{
+				name: "male",
+				available: true,
+				code: "male",
+			},
+			{
+				name: "female",
+				available: true,
+				code: "female",
+			},
+		],
+		type: "select",
+	},
+	{
+		question: "Everything is done. Ready to enter Utopia ? ",
+		userData: "submit",
+		label: "Please read our terms and conditions before entering the site.",
+		buttonText: "LESGOO!!!",
+		type: "button",
+	},
 ];
 
 const SelectComponent = ({
 	id,
 	setData,
 	textData: data,
+	isActive,
 }: InputComponentProps) => {
 	const [selected, setSelected] = useState(departments[0]);
+
+	const toast = useToast();
+
+	useEffect(() => {
+		if (isActive) {
+			// console.log("adding event listener for select");
+			window.addEventListener("keypress", listenForEnterKeyPress);
+			return () => {
+				process.env.NODE_ENV === "development" &&
+					console.log("removing event listener");
+				window.removeEventListener("keypress", listenForEnterKeyPress);
+			};
+		}
+	}, [isActive]);
+
+	const listenForEnterKeyPress = (e: KeyboardEvent) => {
+		if (e.key === "Enter") {
+			validateInputAndMoveNext();
+		}
+	};
+
+	const validateInputAndMoveNext = () => {
+		// the selected value should be available
+
+		if (!selected.available) return toast?.pushError("Select a valid option");
+
+		return setData(selected.code);
+	};
 
 	return (
 		<div className="element p-4">
@@ -129,9 +214,7 @@ const SelectComponent = ({
 				className="inline-flex bg-accent1 rounded-sm text-text  font-bold tracking-widest text-sm align-top  px-2 py-0.5 mt-5 hover:bg-accent2"
 				// make the element non-focusable
 				tabIndex={-1}
-				onClick={() => {
-					setData(selected.name);
-				}}
+				onClick={validateInputAndMoveNext}
 			>
 				<span className="pt-1">OK</span>
 				<span
@@ -165,11 +248,19 @@ const SelectComponent = ({
 	);
 };
 
-const TextComponent = ({ id, isActive }: InputComponentProps) => {
+const TextComponent = ({
+	id,
+	isActive,
+	setData,
+	textData,
+}: InputComponentProps) => {
 	useEffect(() => {
 		if (isActive) {
+			// console.log("adding event listener for text component");
 			window.addEventListener("keypress", listenForEnterKeyPress);
 			return () => {
+				process.env.NODE_ENV === "development" &&
+					console.log("removing event listener");
 				window.removeEventListener("keypress", listenForEnterKeyPress);
 			};
 		}
@@ -181,7 +272,18 @@ const TextComponent = ({ id, isActive }: InputComponentProps) => {
 
 	const listenForEnterKeyPress = (e: KeyboardEvent) => {
 		if (e.key === "Enter") {
+			validateInputAndMoveNext();
 		}
+	};
+
+	// Validates user input, and calls setData
+	const validateInputAndMoveNext = () => {
+		// only check in text component is that,
+		// it cannot be empty
+		console.log(!inputValue);
+		if (!inputValue) return toast?.pushError("Enter a valid response !!");
+
+		return setData(inputValue);
 	};
 
 	return (
@@ -190,26 +292,27 @@ const TextComponent = ({ id, isActive }: InputComponentProps) => {
 				<span className="absolute text-lg pr-2 font-bold -left-12 top-0.5">
 					{id} &rarr;
 				</span>
-				<span>What is your username ?</span>
+				<span>{textData.question}</span>
 			</h1>
 			<label
 				htmlFor="username"
 				className="block text-text text-lg my-3 opacity-75 mb-8"
 			>
-				What do you want to be known as in Utopia ?
+				{textData.label}
 			</label>
 			<input
 				type="text"
 				id="username"
-				placeholder="Enter your name here..."
+				placeholder={textData.placeholder}
 				className="bg-transparent truncate text-text border-b-2 p-2 duration-150  border-opacity-25 text-3xl w-4/5 outline-none focus:border-opacity-100 focus:border-b-2 focus:bg-base focus:text-text"
+				onChange={(e) => setInputValue(e.target.value)}
 			/>
 			<br />
 			<button
 				className="bg-accent1 text-text rounded-sm font-bold tracking-widest text-sm align-top  px-2 py-0.5 mt-5 hover:bg-accent2"
 				// make the element non-focusable
 				tabIndex={-1}
-				onClick={() => {}}
+				onClick={validateInputAndMoveNext}
 			>
 				OK
 				<span
@@ -239,6 +342,60 @@ const TextComponent = ({ id, isActive }: InputComponentProps) => {
 					</span>
 				</span>
 			</span>
+		</div>
+	);
+};
+
+const ButtonComponent = ({
+	isActive,
+	setData,
+	textData,
+}: InputComponentProps) => {
+	useEffect(() => {
+		if (isActive) {
+			// console.log("adding event listener for text component");
+			window.addEventListener("keypress", listenForEnterKeyPress);
+			return () => {
+				process.env.NODE_ENV === "development" &&
+					console.log("removing event listener");
+				window.removeEventListener("keypress", listenForEnterKeyPress);
+			};
+		}
+	}, [isActive]);
+
+	console.log("Creating button component");
+
+	const listenForEnterKeyPress = (e: KeyboardEvent) => {
+		if (e.key === "Enter") {
+			moveNext();
+		}
+	};
+
+	// Validates user input, and calls setData
+	const moveNext = () => {
+		return setData("");
+	};
+
+	return (
+		<div className="element p4">
+			<div className="">
+				<h1 className="relative text-text text-2xl my-14">
+					{/* Everything is done. Ready to enter Utopia ? */}
+					{textData.question}
+				</h1>
+				<p className="text-text text-base">
+					{/* Please read our terms and conditions before entering the site. */}
+					{textData.label}
+				</p>
+				<button
+					className="bg-accent1 rounded text-text font-bold text-lg align-top px-5 py-2.5 mt-12 hover:bg-accent2"
+					// make the element non-focusable
+					tabIndex={-1}
+					onClick={moveNext}
+				>
+					{textData.buttonText}
+				</button>
+			</div>
 		</div>
 	);
 };
@@ -343,14 +500,44 @@ export const Register = () => {
 				prevData[key] = value;
 				return prevData;
 			});
+			nextElement();
 		};
 	};
 
+	const startForm = () => {
+		nextElement();
+	};
+
+	const endForm = () => {
+		// Submit the form here
+	};
+
+	const moveToElement = (index: number) => {
+		allElements.forEach((elem, idx) => {
+			if (idx < index) {
+				elem.classList.remove("active");
+				elem.classList.remove("not-visited");
+			} else if (idx === index) {
+				elem.classList.add("active");
+				elem.classList.remove("not-visited");
+			} else {
+				elem.classList.remove("active");
+				elem.classList.add("not-visited");
+			}
+		});
+		setCurrentActiveElement(index);
+	};
+
 	return (
-		<div className="flex justify-center items-center min-h-screen ">
+		<div
+			className="flex justify-center items-center min-h-screen "
+			style={{
+				backgroundImage: bgImage,
+			}}
+		>
 			<form
 				className="relative w-3/5 bg-base overflow-hidden rounded"
-				style={{ minHeight: "75vh" }}
+				style={{ minHeight: "75vh", backgroundImage: bgImage }}
 				onSubmit={(e) => {
 					e.preventDefault();
 					console.log("Hello world");
@@ -360,21 +547,33 @@ export const Register = () => {
 					if (singleFormData.type === "text") {
 						return (
 							<TextComponent
-								id={index + 1}
+								id={index}
 								key={index}
-								setData={addDataAndProceed(singleFormData.userData)}
+								setData={addDataAndProceed(singleFormData.userData as any)}
+								isActive={index === currentActiveElement}
+								textData={singleFormData}
+							/>
+						);
+					} else if (singleFormData.type === "select") {
+						return (
+							<SelectComponent
+								id={index}
+								key={index}
+								setData={addDataAndProceed(singleFormData.userData as any)}
 								isActive={index === currentActiveElement}
 								textData={singleFormData}
 							/>
 						);
 					} else {
 						return (
-							<SelectComponent
+							<ButtonComponent
 								id={index + 1}
 								key={index}
-								setData={addDataAndProceed(singleFormData.userData)}
 								isActive={index === currentActiveElement}
 								textData={singleFormData}
+								setData={(_: string) =>
+									singleFormData.userData === "start" ? startForm() : endForm()
+								}
 							/>
 						);
 					}
@@ -384,13 +583,37 @@ export const Register = () => {
 					Submit
 				</button>
 
-				{/* PREVIOUS ELEMENT */}
+				<div className="movement-dots absolute right-0 h-full w-10 flex flex-col justify-center align-center">
+					{formData.map((_, index) => {
+						if (index > 0 && index < formData.length - 1)
+							return (
+								<div
+									className={clsx(
+										"w-2.5 h-2.5 my-5 bg-accent2",
+										index === currentActiveElement ? "active" : ""
+									)}
+									key={index}
+									onClick={() => moveToElement(index)}
+								></div>
+							);
+					})}
+				</div>
+
+				{/* PREVIOUS BUTTON */}
 				<div className="absolute right-20 bottom-10 font-thin">
 					<button
-						className="rounded-tl-md rounded-bl-sm bg-accent1 border-r-2 border-black hover:bg-accent2"
+						className={clsx(
+							"rounded-tl-md rounded-bl-sm bg-accent1 border-black hover:bg-accent2 ",
+							"border-r-2",
+							currentActiveElement === 0 ? "hidden" : ""
+						)}
 						onClick={prevElement}
 						disabled={currentActiveElement === 0}
+						// hidden={currentActiveElement === 0}
 						type="button"
+						style={{
+							visibility: currentActiveElement <= 1 ? "hidden" : "visible",
+						}}
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -407,14 +630,28 @@ export const Register = () => {
 							/>
 						</svg>
 					</button>
-					{/* END OF PREVIOUS ELEMENT */}
+					{/* END OF PREVIOUS BUTTON */}
 
 					{/* NEXT BUTTON  */}
 					<button
-						className=" rounded-br-md rounded-tr-sm bg-accent1 hover:bg-accent2"
+						className={clsx(
+							" rounded-br-md rounded-tr-sm",
+							"bg-accent1 hover:bg-accent2"
+						)}
 						onClick={nextElement}
 						type="button"
-						disabled={currentActiveElement + 1 === allElements.length}
+						disabled={
+							currentActiveElement >= allElements.length - 2 ||
+							currentActiveElement === 0
+						}
+						style={{
+							visibility:
+								currentActiveElement >= allElements.length - 2 ||
+								currentActiveElement === 0
+									? "hidden"
+									: "visible",
+						}}
+						// hidden={currentActiveElement + 1 === allElements.length}
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
