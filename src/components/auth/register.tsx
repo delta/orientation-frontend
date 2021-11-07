@@ -110,7 +110,9 @@ const SelectComponent = ({
 	textData: data,
 	isActive,
 }: InputComponentProps) => {
-	const [selected, setSelected] = useState(departments[0]);
+	const [selected, setSelected] = useState(
+		data.options ? data.options[0] : { available: false, code: "", name: "" }
+	);
 
 	const toast = useToast();
 
@@ -135,9 +137,16 @@ const SelectComponent = ({
 	const validateInputAndMoveNext = () => {
 		// the selected value should be available
 
-		if (!selected.available) return toast?.pushError("Select a valid option");
+		// sometimes setState is still running when this function is called
+		// To make sure the setData is working properly, we are calling it as
+		// in the next event loop
+		//
+		// giving 0, shd work. But giving 500 coz im a pussy
+		setTimeout(() => {
+			if (!selected.available) return toast?.pushError("Select a valid option");
 
-		return setData(selected.code);
+			return setData(selected.code);
+		}, 500);
 	};
 
 	return (
@@ -280,10 +289,14 @@ const TextComponent = ({
 	const validateInputAndMoveNext = () => {
 		// only check in text component is that,
 		// it cannot be empty
-		console.log(!inputValue);
-		if (!inputValue) return toast?.pushError("Enter a valid response !!");
+		// console.log(inputValue);
 
-		return setData(inputValue);
+		setTimeout(() => {
+			console.log("inside timeout");
+			if (!inputValue) return toast?.pushError("Enter a valid response !!");
+
+			return setData(inputValue);
+		}, 500);
 	};
 
 	return (
@@ -401,8 +414,6 @@ const ButtonComponent = ({
 };
 
 export const Register = () => {
-	const ref = useRef<any>(null);
-
 	const getAllElements = () => {
 		console.log("getting all elements");
 		const x = window.document.querySelectorAll(".element");
@@ -465,12 +476,15 @@ export const Register = () => {
 	const addEventListenerForKeyPress = (e: KeyboardEvent) => {
 		// if the user presses Tab or Down Arrow, we move to the next element
 		// !!! The element is not validated, only moved
+
+		// Move to next element for => Tab and Down Arrow
 		if (e.keyCode === 9 || e.keyCode === 40) {
 			// preventing Tab key's default action
 			e.preventDefault();
 			nextElement();
 		}
 
+		// Move to Prev element for => Up Arrow
 		if (e.keyCode === 38) prevElement();
 	};
 
@@ -528,6 +542,16 @@ export const Register = () => {
 		setCurrentActiveElement(index);
 	};
 
+	const progress = () => {
+		let ans = 0;
+		for (const singleUserData in userData) {
+			if ((userData as any)[singleUserData]) ans++;
+		}
+
+		ans *= 25;
+		return `${ans}%`;
+	};
+
 	return (
 		<div
 			className="flex justify-center items-center min-h-screen "
@@ -543,6 +567,14 @@ export const Register = () => {
 					console.log("Hello world");
 				}}
 			>
+				<div className="relative pt-0">
+					<div className="overflow-hidden h-2 text-xs flex  bg-base">
+						<div
+							style={{ width: progress() }}
+							className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-accent1 transition-all"
+						></div>
+					</div>
+				</div>
 				{formData.map((singleFormData, index) => {
 					if (singleFormData.type === "text") {
 						return (
