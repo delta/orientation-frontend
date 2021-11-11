@@ -319,6 +319,7 @@ const TextComponent = ({
 				placeholder={textData.placeholder}
 				className="bg-transparent truncate text-text border-b-2 p-2 duration-150  border-opacity-25 text-3xl w-4/5 outline-none focus:border-opacity-100 focus:border-b-2 focus:bg-base focus:text-text"
 				onChange={(e) => setInputValue(e.target.value)}
+				autoFocus={isActive}
 			/>
 			<br />
 			<button
@@ -426,6 +427,8 @@ export const Register = () => {
 	const [currentActiveElement, setCurrentActiveElement] = useState(-1);
 	// const [isNextButtonDisabled]
 
+	const toast = useToast();
+
 	// Set allElements after the DOM Loads
 	useEffect(() => {
 		// setAllElements(getAllElements)
@@ -524,6 +527,7 @@ export const Register = () => {
 
 	const endForm = () => {
 		// Submit the form here
+		submitForm();
 	};
 
 	const moveToElement = (index: number) => {
@@ -550,6 +554,35 @@ export const Register = () => {
 
 		ans *= 25;
 		return `${ans}%`;
+	};
+
+	const verifyIfUserHasFilledAllDetails = () => {
+		for (const singleFormElement of Object.keys(userData)) {
+			if (!(userData as any)[singleFormElement]) {
+				// that element has not been filled
+				// loop through data array and focus that element
+				formData.some((singleFormData, index) => {
+					if (singleFormData.userData === singleFormElement) {
+						moveToElement(index);
+						return true; // loop stops after returning true
+					}
+					return false;
+				});
+				return false;
+			}
+		}
+
+		return true;
+	};
+
+	const postFormDataToServer = () => {};
+
+	const submitForm = () => {
+		if (!verifyIfUserHasFilledAllDetails()) {
+			return toast?.pushInfo(
+				"Answer all the questions before submitting the form"
+			);
+		}
 	};
 
 	return (
