@@ -1,4 +1,4 @@
 import { DAuthLogin } from "./login";
 import { Register } from "./register";
-
-export { DAuthLogin, Register };
+import {DAuthCallBack} from "./dathCallback"
+export { DAuthLogin, Register, DAuthCallBack };

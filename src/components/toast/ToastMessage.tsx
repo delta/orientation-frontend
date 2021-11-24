@@ -62,7 +62,7 @@ const IconWrapper = ({
 	return <Icon className={className} />;
 };
 
-export default function ToastMessage({
+export default function ToastMessageComponent({
 	id,
 	header,
 	message,
@@ -87,7 +87,7 @@ export default function ToastMessage({
 				onRemove(id);
 			}, lifetime);
 		}
-	}, [lifetime]);
+	}, [lifetime, id, onRemove]);
 
 	return (
 		<div

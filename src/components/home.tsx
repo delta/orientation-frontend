@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { UserContext } from "../contexts/userContext";
 
 const HomePage = () => {
+	const isLoggedIn = useContext(UserContext)?.isLoggedIn;
+
 	return (
 		<>
 			<div className="p-20 h-screen flex justify-center items-start flex-col">
@@ -12,9 +15,11 @@ const HomePage = () => {
 					fugiat eveniet tempora, atque alias earum ullam inventore itaque
 					sapiente iste?
 				</p>
-				<button className="p-4 bg-green-600 rounded-lg font-bold text-text mt-5 hover:bg-gray-600">
-					<Link to="/game">Start the journey</Link>
-				</button>
+				<Link to={isLoggedIn ? "/game" : "/auth/login"}>
+					<button className="p-4 bg-green-600 rounded-lg font-bold text-text mt-5 hover:bg-gray-600">
+						Start the journey
+					</button>
+				</Link>
 			</div>
 		</>
 	);

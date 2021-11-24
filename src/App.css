@@ -1,10 +1,10 @@
 :root {
-	--background: "#282725";
-	--base: "#463B33";
-	--accent1: "#749f55";
-	--accent2: "#CED346";
-	--text: "#F4EFE2";
-	--pop: "#FF5757";
+	--background: #282725;
+	--base: #463B33;
+	--accent1: #749f55;
+	--accent2: #CED346;
+	--text: #F4EFE2;
+	--pop: #FF5757;
 }
 
 /* body {

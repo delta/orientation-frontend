@@ -6,7 +6,7 @@ import styles from "./login.module.css";
 const DAuthLogin = () => {
 	return (
 		<div className="min-w-screen min-h-screen flex items-center justify-center px-5 py-5">
-			<div className="bg-base text-gray-500 rounded shadow-2xl py-5 px-5 w-3/5 h-3/4">
+			<div className="bg-base text-gray-500 rounded shadow-2xl py-5 px-5 w-3/4 h-3/4">
 				<div className="flex items-center relative">
 					<div
 						className="pl-10 h-4/5 py-10 w-1/2 flipInX"
@@ -20,23 +20,26 @@ const DAuthLogin = () => {
 							</div>
 						</h1>
 
-						<p className=" text-text my-14 ">
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
-							consectetur quia totam culpa, asperiores, quisquam praesentium
-							cumque quo iusto illum earum rem quos natus. Enim pariatur
-							voluptatibus debitis cumque necessitatibus.
+						<p className=" text-text my-14 text-lg">
+							DAuth is a one stop auth portal for Delta. Once you create an
+							account on Dauth, you can use it to Login to every App made by
+							Delta.
 						</p>
 						<div className={styles.slidingVertical + " h-20"}>
 							<span>
-								<button className="flex justify-between items-center bg-accent1 p-4 rounded-lg font-bold text-white mt-2 hover:bg-accent2">
-									<a href="/game">Start The Journey</a>
-								</button>
+								<a href="/auth/callback">
+									<button className="flex justify-between items-center bg-accent1 p-4 rounded-lg text-lg font-bold text-white mt-2 hover:bg-accent2">
+										Start The Journey
+									</button>
+								</a>
 							</span>
 							<span>
-								<button className="flex justify-between items-center bg-accent1 p-4 w-40 rounded-lg font-bold text-white mt-2 hover:bg-accent2">
-									<a href="/game">Login With </a>
-									<img src={deltaLogo} className="w-7" />
-								</button>
+								<a href="/auth/callback">
+									<button className="flex justify-between items-center bg-accent1 p-4 w-48 rounded-lg text-lg font-bold text-white mt-2 hover:bg-accent2">
+										Login With
+										<img src={deltaLogo} alt="your mom" className="w-7" />
+									</button>
+								</a>
 							</span>
 						</div>
 					</div>

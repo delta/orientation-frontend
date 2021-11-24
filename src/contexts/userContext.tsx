@@ -1,11 +1,12 @@
-import React, { createContext, useCallback, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { axiosInstance } from "../utils/axios";
 
 interface IUser {
 	id?: number;
-	name: string;
 	email: string;
-	aboutMe: string;
+	name: string;
+	username: string;
+	description: string;
 	gender: string;
 	department: string;
 }
@@ -22,6 +23,7 @@ interface UserContextProviderProps {
 	error: any;
 
 	logout: () => void;
+	saveUser: (user: IUser) => void;
 }
 
 export const UserContextProvider: React.FC = ({ children }) => {
@@ -60,11 +62,12 @@ export const UserContextProvider: React.FC = ({ children }) => {
 
 	const logout = () => {
 		setUser(undefined);
+		setIsLoggedIn(false);
 	};
 
 	return (
 		<UserContext.Provider
-			value={{ loading, isLoggedIn, setLoading, user, logout, error }}
+			value={{ loading, isLoggedIn, setLoading, user, logout, error, saveUser }}
 		>
 			{children}
 		</UserContext.Provider>

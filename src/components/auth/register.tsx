@@ -1,14 +1,17 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useContext, useCallback } from "react";
 import "./register.css";
 import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
+import { useHistory } from "react-router-dom";
 
 import bgImage from "../../assets/images/layered-peaks-haikei.svg";
 
 import { useToast } from "../toast/ToastProvider";
 import { clsx } from "../../utils/clsx";
-import { NONAME } from "dns";
+import { axiosInstance } from "../../utils/axios";
+import { UserContext } from "../../contexts/userContext";
+import { Redirect } from "react-router";
 
 interface InputComponentProps {
 	id: number;
@@ -18,15 +21,41 @@ interface InputComponentProps {
 		question: string;
 		label: string;
 		placeholder?: string; // text input
+		textInputType?: "input" | "textArea"; // text input
 		options?: { name: string; available: boolean; code: string }[]; // select input
 		buttonText?: string;
 	};
 }
 
 const departments = [
-	{ name: "Select your department", available: false, code: "YOUR MOM" },
-	{ name: "Computer Science Engineering", available: true, code: "YOUR MOM" },
-	{ name: "Metallurgy", available: true, code: "YOUR MOM" },
+	{ name: "Select your department", available: false, code: "" },
+	{ code: "AR", name: "Architecture", available: true },
+	{ code: "CA", name: "Computer Applications", available: true },
+	{ code: "CE", name: "Chemical Engineering", available: true },
+	{ code: "CL", name: "Civil Engineering", available: true },
+	{ code: "CSE", name: "Computer Science & Engineering", available: true },
+	{
+		code: "ECE",
+		name: "Electrical & Communication Engineering",
+		available: true,
+	},
+	{
+		code: "EEE",
+		name: "Electrical & Electronics Engineering",
+		available: true,
+	},
+	{
+		code: "ICE",
+		name: "Instrumentation & Communication Engineering",
+		available: true,
+	},
+	{ code: "ME", name: "Mechanical Engineering", available: true },
+	{
+		code: "MME",
+		name: "Metallurgical & Materials Engineering",
+		available: true,
+	},
+	{ code: "PR", name: "Production Engineering", available: true },
 ];
 
 const formData: {
@@ -35,11 +64,12 @@ const formData: {
 		| "start"
 		| "username"
 		| "department"
-		| "aboutMe"
+		| "description"
 		| "gender"
 		| "submit";
 	label: string;
 	placeholder?: string;
+	textInputType?: "input" | "textArea";
 	buttonText?: string;
 	type: "text" | "select" | "button";
 	options?: { name: string; available: boolean; code: string }[];
@@ -54,7 +84,8 @@ const formData: {
 	{
 		question: "What's your name",
 		userData: "username",
-		label: "What should we call you",
+		textInputType: "input",
+		label: "What do you wanna be known as in Utopia",
 		placeholder: "Enter your name here...",
 		type: "text",
 	},
@@ -67,9 +98,10 @@ const formData: {
 	},
 	{
 		question: "Tell us something about yourself",
-		userData: "aboutMe",
+		userData: "description",
 		label: "Dont tell me your fav color",
-		placeholder: "FUCK CATS.",
+		placeholder: "Tell me something you want everyone to know about you",
+		textInputType: "textArea",
 		type: "text",
 	},
 	{
@@ -116,25 +148,7 @@ const SelectComponent = ({
 
 	const toast = useToast();
 
-	useEffect(() => {
-		if (isActive) {
-			// console.log("adding event listener for select");
-			window.addEventListener("keypress", listenForEnterKeyPress);
-			return () => {
-				process.env.NODE_ENV === "development" &&
-					console.log("removing event listener");
-				window.removeEventListener("keypress", listenForEnterKeyPress);
-			};
-		}
-	}, [isActive]);
-
-	const listenForEnterKeyPress = (e: KeyboardEvent) => {
-		if (e.key === "Enter") {
-			validateInputAndMoveNext();
-		}
-	};
-
-	const validateInputAndMoveNext = () => {
+	const validateInputAndMoveNext = useCallback(() => {
 		// the selected value should be available
 
 		// sometimes setState is still running when this function is called
@@ -147,7 +161,28 @@ const SelectComponent = ({
 
 			return setData(selected.code);
 		}, 500);
-	};
+	}, [selected, setData, toast]);
+
+	const listenForEnterKeyPress = useCallback(
+		(e: KeyboardEvent) => {
+			if (e.key === "Enter") {
+				validateInputAndMoveNext();
+			}
+		},
+		[validateInputAndMoveNext]
+	);
+
+	useEffect(() => {
+		if (isActive) {
+			// console.log("adding event listener for select");
+			window.addEventListener("keypress", listenForEnterKeyPress);
+			return () => {
+				process.env.NODE_ENV === "development" &&
+					console.log("removing event listener");
+				window.removeEventListener("keypress", listenForEnterKeyPress);
+			};
+		}
+	}, [isActive, listenForEnterKeyPress]);
 
 	return (
 		<div className="element p-4">
@@ -263,30 +298,12 @@ const TextComponent = ({
 	setData,
 	textData,
 }: InputComponentProps) => {
-	useEffect(() => {
-		if (isActive) {
-			// console.log("adding event listener for text component");
-			window.addEventListener("keypress", listenForEnterKeyPress);
-			return () => {
-				process.env.NODE_ENV === "development" &&
-					console.log("removing event listener");
-				window.removeEventListener("keypress", listenForEnterKeyPress);
-			};
-		}
-	}, [isActive]);
-
 	const [inputValue, setInputValue] = useState("");
 
 	const toast = useToast();
 
-	const listenForEnterKeyPress = (e: KeyboardEvent) => {
-		if (e.key === "Enter") {
-			validateInputAndMoveNext();
-		}
-	};
-
 	// Validates user input, and calls setData
-	const validateInputAndMoveNext = () => {
+	const validateInputAndMoveNext = useCallback(() => {
 		// only check in text component is that,
 		// it cannot be empty
 		// console.log(inputValue);
@@ -297,7 +314,28 @@ const TextComponent = ({
 
 			return setData(inputValue);
 		}, 500);
-	};
+	}, [toast, setData, inputValue]);
+
+	const listenForEnterKeyPress = useCallback(
+		(e: KeyboardEvent) => {
+			if (e.key === "Enter") {
+				validateInputAndMoveNext();
+			}
+		},
+		[validateInputAndMoveNext]
+	);
+
+	useEffect(() => {
+		if (isActive) {
+			// console.log("adding event listener for text component");
+			window.addEventListener("keypress", listenForEnterKeyPress);
+			return () => {
+				process.env.NODE_ENV === "development" &&
+					console.log("removing event listener");
+				window.removeEventListener("keypress", listenForEnterKeyPress);
+			};
+		}
+	}, [isActive, listenForEnterKeyPress]);
 
 	return (
 		<div className="element p-4">
@@ -313,14 +351,26 @@ const TextComponent = ({
 			>
 				{textData.label}
 			</label>
-			<input
-				type="text"
-				id="username"
-				placeholder={textData.placeholder}
-				className="bg-transparent truncate text-text border-b-2 p-2 duration-150  border-opacity-25 text-3xl w-4/5 outline-none focus:border-opacity-100 focus:border-b-2 focus:bg-base focus:text-text"
-				onChange={(e) => setInputValue(e.target.value)}
-				autoFocus={isActive}
-			/>
+			{textData.textInputType === "input" ? (
+				<input
+					type="text"
+					// id="username"
+					placeholder={textData.placeholder}
+					className="bg-transparent truncate text-text border-b-2 p-2 duration-150  border-opacity-25 text-3xl w-4/5 outline-none focus:border-opacity-100 focus:border-b-2 focus:bg-base focus:text-text"
+					onChange={(e) => setInputValue(e.target.value)}
+					autoFocus={isActive}
+				/>
+			) : (
+				<input
+					type="text"
+					// id="username"
+					style={{ overflowWrap: "break-word" }}
+					placeholder={textData.placeholder}
+					className="bg-transparent truncate text-text border-b-2 p-2 duration-150  border-opacity-25 text-xl w-4/5 outline-none focus:border-opacity-100 focus:border-b-2 focus:bg-base focus:text-text"
+					onChange={(e) => setInputValue(e.target.value)}
+					autoFocus={isActive}
+				/>
+			)}
 			<br />
 			<button
 				className="bg-accent1 text-text rounded-sm font-bold tracking-widest text-sm align-top  px-2 py-0.5 mt-5 hover:bg-accent2"
@@ -365,6 +415,20 @@ const ButtonComponent = ({
 	setData,
 	textData,
 }: InputComponentProps) => {
+	// Validates user input, and calls setData
+	const moveNext = useCallback(() => {
+		return setData("");
+	}, [setData]);
+
+	const listenForEnterKeyPress = useCallback(
+		(e: KeyboardEvent) => {
+			if (e.key === "Enter") {
+				moveNext();
+			}
+		},
+		[moveNext]
+	);
+
 	useEffect(() => {
 		if (isActive) {
 			// console.log("adding event listener for text component");
@@ -375,20 +439,9 @@ const ButtonComponent = ({
 				window.removeEventListener("keypress", listenForEnterKeyPress);
 			};
 		}
-	}, [isActive]);
+	}, [isActive, listenForEnterKeyPress]);
 
-	console.log("Creating button component");
-
-	const listenForEnterKeyPress = (e: KeyboardEvent) => {
-		if (e.key === "Enter") {
-			moveNext();
-		}
-	};
-
-	// Validates user input, and calls setData
-	const moveNext = () => {
-		return setData("");
-	};
+	// console.log("Creating button component");
 
 	return (
 		<div className="element p4">
@@ -422,6 +475,10 @@ export const Register = () => {
 		return Array.from(x);
 	};
 
+	const { isLoggedIn, saveUser } = useContext(UserContext) || {};
+
+	const history = useHistory();
+
 	// This won't work, need to setAllElements manually inside useEffect : )
 	const [allElements, setAllElements] = useState<Element[]>(getAllElements);
 	const [currentActiveElement, setCurrentActiveElement] = useState(-1);
@@ -448,6 +505,8 @@ export const Register = () => {
 		// console.log(allElements);
 		// console.log(allElements[0]?.className);
 		if (!allElements) return;
+		// only happens in dev, and is annoying af
+		allElements.forEach((e) => e.classList.remove("active"));
 		allElements[0]?.classList.add("active");
 		setCurrentActiveElement(0);
 
@@ -501,12 +560,12 @@ export const Register = () => {
 	const [userData, setUserData] = useState<{
 		username: string;
 		department: string;
-		aboutMe: string;
+		description: string;
 		gender: string;
 	}>({
 		username: "",
 		department: "",
-		aboutMe: "",
+		description: "",
 		gender: "",
 	});
 
@@ -575,15 +634,28 @@ export const Register = () => {
 		return true;
 	};
 
-	const postFormDataToServer = () => {};
+	const postFormDataToServer = async () => {
+		try {
+			const resp = await axiosInstance.put("/api/user/signup", {
+				user: userData,
+			});
+			saveUser && saveUser(resp.data.user);
+			history.push("/game");
+		} catch (error) {
+			toast?.pushError("Something went wrong try again later");
+		}
+	};
 
-	const submitForm = () => {
+	const submitForm = async () => {
 		if (!verifyIfUserHasFilledAllDetails()) {
 			return toast?.pushInfo(
 				"Answer all the questions before submitting the form"
 			);
 		}
+		await postFormDataToServer();
 	};
+
+	if (!isLoggedIn) return <Redirect to="/auth/login" />;
 
 	return (
 		<div
@@ -661,6 +733,7 @@ export const Register = () => {
 									onClick={() => moveToElement(index)}
 								></div>
 							);
+						return <></>;
 					})}
 				</div>
 
