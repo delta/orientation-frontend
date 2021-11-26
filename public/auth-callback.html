@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utopia | LOGIN REDIRECT</title>
+</head>
+
+<style>
+    :root {
+        --background: #282725;
+        --base: #463B33;
+        --accent1: #749f55;
+        --accent2: #CED346;
+        --text: #F4EFE2;
+        --pop: #FF5757;
+    }
+
+    body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+            "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+            sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+
+        background-color: var(--background);
+
+    }
+
+    * {
+        color: var(--text);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .containerz {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100vw;
+        min-height: 100vh;
+        background: var(--background);
+    }
+
+    .containerz .loader {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 300px;
+        height: 300px;
+    }
+
+    .containerz .loader span {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 2px solid #fff;
+        pointer-events: none;
+        animation: animateThreads 5s linear infinite;
+    }
+
+    .containerz .loader span:nth-child(1) {
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+
+    .containerz .loader span:nth-child(2) {
+        animation-direction: reverse;
+        border-radius: 67% 33% 70% 30% / 75% 65% 35% 25%;
+    }
+
+    .containerz .loader span:nth-child(3) {
+        animation-duration: 3s;
+        border-radius: 52% 48% 70% 30% / 41% 65% 35% 59%;
+    }
+
+    @keyframes animateThreads {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .containerz .loader h2 {
+        color: var(--text);
+        /* font-family: "Courier New", Courier, monospace; */
+        font-weight: 500;
+        max-width: 200px;
+        text-align: center;
+    }
+</style>
+
+<body>
+    <!-- <h1>Auth Callback</h1> -->
+
+    <div class="containerz">
+        <div class="loader">
+            <span></span>
+            <span></span>
+            <span></span>
+            <h2>Redirecting back to Utopia...</h2>
+        </div>
+    </div>
+</body>
+
+<script>
+    // console.log("hello world");
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const params = Object.fromEntries(urlSearchParams.entries());
+    // console.log(params);
+    params.source = "dauth-login-callback";
+
+    setTimeout(() => {
+        if (window.opener) {
+            // send them to the opening window
+            window.opener.postMessage(params);
+            // close the popup
+            window.close();
+        }
+    }, 500);
+</script>
+
+</html>

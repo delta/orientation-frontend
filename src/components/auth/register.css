@@ -1,0 +1,123 @@
+* {
+	/* color: green !important; */
+	font-family: monospace;
+}
+
+form {
+	/* background-image: "../../assets/images/layered-peaks-haikei.svg"; */
+	background-image: url("../../assets/images/layered-peaks-haikei.svg");
+	background-size: cover;
+}
+
+.element {
+	/* background-image: url("../../assets/images/layered-peaks-haikei.svg"); */
+	position: absolute;
+	/* border: solid 4px yellow; */
+	opacity: 0;
+	left: calc(50% - 20vw);
+	top: calc(50% - 20vh);
+	width: 40vw;
+	height: 40vh;
+	transform: translate(-0%, -300%);
+	transition: all 0.6s cubic-bezier(0.4, 0.25, 0.8, 0.3) 0.05s;
+}
+
+.element.not-visited {
+	transform: translate(+0%, +300%);
+}
+
+.element.active {
+	transform: none;
+	opacity: 1;
+}
+
+.element h1 {
+	transform: translate(-0%, -300%);
+	transition: all 0.3s ease-in;
+}
+
+.element.not-visited h1 {
+	transform: translate(+0%, -300%);
+}
+
+.element input,
+.element .headless-select {
+	transition: transform 1s ease-in 0.2s, opacity 0.9s ease-out 1s;
+	transform: translate(-0%, -100%);
+	opacity: 0;
+}
+
+.element.active input,
+.element.active .headless-select {
+	transform: none;
+	opacity: 1;
+}
+
+/* .element.not-visited input,
+.element.not-visited .headless-select {
+	transform: translate(0%, 100%);
+} */
+
+.element.active h1 {
+	transform: none;
+}
+
+input {
+	outline: 0;
+}
+
+input:focus {
+	outline: 0;
+	color: --var(text) !important;
+	background: transparent;
+}
+input:active {
+	color: --var(text) !important;
+}
+
+.styledSelect option {
+	display: none;
+}
+
+.selectItems {
+	transition: all 0.4s cubic-bezier(0.4, 0.25, 0.8, 0.3) 0.05s;
+	overflow: hidden;
+	height: fit-content;
+}
+
+.selectItems-closed {
+	height: 0;
+	transition: all 0.4s cubic-bezier(0.4, 0.25, 0.8, 0.3) 0.05s;
+}
+
+.select-box::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3) !important;
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3) !important;
+	border-radius: 10px !important;
+	background-color: #463b33 !important;
+}
+
+.select-box::-webkit-scrollbar {
+	width: 6px !important;
+	background-color: #463b33 !important;
+}
+
+.select-box::-webkit-scrollbar-thumb {
+	border-radius: 10px !important;
+	box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3) !important;
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3) !important;
+	background-color: #749f55 !important;
+}
+
+.movement-dots > div {
+	cursor: pointer;
+	transform: rotate(45deg);
+	border-radius: 5px;
+}
+
+.movement-dots > div.active {
+	outline: 1px solid #ced346;
+	outline-offset: 4px;
+	/* out */
+	/* margin: 1px; */
+}
