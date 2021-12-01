@@ -4,7 +4,7 @@ import './styles/output.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { HomePage } from './pages/home';
 import { AuthPage } from './pages/auth';
-import { Game } from './Phaser/Game';
+import { Game } from './Phaser/Game/Game';
 
 import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
