@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Game as PhaserGame } from 'phaser';
-import { reconcilerInstance } from '../renderer/reconciler';
+import { Renderer } from '../renderer';
 
 const Game = () => {
     const [gameRef, setGameRef] = useState<HTMLDivElement | null>(null);
@@ -11,9 +11,8 @@ const Game = () => {
             width: 500,
             parent: gameRef
         });
-        reconcilerInstance.createContainer(game, 0, false, null);
+        Renderer.createContainer(game, 0, false, null);
         return () => {
-            console.log('deleting game');
             game.destroy(true);
         };
     }, [gameRef]);

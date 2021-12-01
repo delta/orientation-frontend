@@ -1,4 +1,5 @@
 import Reconciler, { HostConfig } from 'react-reconciler';
+import { hostConfigWrapper } from './hostWrapper';
 
 type Type = any;
 type Props = any;
@@ -30,7 +31,9 @@ const hostConfig: HostConfig<
     NoTimeout
 > = {
     now: Date.now,
-    getRootHostContext: (...args) => {},
+    getRootHostContext: (...args) => {
+        console.log('hostConfig wrapper');
+    },
     prepareForCommit: (...args) => {
         return null;
     },
@@ -57,23 +60,9 @@ const hostConfig: HostConfig<
     supportsHydration: false
 };
 
+// const reconcilerInstance = Reconciler(hostConfigWrapper(hostConfig));
 const reconcilerInstance = Reconciler(hostConfig);
 
-const customRenderer = {
-    // render(element, renderDom, callback) {
-    // 	// element: This is the react element for App component
-    // 	// renderDom: This is the host root element to which the rendered app will be attached.
-    // 	// callback: if specified will be called after render is done.
-    // 	const isAsync = false; // Disables async rendering
-    // 	const container = reconcilerInstance.createContainer(renderDom, isAsync); // Creates root fiber node.
-    // 	const parentComponent = null; // Since there is no parent (since this is the root fiber). We set parentComponent to null.
-    // 	reconcilerInstance.updateContainer(
-    // 		element,
-    // 		container,
-    // 		parentComponent,
-    // 		callback
-    // 	); // Start reconcilation and render the result
-    // },
-};
+export type hostConfigType = typeof hostConfig;
 
 export { reconcilerInstance };
