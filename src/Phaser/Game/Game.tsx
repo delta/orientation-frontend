@@ -24,9 +24,35 @@ class GameClass extends Component<GameProps, GameState> {
     }
 
     componentDidMount = () => {
+        // // console.log('Component did mount', this.state);
+        // // create a phaser game after initial render
         // console.log('Component did mount', this.state);
-        // create a phaser game after initial render
-        console.log('Component did mount', this.state);
+        // if (!this.state.gameRef) return;
+        // const game = new PhaserGame({
+        //     height: 500,
+        //     width: 500,
+        //     parent: this.state.gameRef
+        // });
+        // console.log(game);
+        // // We create a new container with our custom renderer with the PhaserGameObject
+        // //
+        // // createContainer parameters = containerInfo, tag, hydrate, hydrationCallbacks
+        // // containerInfo -> the root container of our phaser game (Game obj obvi.)
+        // // tag = 0 -> we are creating a BlockingRoot (even though I don't understand what that means, but ReactDOM seems to be using this,
+        // // so if its good enough for it, its good enough for us)
+        // // hydrate -> we are not using any hydration,
+        // const mountContainerInstance = Renderer.createContainer(
+        //     game,
+        //     0,
+        //     false,
+        //     null
+        // );
+        // this.setState({ mountContainer: mountContainerInstance });
+    };
+
+    // Creates a phaser game once the gameRef state has been initialized
+    startGame = () => {
+        // just checking to prevent typescript error
         if (!this.state.gameRef) return;
         const game = new PhaserGame({
             height: 500,
@@ -54,7 +80,7 @@ class GameClass extends Component<GameProps, GameState> {
 
     setGameRef = (gameObj: HTMLDivElement) => {
         console.log('setting game ref');
-        this.setState({ gameRef: gameObj });
+        this.setState({ gameRef: gameObj }, this.startGame);
     };
 
     componentDidUpdate() {
