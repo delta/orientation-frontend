@@ -3,7 +3,7 @@ import { Game } from 'phaser';
 
 import { hostConfigWrapper } from './hostWrapper';
 
-type ReactElement = Element | Document;
+// type ReactElement = Element | Document;
 type Type = any;
 type Props = any;
 type Container = Game;

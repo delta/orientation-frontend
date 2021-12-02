@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, Component } from 'react';
+import React, { Component } from 'react';
 import { Game as PhaserGame } from 'phaser';
 import { isEqual } from 'lodash';
 
@@ -15,7 +15,7 @@ interface GameState {
     mountContainer: any;
 }
 
-class GameClass extends Component<GameProps, GameState> {
+class Game extends Component<GameProps, GameState> {
     constructor(props: GameProps) {
         super(props);
         this.state = {
@@ -120,60 +120,4 @@ class GameClass extends Component<GameProps, GameState> {
     }
 }
 
-const Game = (props: GameProps) => {
-    const [gameRef, setGameRef] = useState<HTMLDivElement | null>(null);
-    const [phaserGame, setPhaserGame] = useState<PhaserGame | null>(null);
-    const [mountContainer, setMountContainer] = useState<any>(null);
-
-    const { children } = props;
-
-    // console.log(React.findDOMNode);
-
-    useEffect(() => {
-        if (!gameRef) return;
-        const game = new PhaserGame({
-            height: 500,
-            width: 500,
-            parent: gameRef
-        });
-
-        // We create a new container with our custom renderer with the PhaserGameObject
-        //
-        // createContainer parameters = containerInfo, tag, hydrate, hydrationCallbacks
-        // containerInfo -> the root container of our phaser game (Game obj obvi.)
-        // tag = 0 -> we are creating a BlockingRoot (even though I don't understand what that means, but ReactDOM seems to be using this,
-        // so if its good enough for it, its good enough for us)
-        // hydrate -> we are not using any hydration,
-        const mountContainerInstance = Renderer.createContainer(
-            game,
-            0,
-            false,
-            null
-        );
-
-        setMountContainer(mountContainerInstance);
-
-        setPhaserGame(game);
-        return () => {
-            // when we destroy the game, we have to remove it from the Fiber renderer
-            Renderer.updateContainer(null, mountContainer, null, () => {});
-            game.destroy(true);
-        };
-    }, [gameRef]);
-
-    useEffect(() => {
-        // when ever the list of children changes , we call updateContainer to reconcile
-        // and update the dom
-        Renderer.updateContainer(children, mountContainer, null, () => {});
-    }, [children]);
-
-    return (
-        <div id="phaser-game" ref={setGameRef}>
-            <GameContext.Provider value={phaserGame}>
-                {children}
-            </GameContext.Provider>
-        </div>
-    );
-};
-
-export { GameClass as Game };
+export { Game };
