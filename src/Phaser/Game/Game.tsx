@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState, Component } from 'react';
 import { Game as PhaserGame } from 'phaser';
+import { isEqual } from 'lodash';
+
 import { Renderer } from '../../renderer';
 import { GameContext } from './GameContext';
 
@@ -75,20 +77,30 @@ class GameClass extends Component<GameProps, GameState> {
             null
         );
 
-        this.setState({ mountContainer: mountContainerInstance });
+        // we call mountContainerInstance as a callback instead of calling it in componentDidMount
+        // because it isn't guaranteed that the gameRef will be set to the container
+        this.setState({
+            mountContainer: mountContainerInstance,
+            phaserGame: game
+        });
     };
 
     setGameRef = (gameObj: HTMLDivElement) => {
-        console.log('setting game ref');
+        console.log('set game ref');
         this.setState({ gameRef: gameObj }, this.startGame);
     };
 
+    shouldComponentUpdate(newProps: GameProps, newState: GameState) {
+        // we dont re-render if there is a change in state
+        if (!isEqual(newProps, this.props)) return true;
+        return false;
+    }
+
     componentDidUpdate() {
-        console.log('component updated');
+        console.log('component did update');
     }
 
     render() {
-        console.log('render');
         return (
             <div id="phaser-game" ref={this.setGameRef}>
                 <GameContext.Provider value={this.state.phaserGame}>
