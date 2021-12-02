@@ -61,7 +61,6 @@ class GameClass extends Component<GameProps, GameState> {
             width: 500,
             parent: this.state.gameRef
         });
-        console.log(game);
 
         // We create a new container with our custom renderer with the PhaserGameObject
         //
@@ -79,14 +78,24 @@ class GameClass extends Component<GameProps, GameState> {
 
         // we call mountContainerInstance as a callback instead of calling it in componentDidMount
         // because it isn't guaranteed that the gameRef will be set to the container
-        this.setState({
-            mountContainer: mountContainerInstance,
-            phaserGame: game
-        });
+        this.setState(
+            {
+                mountContainer: mountContainerInstance,
+                phaserGame: game
+            },
+            this.updateContainer
+        );
+    };
+
+    updateContainer = () => {
+        Renderer.updateContainer(
+            this.props.children,
+            this.state.mountContainer,
+            this
+        );
     };
 
     setGameRef = (gameObj: HTMLDivElement) => {
-        console.log('set game ref');
         this.setState({ gameRef: gameObj }, this.startGame);
     };
 
@@ -97,7 +106,7 @@ class GameClass extends Component<GameProps, GameState> {
     }
 
     componentDidUpdate() {
-        console.log('component did update');
+        this.updateContainer();
     }
 
     render() {
