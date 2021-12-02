@@ -15,6 +15,12 @@ interface GameState {
     mountContainer: any;
 }
 
+// We have to use class component instead of functional component
+// as we have to pass an instance of the root component to the updateContainer method
+// of our custom renderer. Since Functional component are not instantiated,
+// https://github.com/facebook/react/issues/4936#issuecomment-142379068
+// we are forced to use class based components
+
 class Game extends Component<GameProps, GameState> {
     constructor(props: GameProps) {
         super(props);
@@ -76,8 +82,6 @@ class Game extends Component<GameProps, GameState> {
             null
         );
 
-        // we call mountContainerInstance as a callback instead of calling it in componentDidMount
-        // because it isn't guaranteed that the gameRef will be set to the container
         this.setState(
             {
                 mountContainer: mountContainerInstance,
@@ -87,6 +91,7 @@ class Game extends Component<GameProps, GameState> {
         );
     };
 
+    // we update the dom container everyTime the DOM Tree is updated
     updateContainer = () => {
         Renderer.updateContainer(
             this.props.children,
@@ -96,6 +101,8 @@ class Game extends Component<GameProps, GameState> {
     };
 
     setGameRef = (gameObj: HTMLDivElement) => {
+        // we call startGame as a callback instead of calling it in componentDidMount
+        // because it isn't guaranteed that the gameRef will be set to the container
         this.setState({ gameRef: gameObj }, this.startGame);
     };
 
