@@ -4,16 +4,17 @@ import { hostConfigType } from './reconciler';
  */
 const hostConfigWrapper = (hostConfig: hostConfigType) => {
     let traceWrappedHostConfig = {};
-    traceWrappedHostConfig = Object.keys(hostConfig).map((key) => {
+    Object.keys(hostConfig).forEach((key) => {
         // @ts-ignore
         const func = hostConfig[key];
         // @ts-ignore
-        return (...args) => {
+        traceWrappedHostConfig[key] = (...args) => {
             process.env.NODE_ENV === 'development' &&
                 console.log('$', key, { ...args });
             return func(...args);
         };
     });
+    console.log(traceWrappedHostConfig);
     return traceWrappedHostConfig as hostConfigType;
 };
 

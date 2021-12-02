@@ -41,9 +41,7 @@ const hostConfig: HostConfig<
     cancelTimeout: clearTimeout,
     noTimeout: -1,
 
-    getRootHostContext: (...args) => {
-        console.log('hostConfig wrapper');
-    },
+    getRootHostContext: (...args) => {},
     prepareForCommit: (...args) => {
         return null;
     },
