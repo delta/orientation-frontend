@@ -1,9 +1,12 @@
 import Reconciler, { HostConfig } from 'react-reconciler';
+import { Game } from 'phaser';
+
 import { hostConfigWrapper } from './hostWrapper';
 
+type ReactElement = Element | Document;
 type Type = any;
 type Props = any;
-type Container = any;
+type Container = Game;
 type Instance = any;
 type TextInstance = any;
 type SuspenseInstance = any;
@@ -30,7 +33,14 @@ const hostConfig: HostConfig<
     TimeoutHandle,
     NoTimeout
 > = {
-    now: Date.now,
+    // similar to date.now but react version of it
+    now: performance.now,
+    // proxying it to setTimeout
+    scheduleTimeout: setTimeout,
+    // proxy to clear timeout coz they are essentially the same
+    cancelTimeout: clearTimeout,
+    noTimeout: -1,
+
     getRootHostContext: (...args) => {
         console.log('hostConfig wrapper');
     },
@@ -53,15 +63,15 @@ const hostConfig: HostConfig<
     prepareUpdate: (...args) => {},
     getPublicInstance: (...args) => {},
     preparePortalMount: (...args) => {},
-    scheduleTimeout: (...args) => {},
-    cancelTimeout: (...args) => {},
-    noTimeout: -1,
+
+    // we are only using this renderer for the phaser, we are still
+    // using ReactDOM as our primary renderer
     isPrimaryRenderer: false,
-    supportsHydration: false
+    supportsHydration: false,
+    clearContainer: (...args) => {}
 };
 
-// const reconcilerInstance = Reconciler(hostConfigWrapper(hostConfig));
-const reconcilerInstance = Reconciler(hostConfig);
+const reconcilerInstance = Reconciler(hostConfigWrapper(hostConfig));
 
 export type hostConfigType = typeof hostConfig;
 
