@@ -12,7 +12,7 @@ type TextInstance = any;
 type SuspenseInstance = any;
 type HydratableInstance = any;
 type PublicInstance = any;
-type HostContext = any;
+type HostContext = Game | any;
 type UpdatePayload = any;
 type _ChildSet = any;
 type TimeoutHandle = any;
@@ -41,7 +41,12 @@ const hostConfig: HostConfig<
     cancelTimeout: clearTimeout,
     noTimeout: -1,
 
-    getRootHostContext: (...args) => {},
+    // this function lets you share the initial host context, (aka the Phaser Game Object)
+    // Since we ned the Phaser Game Object to add scenes, we are passing it down to the
+    // component tree
+    getRootHostContext: (rootContainer) => {
+        return rootContainer;
+    },
     prepareForCommit: (...args) => {
         return null;
     },
