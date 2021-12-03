@@ -8,6 +8,7 @@ import { Game } from './Phaser/Game/Game';
 
 import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
+import { Scene } from './Phaser/Scene/Scene';
 
 function App() {
     return (
@@ -20,7 +21,9 @@ function App() {
                                 <HomePage />
                             </Route>
                             <Route path="/game">
-                                <Game />
+                                <Game>
+                                    <Scene />
+                                </Game>
                             </Route>
                             <Route path="/auth">
                                 <AuthPage />
