@@ -31,7 +31,7 @@ class Game extends Component<GameProps, GameState> {
         };
     }
 
-    componentDidMount = () => {
+    componentDidMount() {
         // // console.log('Component did mount', this.state);
         // // create a phaser game after initial render
         // console.log('Component did mount', this.state);
@@ -56,7 +56,7 @@ class Game extends Component<GameProps, GameState> {
         //     null
         // );
         // this.setState({ mountContainer: mountContainerInstance });
-    };
+    }
 
     // Creates a phaser game once the gameRef state has been initialized
     startGame = () => {
@@ -92,13 +92,13 @@ class Game extends Component<GameProps, GameState> {
     };
 
     // we update the dom container everyTime the DOM Tree is updated
-    updateContainer = () => {
+    updateContainer() {
         Renderer.updateContainer(
             this.props.children,
             this.state.mountContainer,
             this
         );
-    };
+    }
 
     setGameRef = (gameObj: HTMLDivElement) => {
         // we call startGame as a callback instead of calling it in componentDidMount
@@ -114,6 +114,14 @@ class Game extends Component<GameProps, GameState> {
 
     componentDidUpdate() {
         this.updateContainer();
+    }
+
+    componentWillUnmount() {
+        Renderer.updateContainer(
+            this.props.children,
+            this.state.mountContainer,
+            this
+        );
     }
 
     render() {
