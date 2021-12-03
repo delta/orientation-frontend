@@ -106,14 +106,12 @@ class Game extends Component<GameProps, GameState> {
         this.setState({ gameRef: gameObj }, this.startGame);
     };
 
-    shouldComponentUpdate(newProps: GameProps, newState: GameState) {
-        // we dont re-render if there is a change in state
-        if (!isEqual(newProps, this.props)) return true;
-        return false;
-    }
-
-    componentDidUpdate() {
-        this.updateContainer();
+    componentDidUpdate(prevProps: GameProps, prevState: GameState) {
+        // we only update the container if the there is a change in props
+        if (!isEqual(prevProps, this.props)) this.updateContainer();
+        // or when mount container is intialized
+        if (!prevState.mountContainer && this.state.mountContainer)
+            this.updateContainer();
     }
 
     componentWillUnmount() {
@@ -127,9 +125,11 @@ class Game extends Component<GameProps, GameState> {
     render() {
         return (
             <div id="phaser-game" ref={this.setGameRef}>
-                <GameContext.Provider value={this.state.phaserGame}>
-                    {this.props.children}
-                </GameContext.Provider>
+                {this.state.mountContainer ? (
+                    <GameContext.Provider value={this.state.phaserGame}>
+                        {this.props.children}
+                    </GameContext.Provider>
+                ) : null}
             </div>
         );
     }
