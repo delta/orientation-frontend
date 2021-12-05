@@ -31,32 +31,7 @@ class Game extends Component<GameProps, GameState> {
         };
     }
 
-    componentDidMount() {
-        // // console.log('Component did mount', this.state);
-        // // create a phaser game after initial render
-        // console.log('Component did mount', this.state);
-        // if (!this.state.gameRef) return;
-        // const game = new PhaserGame({
-        //     height: 500,
-        //     width: 500,
-        //     parent: this.state.gameRef
-        // });
-        // console.log(game);
-        // // We create a new container with our custom renderer with the PhaserGameObject
-        // //
-        // // createContainer parameters = containerInfo, tag, hydrate, hydrationCallbacks
-        // // containerInfo -> the root container of our phaser game (Game obj obvi.)
-        // // tag = 0 -> we are creating a BlockingRoot (even though I don't understand what that means, but ReactDOM seems to be using this,
-        // // so if its good enough for it, its good enough for us)
-        // // hydrate -> we are not using any hydration,
-        // const mountContainerInstance = Renderer.createContainer(
-        //     game,
-        //     0,
-        //     false,
-        //     null
-        // );
-        // this.setState({ mountContainer: mountContainerInstance });
-    }
+    componentDidMount() {}
 
     // Creates a phaser game once the gameRef state has been initialized
     startGame = () => {
@@ -89,6 +64,10 @@ class Game extends Component<GameProps, GameState> {
             },
             this.updateContainer
         );
+
+        game.events.on('ready', () => {
+            console.log('game is ready');
+        });
     };
 
     // we update the dom container everyTime the DOM Tree is updated
@@ -114,15 +93,26 @@ class Game extends Component<GameProps, GameState> {
             this.updateContainer();
     }
 
+    // simple debug function to know whats going on
+    debug(...args: any) {
+        process.env.NODE_ENV === 'production' && console.log(...args);
+    }
+
     componentWillUnmount() {
+        this.debug('Removing the game');
         Renderer.updateContainer(
             this.props.children,
             this.state.mountContainer,
             this
         );
+        this.state.phaserGame?.destroy(true);
     }
 
     render() {
+        if (this.state.mountContainer)
+            console.log('Mount container has been created');
+        else console.log('mount container has not been created');
+
         return (
             <div id="phaser-game" ref={this.setGameRef}>
                 {this.state.mountContainer ? (
