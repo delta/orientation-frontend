@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, RefObject, createRef } from 'react';
 import { Game as PhaserGame } from 'phaser';
 import { isEqual } from 'lodash';
 
@@ -22,6 +22,9 @@ interface GameState {
 // we are forced to use class based components
 
 class Game extends Component<GameProps, GameState> {
+    // a ref for the html element inside which the game will be created
+    gameRef!: RefObject<HTMLDivElement>;
+
     constructor(props: GameProps) {
         super(props);
         this.state = {
@@ -29,18 +32,22 @@ class Game extends Component<GameProps, GameState> {
             mountContainer: null,
             phaserGame: null
         };
+        this.gameRef = createRef<HTMLDivElement>();
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        this.startGame();
+    }
 
     // Creates a phaser game once the gameRef state has been initialized
     startGame = () => {
         // just checking to prevent typescript error
-        if (!this.state.gameRef) return;
+        if (!this.gameRef.current) return;
+        //TODO: Get the Phaser game as properties, and initialize them instead of hard coding
         const game = new PhaserGame({
             height: 500,
             width: 500,
-            parent: this.state.gameRef
+            parent: this.gameRef.current
         });
 
         // We create a new container with our custom renderer with the PhaserGameObject
@@ -79,12 +86,6 @@ class Game extends Component<GameProps, GameState> {
         );
     }
 
-    setGameRef = (gameObj: HTMLDivElement) => {
-        // we call startGame as a callback instead of calling it in componentDidMount
-        // because it isn't guaranteed that the gameRef will be set to the container
-        this.setState({ gameRef: gameObj }, this.startGame);
-    };
-
     componentDidUpdate(prevProps: GameProps, prevState: GameState) {
         // we only update the container if the there is a change in props
         if (!isEqual(prevProps, this.props)) this.updateContainer();
@@ -95,7 +96,7 @@ class Game extends Component<GameProps, GameState> {
 
     // simple debug function to know whats going on
     debug(...args: any) {
-        process.env.NODE_ENV === 'production' && console.log(...args);
+        process.env.NODE_ENV === 'development' && console.log(...args);
     }
 
     componentWillUnmount() {
@@ -109,12 +110,8 @@ class Game extends Component<GameProps, GameState> {
     }
 
     render() {
-        if (this.state.mountContainer)
-            console.log('Mount container has been created');
-        else console.log('mount container has not been created');
-
         return (
-            <div id="phaser-game" ref={this.setGameRef}>
+            <div id="phaser-game" ref={this.gameRef}>
                 {this.state.mountContainer ? (
                     <GameContext.Provider value={this.state.phaserGame}>
                         {this.props.children}
