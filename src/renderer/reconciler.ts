@@ -41,13 +41,19 @@ const hostConfig: HostConfig<
     cancelTimeout: clearTimeout,
     noTimeout: -1,
 
-    // this function lets you share the initial host context, (aka the Phaser Game Object)
-    // Since we ned the Phaser Game Object to add scenes, we are passing it down to the
-    // component tree
+    // this function lets us share the initial host context, (aka the Phaser Game Object)
+    // Since we ned the Phaser Game Object down the line, we are passing it down to the component tree
     getRootHostContext: (rootContainer) => {
         return rootContainer;
     },
-    prepareForCommit: (...args) => {
+
+    // Lets us store some information about the tree (eg react-dom stores data about the current text selection)
+    // before the actual re-render takes place
+    // if we want to restore some state of the game, we return from this function and
+    // restore it in this function's counter part resetAfterCommit
+    //
+    // ?? not able to receive the object returned here inside resetAfterCommit, so need to figure out how to do it
+    prepareForCommit: (rootContainer) => {
         return null;
     },
     resetAfterCommit: (...args) => {},
