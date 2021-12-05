@@ -41,6 +41,15 @@ const hostConfig: HostConfig<
     cancelTimeout: clearTimeout,
     noTimeout: -1,
 
+    // can nodes(game objects in our case) be added (appended) and removed to the tree => TRUE (in our case)
+    supportsMutation: true,
+    supportsPersistence: false,
+
+    // we are only using this renderer for the phaser, we are still
+    // using ReactDOM as our primary renderer
+    isPrimaryRenderer: false,
+    supportsHydration: false,
+
     // this function lets us share the initial host context, (aka the Phaser Game Object)
     // Since we ned the Phaser Game Object down the line, we are passing it down to the component tree
     getRootHostContext: (rootContainer) => {
@@ -67,17 +76,14 @@ const hostConfig: HostConfig<
     finalizeInitialChildren: (...args) => {
         return false;
     },
-    supportsMutation: true,
-    supportsPersistence: false,
     prepareUpdate: (...args) => {},
     getPublicInstance: (...args) => {},
     preparePortalMount: (...args) => {},
-
-    // we are only using this renderer for the phaser, we are still
-    // using ReactDOM as our primary renderer
-    isPrimaryRenderer: false,
-    supportsHydration: false,
-    clearContainer: (...args) => {}
+    // shdould create the root container, since our container is GameObject,
+    // we dont have to do anything
+    clearContainer: (container) => {
+        return;
+    }
 };
 
 const reconcilerInstance = Reconciler(hostConfigWrapper(hostConfig));
