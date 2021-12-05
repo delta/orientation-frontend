@@ -57,15 +57,22 @@ const hostConfig: HostConfig<
     },
 
     // Lets us store some information about the tree (eg react-dom stores data about the current text selection)
-    // before the actual re-render takes place
+    // before the actual re-render takes place (rn, the new tree has been generated in-memory)
     // if we want to restore some state of the game, we return from this function and
     // restore it in this function's counter part resetAfterCommit
+    //
     //
     // ?? not able to receive the object returned here inside resetAfterCommit, so need to figure out how to do it
     prepareForCommit: (rootContainer) => {
         return null;
     },
-    resetAfterCommit: (...args) => {},
+    // this function is called after the in-memory tree has been attached rendered / attached to the actual tree
+    // here we can restore some state of the game, returned from prepareForCommit
+    // right now we dont any state we have to manage
+    //
+    resetAfterCommit: (rootInstance) => {
+        return;
+    },
     getChildHostContext: (...args) => {},
     shouldSetTextContent: (...args) => {
         return false;
