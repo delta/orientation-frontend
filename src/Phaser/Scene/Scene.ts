@@ -22,6 +22,11 @@ export interface IPhaserScene extends Scene {
 
 export class PhaserScene extends Scene implements IPhaserScene {
     constructor(config: string | Types.Scenes.SettingsConfig) {
+        // right now we are not adding the newPhaserScene methods
+        // user is responsible for adding the methods on their own
+        //
+        // TODO: get the methods in constructor call itself
+        //
         super(config);
     }
 }
