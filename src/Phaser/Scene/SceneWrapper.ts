@@ -25,5 +25,6 @@ export class PhaserScene extends Scene {
         // TODO: get the methods in constructor call itself
         //
         super(config);
+        return;
     }
 }
