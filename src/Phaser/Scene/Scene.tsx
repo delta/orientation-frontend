@@ -4,31 +4,29 @@ import React, { useContext, useEffect } from 'react';
 import { PhaserScene } from './SceneWrapper';
 import { GameContext } from '../Game/GameContext';
 
-const Scene = (props: any) => {
+interface ISceneProps {
+    children?: React.ReactNode;
+    sceneKey: string;
+    init?: PhaserScene['init'];
+    preload?: PhaserScene['preload'];
+    create?: PhaserScene['create'];
+}
+
+const Scene = ({ children, sceneKey, create, init, preload }: ISceneProps) => {
     const game = useContext(GameContext);
 
-    function init(this: PhaserScene) {
-        console.log('init');
-    }
-
-    function preload(this: PhaserScene) {
-        console.log('preload');
-    }
-
-    function create(this: PhaserScene) {
-        console.log('create');
-    }
     useEffect(() => {
         if (!game) return;
-        const newScene = new PhaserScene({ key: 'firstScene' });
+        const newScene = new PhaserScene({ key: sceneKey });
         console.log(game);
-        newScene.init = init;
-        newScene.preload = preload;
-        newScene.create = create;
+        // TODO: this is soo untidy, clean it up
+        newScene.init = init ? init : null;
+        newScene.preload = preload ? preload : null;
+        newScene.create = create ? create : null;
         game?.scene.add('firstScene', newScene, true);
 
         return () => {
-            game?.scene.remove('firstScene');
+            game?.scene.remove(sceneKey);
         };
     }, [game]);
     return null;

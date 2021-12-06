@@ -22,7 +22,7 @@ function App() {
                             </Route>
                             <Route path="/game">
                                 <Game>
-                                    <Scene />
+                                    <Scene sceneKey="first-scene" />
                                 </Game>
                             </Route>
                             <Route path="/auth">
