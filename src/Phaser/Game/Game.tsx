@@ -10,9 +10,9 @@ interface GameProps {
 }
 
 interface GameState {
-    gameRef: HTMLDivElement | null;
     phaserGame: PhaserGame | null;
     mountContainer: any;
+    booting: boolean;
 }
 
 // We have to use class component instead of functional component
@@ -28,9 +28,9 @@ class Game extends Component<GameProps, GameState> {
     constructor(props: GameProps) {
         super(props);
         this.state = {
-            gameRef: null,
             mountContainer: null,
-            phaserGame: null
+            phaserGame: null,
+            booting: true
         };
         this.gameRef = createRef<HTMLDivElement>();
     }
@@ -73,7 +73,7 @@ class Game extends Component<GameProps, GameState> {
         );
 
         game.events.on('ready', () => {
-            console.log('game is ready');
+            this.setState({ booting: false });
         });
     };
 
@@ -100,7 +100,6 @@ class Game extends Component<GameProps, GameState> {
     }
 
     componentWillUnmount() {
-        this.debug('Removing the game');
         Renderer.updateContainer(
             this.props.children,
             this.state.mountContainer,
@@ -114,7 +113,7 @@ class Game extends Component<GameProps, GameState> {
             <div id="phaser-game" ref={this.gameRef}>
                 {this.state.mountContainer ? (
                     <GameContext.Provider value={this.state.phaserGame}>
-                        {this.props.children}
+                        {this.state.booting ? null : this.props.children}
                     </GameContext.Provider>
                 ) : null}
             </div>
