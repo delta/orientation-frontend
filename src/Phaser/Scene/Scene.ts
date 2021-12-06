@@ -21,6 +21,9 @@ export interface IPhaserScene extends Scene {
 }
 
 export class PhaserScene extends Scene implements IPhaserScene {
+    preload?: () => void;
+    init?: (data: any) => void;
+    create?: (data: any) => void;
     constructor(config: string | Types.Scenes.SettingsConfig) {
         // right now we are not adding the newPhaserScene methods
         // user is responsible for adding the methods on their own
