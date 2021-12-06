@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { PhaserScene } from './SceneWrapper';
 import { GameContext } from '../Game/GameContext';
+import { SceneContext } from './sceneContext';
 
 interface ISceneProps {
     children?: React.ReactNode;
@@ -38,7 +39,12 @@ const Scene = ({ children, sceneKey, create, init, preload }: ISceneProps) => {
         };
     }, [game]);
 
-    return null;
+    if (!sceneInstance) return null;
+    return (
+        <SceneContext.Provider value={sceneInstance}>
+            {children}
+        </SceneContext.Provider>
+    );
 };
 
 export { Scene };
