@@ -64,13 +64,10 @@ class Game extends Component<GameProps, GameState> {
             null
         );
 
-        this.setState(
-            {
-                mountContainer: mountContainerInstance,
-                phaserGame: game
-            },
-            this.updateContainer
-        );
+        this.setState({
+            mountContainer: mountContainerInstance,
+            phaserGame: game
+        });
 
         game.events.on('ready', () => {
             this.setState({ booting: false });
@@ -80,18 +77,47 @@ class Game extends Component<GameProps, GameState> {
     // we update the dom container everyTime the DOM Tree is updated
     updateContainer() {
         Renderer.updateContainer(
-            this.props.children,
+            this.gameObject(),
             this.state.mountContainer,
             this
         );
     }
 
+    gameObject() {
+        return (
+            <GameContext.Provider value={this.state.phaserGame}>
+                {this.props.children}
+            </GameContext.Provider>
+        );
+    }
+
     componentDidUpdate(prevProps: GameProps, prevState: GameState) {
-        // we only update the container if the there is a change in props
+        // update the container if the there is a change in props
+        // TODO: Right now we are update whenever the props changes
+        // but we should only do this when the children changes
+        // If any other props (like the game config) changes,
+        // we have to either
+        //  -> either throw an error preventing the user from doing it,
+        //      coz restoring the game state will be big issue
+        //  -> restart the game and actually find some hacky way to restore the game
         if (!isEqual(prevProps, this.props)) this.updateContainer();
-        // or when mount container is intialized
-        if (!prevState.mountContainer && this.state.mountContainer)
-            this.updateContainer();
+        // we update the container once the game is done booting
+        // this will be the first time the container is updated
+        // aka the we paint the container
+        //
+        // we have to do this because, we have to wait till the Game is
+        // done booting before we are able to add the scenes and other game objects
+        // which is conveniently not mentioned anywhere in the phaser docs
+        //
+        // after this the container will only update when the
+        // children change.
+        //
+        if (prevState.booting && !this.state.booting) this.updateContainer();
+    }
+
+    // a boundary which catches all the errors which occur in the container
+    componentDidCatch(err: any, info: any) {
+        this.debug('Error : ', err, info);
     }
 
     // simple debug function to know whats going on
@@ -109,15 +135,14 @@ class Game extends Component<GameProps, GameState> {
     }
 
     render() {
-        return (
-            <div id="phaser-game" ref={this.gameRef}>
-                {this.state.mountContainer ? (
-                    <GameContext.Provider value={this.state.phaserGame}>
-                        {this.state.booting ? null : this.props.children}
-                    </GameContext.Provider>
-                ) : null}
-            </div>
-        );
+        // we only render the container inside which the phaser game will
+        // be rendered in. All the Scenes and Game Objects are rendered
+        // with the custom renderer we created.
+        //
+        // TODO: Right now we dont have any way to render, non Phaser
+        // elements inside our container. We have to figure out a way to do that.
+
+        return <div id="phaser-game" ref={this.gameRef} />;
     }
 }
 
