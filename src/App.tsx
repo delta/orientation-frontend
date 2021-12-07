@@ -9,6 +9,7 @@ import { Game } from './Phaser/Game/Game';
 import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
 import { Scene } from './Phaser/Scene/Scene';
+import { Text } from './Phaser/GameObjects/Text';
 
 function App() {
     return (
@@ -22,7 +23,17 @@ function App() {
                             </Route>
                             <Route path="/game">
                                 <Game>
-                                    <Scene sceneKey="first-scene" />
+                                    <Scene sceneKey="first-scene">
+                                        <Text
+                                            text="hello world"
+                                            x={10}
+                                            y={10}
+                                            style={{
+                                                fontSize: '18px',
+                                                color: '#fff'
+                                            }}
+                                        />
+                                    </Scene>
                                 </Game>
                             </Route>
                             <Route path="/auth">
