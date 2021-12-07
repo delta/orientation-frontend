@@ -78,6 +78,8 @@ const hostConfig: HostConfig<
         return false;
     },
     createInstance: (...args) => {},
+    // we are not creating a text instance inside a component inside our phaser game
+    // so we throw an error when this function is called
     createTextInstance: (...args) => {},
     appendInitialChild: (...args) => {},
     finalizeInitialChildren: (...args) => {
@@ -90,7 +92,13 @@ const hostConfig: HostConfig<
     // we dont have to do anything
     clearContainer: (container) => {
         return;
-    }
+    },
+
+    // ++++++++++++++++++++++++++++++++
+    // -------MUTATION METHODS---------
+    // ++++++++++++++++++++++++++++++++
+
+    appendChildToContainer(...args) {}
 };
 
 const reconcilerInstance = Reconciler(hostConfigWrapper(hostConfig));

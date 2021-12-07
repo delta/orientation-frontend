@@ -14,7 +14,6 @@ const hostConfigWrapper = (hostConfig: hostConfigType) => {
             return func(...args);
         };
     });
-    console.log(traceWrappedHostConfig);
     return traceWrappedHostConfig as hostConfigType;
 };
 
