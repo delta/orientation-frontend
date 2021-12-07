@@ -8,12 +8,20 @@ import { SceneContext } from './sceneContext';
 interface ISceneProps {
     children?: React.ReactNode;
     sceneKey: string;
+    autoStart?: boolean;
     init?: PhaserScene['init'];
     preload?: PhaserScene['preload'];
     create?: PhaserScene['create'];
 }
 
-const Scene = ({ children, sceneKey, create, init, preload }: ISceneProps) => {
+const Scene = ({
+    children,
+    sceneKey,
+    autoStart,
+    create,
+    init,
+    preload
+}: ISceneProps) => {
     const game = useContext(GameContext);
     const [sceneInstance, setSceneInstance] = useState<PhaserScene | null>(
         null
@@ -27,7 +35,7 @@ const Scene = ({ children, sceneKey, create, init, preload }: ISceneProps) => {
         newScene.init = init ? init : null;
         newScene.preload = preload ? preload : null;
         newScene.create = create ? create : null;
-        game?.scene.add(sceneKey, newScene, true);
+        game?.scene.add(sceneKey, newScene, !!autoStart);
 
         // TODO: Find out how to wait till the assets are loaded before rendering the component
         //
