@@ -43,6 +43,8 @@ const Scene = ({
         setSceneInstance(newScene);
 
         return () => {
+            process.env.NODE_ENV === 'development' &&
+                console.log('removing the scene');
             game?.scene.remove(sceneKey);
         };
     }, [game]);
