@@ -2,6 +2,7 @@ import Reconciler, { HostConfig } from 'react-reconciler';
 import { Game } from 'phaser';
 
 import { hostConfigWrapper } from './hostWrapper';
+import { invariant } from '../utils/invariant';
 
 // type ReactElement = Element | Document;
 type Type = any;
@@ -80,7 +81,12 @@ const hostConfig: HostConfig<
     createInstance: (...args) => {},
     // we are not creating a text instance inside a component inside our phaser game
     // so we throw an error when this function is called
-    createTextInstance: (...args) => {},
+    createTextInstance: (text, rootContainer, hostContext, fiberNode) => {
+        invariant(
+            false,
+            'Text objects cannot be created inside a Phaser Component.'
+        );
+    },
     appendInitialChild: (...args) => {},
     finalizeInitialChildren: (...args) => {
         return false;
@@ -98,7 +104,8 @@ const hostConfig: HostConfig<
     // -------MUTATION METHODS---------
     // ++++++++++++++++++++++++++++++++
 
-    appendChildToContainer(...args) {}
+    appendChildToContainer(...args) {},
+    removeChildFromContainer(...args) {}
 };
 
 const reconcilerInstance = Reconciler(hostConfigWrapper(hostConfig));
