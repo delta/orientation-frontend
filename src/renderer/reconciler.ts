@@ -82,9 +82,20 @@ const hostConfig: HostConfig<
     getChildHostContext: (parentContext, type, rootContainer) => {
         if (type === 'gameObject') return 'PHASER';
         else return 'DOM';
-
-        // console.log('#### CHILD HOST CONFIG ####', args);
     },
+    // According to the docs, some Some target platforms support setting an instance's text
+    // content without manually creating a text node. For example, in the DOM,
+    // you can set node.textContent instead of creating a text node and appending it.
+    //
+    // If the function returns true, the text would be created inside the host element and
+    // no new text element would be created separately.
+    //
+    // If it returns false, getChildHostContext and shouldSetTextContent will be called
+    // on the child elements and it will continue till shouldSetTextContent returns true
+    // or if the recursion reaches the last tree endpoint which usually is a text node.
+    // When it reaches the last leaf text node it will call createTextInstance
+    //
+    // Since we do not want to create textNodes, we return false
     shouldSetTextContent: (...args) => {
         return false;
     },
