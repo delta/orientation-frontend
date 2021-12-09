@@ -3,6 +3,7 @@ import { Game } from 'phaser';
 
 import { hostConfigWrapper } from './hostWrapper';
 import { invariant } from '../utils/invariant';
+import { clsx } from '../utils/clsx';
 
 // type ReactElement = Element | Document;
 type Type = any;
@@ -13,7 +14,7 @@ type TextInstance = any;
 type SuspenseInstance = any;
 type HydratableInstance = any;
 type PublicInstance = any;
-type HostContext = Game | any;
+type HostContext = Game | string;
 type UpdatePayload = any;
 type _ChildSet = any;
 type TimeoutHandle = any;
@@ -74,18 +75,28 @@ const hostConfig: HostConfig<
     resetAfterCommit: (rootInstance) => {
         return;
     },
-    getChildHostContext: (...args) => {},
+    getChildHostContext: (parentContext, type, rootContainer) => {
+        if (type === 'gameObject') return 'PHASER';
+        else return 'DOM';
+
+        // console.log('#### CHILD HOST CONFIG ####', args);
+    },
     shouldSetTextContent: (...args) => {
         return false;
     },
     createInstance: (...args) => {},
-    // we are not creating a text instance inside a component inside our phaser game
+    // we are not creating a text instance inside a phaser component inside our phaser game
     // so we throw an error when this function is called
     createTextInstance: (text, rootContainer, hostContext, fiberNode) => {
-        invariant(
-            false,
-            'Text objects cannot be created inside a Phaser Component.'
-        );
+        // Creating text components inside of
+        hostContext === 'PHASER' &&
+            invariant(
+                false,
+                clsx(
+                    'Text objects cannot be created inside a Phaser Component.',
+                    'Use <Text /> Component instead.'
+                )
+            );
     },
     appendInitialChild: (...args) => {},
     finalizeInitialChildren: (...args) => {
