@@ -1,6 +1,14 @@
 import { clsx } from './clsx';
 
 // literally https://github.com/zertosh/invariant but less shitty
+/**
+ * A fancy function which throws error if the **condition** fails. It has over the top
+ * unnecessary feats like %s in printf in GoLang or C
+ * @param condition if the condition fails, invariant will throw an error
+ * @param format Error message, and '**%s**; places where you want the arguments to be
+ * @param args arguments which go in the place of '**%s**'
+ * @returns throws an error if the **condition** fails, else return nothing (void)
+ */
 export const invariant = (
     condition: boolean,
     format?: string,
