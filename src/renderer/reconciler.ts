@@ -75,6 +75,10 @@ const hostConfig: HostConfig<
     resetAfterCommit: (rootInstance) => {
         return;
     },
+    // This function provides a way to access context from the parent and also a way to
+    // pass some context to the immediate children of the current node.
+    // Here we just want to know if the parent is a Phaser object or DOM Element
+    //
     getChildHostContext: (parentContext, type, rootContainer) => {
         if (type === 'gameObject') return 'PHASER';
         else return 'DOM';
