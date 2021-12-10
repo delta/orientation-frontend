@@ -6,8 +6,8 @@ import { invariant } from '../utils/invariant';
 import { clsx } from '../utils/clsx';
 
 // type ReactElement = Element | Document;
-type Type = any;
-type Props = any;
+type Type = string; // type This contains the type of fiber i.e, ‘div’, ‘span’, ‘p’, ‘input’ etc.
+type Props = any; // props of the element (usually an object)
 type Container = Game;
 type Instance = any;
 type TextInstance = any;
@@ -83,28 +83,44 @@ const hostConfig: HostConfig<
         if (type === 'gameObject') return 'PHASER';
         else return 'DOM';
     },
-    // According to the docs, some Some target platforms support setting an instance's text
-    // content without manually creating a text node. For example, in the DOM,
-    // you can set node.textContent instead of creating a text node and appending it.
-    //
-    // If the function returns true, the text would be created inside the host element and
-    // no new text element would be created separately.
-    //
-    // If it returns false, getChildHostContext and shouldSetTextContent will be called
-    // on the child elements and it will continue till shouldSetTextContent returns true
-    // or if the recursion reaches the last tree endpoint which usually is a text node.
-    // When it reaches the last leaf text node it will call createTextInstance
-    //
-    // Since we do not want to create textNodes, we return false
-    shouldSetTextContent: (...args) => {
+    /**
+     *
+     * According to the docs, some Some target platforms support setting an instance's text
+     * content without manually creating a text node. For example, in the DOM,
+     * you can set node.textContent instead of creating a text node and appending it.
+     *
+     * If the function returns true, the text would be created inside the host element and
+     * no new text element would be created separately.
+     *
+     * If it returns false, getChildHostContext and shouldSetTextContent will be called
+     * on the child elements and it will continue till shouldSetTextContent returns true
+     * or if the recursion reaches the last tree endpoint which usually is a text node.
+     * When it reaches the last leaf text node it will call createTextInstance
+     *
+     * Since we do not want to create textNodes, we return false
+     * @param type
+     * @param props
+     * @returns
+     */
+    shouldSetTextContent: (type, props) => {
         return false;
     },
     createInstance: (...args) => {},
-    // we are not creating a text instance inside a phaser component inside our phaser game
-    // so we throw an error when this function is called
-    createTextInstance: (text, rootContainer, hostContext, fiberNode) => {
+    /**
+     * Here we specify how we want to handle the rendering of text content.
+     *
+     * we are not creating a text instance inside a phaser component inside our phaser game
+     * so we throw an error when this function is called
+     * @param text contains the text which needs to be rendered
+     * @param rootContainer the rootContainer instance which is root element where our
+     * renderer is intialized, this is (Phaser Game object in our case)
+     * @param parentHostContext This the context of the element which is enclosing the text, eg <p>Text</p> here p-> is our host context. We get the
+     * parent's hostContext from getChildHostContext
+     * @param fiberNode this is the fiberNode of the textInstance, this is created by react internally to manage the work in the instance
+     */
+    createTextInstance: (text, rootContainer, parentHostContext, fiberNode) => {
         // Creating text components inside of
-        hostContext === 'PHASER' &&
+        parentHostContext === 'PHASER' &&
             invariant(
                 false,
                 clsx(
