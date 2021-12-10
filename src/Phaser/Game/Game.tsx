@@ -79,7 +79,7 @@ class Game extends Component<GameProps, GameState> {
         Renderer.updateContainer(
             this.gameObject(),
             this.state.mountContainer,
-            this
+            null
         );
     }
 
@@ -129,7 +129,7 @@ class Game extends Component<GameProps, GameState> {
         Renderer.updateContainer(
             this.props.children,
             this.state.mountContainer,
-            this
+            null
         );
         this.state.phaserGame?.destroy(true);
     }

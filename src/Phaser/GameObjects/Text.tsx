@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
-import { Types } from 'phaser';
+import { Types, GameObjects } from 'phaser';
 
 import { useScene } from './useScene';
-
+import { GameObjectComponent } from './GameObject';
 interface TextProps {
     children?: React.ReactNode;
     text: string;
@@ -11,7 +11,7 @@ interface TextProps {
     style: Types.GameObjects.Text.TextStyle;
 }
 
-export const Text = ({ x, y, text, style }: TextProps) => {
+export const Text = ({ x, y, text, style, children }: TextProps) => {
     const scene = useScene();
 
     // creating a new TextInstance
@@ -27,6 +27,7 @@ export const Text = ({ x, y, text, style }: TextProps) => {
     }, []);
 
     useEffect(() => {
+        console.log(textInstance instanceof GameObjects.GameObject);
         return () => {
             process.env.NODE_ENV === 'development' &&
                 console.log('removing the text');
@@ -35,8 +36,16 @@ export const Text = ({ x, y, text, style }: TextProps) => {
         };
     }, []);
 
-    // BUG: Since we are returning null, a node will not be be created
+    // FIXED: Since we are returning null, a node will not be be created
     // so reconciler won't work. We need to return a placeholder JSX Element
     // which is not null
-    return null as unknown as JSX.Element;
+    // If the scene is not created yet, we return NULL, aka we don't create
+    // a DOM Node (This is a edge case which happens very rarely when there
+    // is a race condition)
+    if (!textInstance || !scene) return null;
+    return (
+        <GameObjectComponent instance={textInstance} scene={scene} type="Text">
+            {children}
+        </GameObjectComponent>
+    );
 };
