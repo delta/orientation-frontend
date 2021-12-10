@@ -2,9 +2,11 @@ import React, { useEffect, useMemo } from 'react';
 import { Types, GameObjects } from 'phaser';
 
 import { useScene } from './useScene';
-import { GameObjectComponent } from './GameObject';
-interface TextProps {
-    children?: React.ReactNode;
+import {
+    BasicGameObjectComponentProps,
+    GameObjectComponent
+} from './GameObject';
+interface TextProps extends BasicGameObjectComponentProps {
     text: string;
     x: number;
     y: number;
@@ -27,12 +29,14 @@ export const Text = ({ x, y, text, style, children }: TextProps) => {
     }, []);
 
     useEffect(() => {
-        console.log(textInstance instanceof GameObjects.GameObject);
+        const propType = { x, y, text, style };
+        let z: Types.GameObjects.GameObjectConfig;
+
         return () => {
             process.env.NODE_ENV === 'development' &&
                 console.log('removing the text');
             // removing the game object from the scene
-            textInstance?.destroy(true);
+            // textInstance?.destroy(true);
         };
     }, []);
 
