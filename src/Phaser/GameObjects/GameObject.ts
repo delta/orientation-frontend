@@ -1,5 +1,7 @@
 import { FC, ReactNode } from 'react';
-import { GameObjects, Scene, Types } from 'phaser';
+import { GameObjects, Scene } from 'phaser';
+
+import { GameElements } from './elements/types';
 
 const GameObjectElement = 'gameObject';
 
@@ -8,11 +10,12 @@ export interface BasicGameObjectComponentProps {
     children?: ReactNode;
 }
 
-type AllowedGameObjectTypes = 'Text' | 'Image' | 'TileMap';
+type AllowedGameObjectTypes = 'TEXT' | 'Image' | 'TileMap';
 
 interface GameObjectProps<T> {
     instance: T;
     type: AllowedGameObjectTypes;
+    data: GameElements.GameObject;
 }
 
 interface GameObjectComponentType

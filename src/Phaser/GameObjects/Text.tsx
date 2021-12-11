@@ -6,6 +6,7 @@ import {
     BasicGameObjectComponentProps,
     GameObjectComponent
 } from './GameObject';
+import { GameElements } from './elements/types';
 interface TextProps extends BasicGameObjectComponentProps {
     text: string;
     x: number;
@@ -47,8 +48,20 @@ export const Text = ({ x, y, text, style, children }: TextProps) => {
     // a DOM Node (This is a edge case which happens very rarely when there
     // is a race condition)
     if (!textInstance || !scene) return null;
+    const textData: GameElements.Text = {
+        name: 'TEXT',
+        x,
+        y,
+        text,
+        style
+    };
     return (
-        <GameObjectComponent instance={textInstance} scene={scene} type="Text">
+        <GameObjectComponent
+            instance={textInstance}
+            scene={scene}
+            type="TEXT"
+            data={textData}
+        >
             {children}
         </GameObjectComponent>
     );
