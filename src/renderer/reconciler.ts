@@ -4,12 +4,14 @@ import { Game } from 'phaser';
 import { hostConfigWrapper } from './hostWrapper';
 import { invariant } from '../utils/invariant';
 import { clsx } from '../utils/clsx';
+import { GameElements } from '../Phaser/GameObjects/elements/types';
+import { GameObjectComponentType } from '../Phaser/GameObjects/GameObject';
 
 // type ReactElement = Element | Document;
 type Type = string; // type This contains the type of fiber i.e, ‘div’, ‘span’, ‘p’, ‘input’ etc.
-type Props = any; // props of the element (usually an object)
+type Props = GameObjectComponentType | any; // props of the element (usually an object)
 type Container = Game;
-type Instance = any;
+type Instance = GameElements.FiberGameObject | any;
 type TextInstance = any;
 type SuspenseInstance = any;
 type HydratableInstance = any;
@@ -98,14 +100,32 @@ const hostConfig: HostConfig<
      * When it reaches the last leaf text node it will call createTextInstance
      *
      * Since we do not want to create textNodes, we return false
-     * @param type
-     * @param props
-     * @returns
+     * @param type contains the type of the fiber
+     * @param props props of the element
+     * @returns whether we should set text content or not
      */
     shouldSetTextContent: (type, props) => {
         return false;
     },
-    createInstance: (...args) => {},
+
+    createInstance: (
+        type,
+        props,
+        rootContainer,
+        parentHostContext,
+        fiberNode
+    ) => {
+        if (type === 'gameObject') {
+            return {
+                instanceType: 'PHASER',
+                type: props.type,
+                data: props.data,
+                instance: props.instance,
+                scene: props.scene
+            };
+        }
+        // else its a dom element
+    },
     /**
      * Here we specify how we want to handle the rendering of text content.
      *

@@ -10,15 +10,13 @@ export interface BasicGameObjectComponentProps {
     children?: ReactNode;
 }
 
-type AllowedGameObjectTypes = 'TEXT' | 'Image' | 'TileMap';
-
 interface GameObjectProps<T> {
     instance: T;
-    type: AllowedGameObjectTypes;
+    type: GameElements.AllowedGameObjectTypes;
     data: GameElements.GameObject;
 }
 
-interface GameObjectComponentType
+export interface GameObjectComponentType
     extends GameObjectProps<GameObjects.GameObject> {
     scene: Scene;
     // Not sure when an element will have children
