@@ -108,6 +108,19 @@ const hostConfig: HostConfig<
         return false;
     },
 
+    /**
+     * createInstance is called on all the nodes, except the leaf text nodes.
+     * We use the data created here to update the element later on.
+     * Here we create the GameObject we need to keep track of. We can also add some event listeners here
+     * but currently we are doing it inside the gameObject component's useEffect.
+     *
+     * @param type type of our object (eg. gameObject, div, p)
+     * @param props props of our element
+     * @param rootContainer Game
+     * @param parentHostContext Data passed from the parent container, using getChildHostContext
+     * @param fiberNode this is the fiberNode of the textInstance, this is created by react internally to manage the work in the instance
+     * @returns the newly created node
+     */
     createInstance: (
         type,
         props,
