@@ -47,7 +47,13 @@ class Game extends Component<GameProps, GameState> {
         const game = new PhaserGame({
             height: 500,
             width: 500,
-            parent: this.gameRef.current
+            parent: this.gameRef.current,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 0 }
+                }
+            }
         });
 
         // We create a new container with our custom renderer with the PhaserGameObject
