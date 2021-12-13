@@ -163,7 +163,17 @@ const hostConfig: HostConfig<
             );
     },
     appendInitialChild: (...args) => {},
-    finalizeInitialChildren: (...args) => {
+
+    /**
+     * refer react docs, did not find anu use-case for this function
+     */
+    finalizeInitialChildren: (
+        instance,
+        type,
+        props,
+        rootContainer,
+        hostContext
+    ) => {
         return false;
     },
     prepareUpdate: (...args) => {},
