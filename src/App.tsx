@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import './styles/output.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
@@ -12,6 +12,15 @@ import { Scene } from './Phaser/Scene/Scene';
 import { Text } from './Phaser/GameObjects/Text';
 
 function App() {
+    const [i, changeI] = useState(0);
+
+    useEffect(() => {
+        setTimeout(() => {
+            console.log('changing i ');
+            changeI(10);
+        }, 2500);
+    });
+
     return (
         <div className="min-h-screen bg-background">
             <ToastProvider variant={'top_right'}>
@@ -23,11 +32,34 @@ function App() {
                             </Route>
                             <Route path="/game">
                                 <Game>
-                                    <Scene sceneKey="first-scene">
+                                    <Scene
+                                        sceneKey="first-scene"
+                                        autoStart={true}
+                                    >
                                         <Text
                                             text="hello world"
-                                            x={10}
+                                            x={10 + i}
                                             y={10}
+                                            style={{
+                                                fontSize: '18px',
+                                                color: '#fff'
+                                            }}
+                                        ></Text>
+                                        <Text
+                                            text="Hello"
+                                            x={10 + i}
+                                            y={35}
+                                            style={{
+                                                fontSize: '18px',
+                                                color: '#fff'
+                                            }}
+                                        />
+                                    </Scene>
+                                    <Scene sceneKey="second-scene">
+                                        <Text
+                                            text="hello world 2.0"
+                                            x={50}
+                                            y={50}
                                             style={{
                                                 fontSize: '18px',
                                                 color: '#fff'
