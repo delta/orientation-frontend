@@ -6,7 +6,7 @@ import { hostConfigWrapper } from './hostWrapper';
 import { invariant } from '../utils/invariant';
 import { clsx } from '../utils/clsx';
 import { GameElements } from '../Phaser/GameObjects/elements/types';
-import { updateData } from '../Phaser/GameObjects/elements/updateGameObject';
+import { updateGameObjectData } from '../Phaser/GameObjects/elements/updateGameObject';
 import { GameObjectComponentType } from '../Phaser/GameObjects/GameObject';
 
 // type ReactElement = Element | Document;
@@ -53,26 +53,17 @@ const updatePayload = (
     return updatePayload;
 };
 
+// a function which updates the gameInstance with the payload data
 const commitPayload = (
     type: GameElements.AllowedGameObjectTypes,
     instance: GameObjects.GameObject,
     payload: UpdatePayloadType
 ) => {
-    const updateFunction = updateData[type];
+    const updateFunction = updateGameObjectData[type];
     payload.forEach((p) => {
         const updateInstance = updateFunction(p.propName);
-        console.log(updateInstance);
         updateInstance(instance, p.new);
     });
-    // console.log(type);
-    // // updateFunction.bind(instance);
-    // console.log(updateFunction);
-    // const update = updateFunction('x');
-    // console.log(update);
-    // console.log(update(instance));
-    // const x = update(instance);
-    // // (instance as any).setX(35);
-    // console.log(x(45));
 };
 
 const hostConfig: HostConfig<

@@ -23,7 +23,10 @@ const TextMethodWrapper = (type: 'x' | 'y' | 'text' | 'style') => {
         };
 };
 
-export const updateData: Record<
+/**
+ * A compilation of all the methods need to update every phaser Game object
+ */
+export const updateGameObjectData: Record<
     GameElements.AllowedGameObjectTypes,
     (type: any) => (...args: any) => any
 > = {
