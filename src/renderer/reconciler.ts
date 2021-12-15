@@ -1,5 +1,6 @@
 import Reconciler, { HostConfig } from 'react-reconciler';
 import { Game } from 'phaser';
+import { isEqual } from 'lodash';
 
 import { hostConfigWrapper } from './hostWrapper';
 import { invariant } from '../utils/invariant';
@@ -17,10 +18,38 @@ type SuspenseInstance = any;
 type HydratableInstance = any;
 type PublicInstance = any;
 type HostContext = Game | string;
-type UpdatePayload = any;
+type UpdatePayload = any; // return data of prepareUpdate
 type _ChildSet = any;
 type TimeoutHandle = any;
 type NoTimeout = any;
+
+const updatePayload = (
+    oldProps: GameObjectComponentType,
+    newProps: GameObjectComponentType
+) => {
+    const updatedProps: { propName: string; old: any; new: any }[] = [];
+
+    if (isEqual(oldProps, newProps)) return null;
+
+    for (const key of Object.keys(oldProps.data)) {
+        // if the prop has been removed
+        if ((newProps.data as any)[key] === undefined)
+            updatedProps.push({
+                propName: key,
+                old: (oldProps.data as any)[key],
+                new: null
+            });
+        else if (
+            !isEqual((oldProps.data as any)[key], (newProps.data as any)[key])
+        )
+            updatedProps.push({
+                propName: key,
+                old: (oldProps.data as any)[key],
+                new: (newProps.data as any)[key]
+            });
+    }
+    return updatedProps;
+};
 
 const hostConfig: HostConfig<
     Type,
@@ -176,7 +205,40 @@ const hostConfig: HostConfig<
     ) => {
         return false;
     },
-    prepareUpdate: (...args) => {},
+    /**
+     * prepareUpdate is called on the first node with a change
+     * and called on all of its child nodes recursively
+     *
+     * We use this to determine whether a update needs to take place on the component
+     * by comparing the previousProps and the new Props.
+     * If we want an update, we return an object representing the changes we want
+     * and use the commitUpdate methods to do the object, else we return null
+     *
+     * We do not perform any DOM changes here, we should do them only in the commit
+     * phase of the renderer aka commitUpdate
+     *
+     * commitUpdate will be called if we return a truthy value from prepareUpdate
+     *
+     * @param instance instance of the DOM element which has changed
+     * @param type type of the element (gameObject, div, p)
+     * @param oldProps previous Props
+     * @param newProps new Props
+     * @param rootContainer Game Object
+     * @param hostContext context passed down from the parent node
+     */
+    prepareUpdate: (
+        instance,
+        type,
+        oldProps,
+        newProps,
+        rootContainer,
+        hostContext
+    ) => {
+        if (type === 'gameObject') {
+            const updatedProps = updatePayload(oldProps, newProps);
+            return updatedProps;
+        }
+    },
     getPublicInstance: (...args) => {},
     preparePortalMount: (...args) => {},
     // shdould create the root container, since our container is GameObject,
@@ -189,8 +251,9 @@ const hostConfig: HostConfig<
     // -------MUTATION METHODS---------
     // ++++++++++++++++++++++++++++++++
 
-    appendChildToContainer(...args) {},
-    removeChildFromContainer(...args) {}
+    commitUpdate: (...args) => {},
+    appendChildToContainer: (...args) => {},
+    removeChildFromContainer: (...args) => {}
 };
 
 const reconcilerInstance = Reconciler(hostConfigWrapper(hostConfig));
