@@ -1,11 +1,12 @@
 import Reconciler, { HostConfig } from 'react-reconciler';
-import { Game } from 'phaser';
+import { Game, GameObjects } from 'phaser';
 import { isEqual } from 'lodash';
 
 import { hostConfigWrapper } from './hostWrapper';
 import { invariant } from '../utils/invariant';
 import { clsx } from '../utils/clsx';
 import { GameElements } from '../Phaser/GameObjects/elements/types';
+import { updateData } from '../Phaser/GameObjects/elements/updateGameObject';
 import { GameObjectComponentType } from '../Phaser/GameObjects/GameObject';
 
 // type ReactElement = Element | Document;
@@ -23,18 +24,19 @@ type _ChildSet = any;
 type TimeoutHandle = any;
 type NoTimeout = any;
 
+type UpdatePayloadType = { propName: string; old: any; new: any }[];
 const updatePayload = (
     oldProps: GameObjectComponentType,
     newProps: GameObjectComponentType
 ) => {
-    const updatedProps: { propName: string; old: any; new: any }[] = [];
+    const updatePayload: UpdatePayloadType = [];
 
     if (isEqual(oldProps, newProps)) return null;
 
     for (const key of Object.keys(oldProps.data)) {
         // if the prop has been removed
         if ((newProps.data as any)[key] === undefined)
-            updatedProps.push({
+            updatePayload.push({
                 propName: key,
                 old: (oldProps.data as any)[key],
                 new: null
@@ -42,13 +44,35 @@ const updatePayload = (
         else if (
             !isEqual((oldProps.data as any)[key], (newProps.data as any)[key])
         )
-            updatedProps.push({
+            updatePayload.push({
                 propName: key,
                 old: (oldProps.data as any)[key],
                 new: (newProps.data as any)[key]
             });
     }
-    return updatedProps;
+    return updatePayload;
+};
+
+const commitPayload = (
+    type: GameElements.AllowedGameObjectTypes,
+    instance: GameObjects.GameObject,
+    payload: UpdatePayloadType
+) => {
+    const updateFunction = updateData[type];
+    payload.forEach((p) => {
+        const updateInstance = updateFunction(p.propName);
+        console.log(updateInstance);
+        updateInstance(instance, p.new);
+    });
+    // console.log(type);
+    // // updateFunction.bind(instance);
+    // console.log(updateFunction);
+    // const update = updateFunction('x');
+    // console.log(update);
+    // console.log(update(instance));
+    // const x = update(instance);
+    // // (instance as any).setX(35);
+    // console.log(x(45));
 };
 
 const hostConfig: HostConfig<
@@ -251,7 +275,30 @@ const hostConfig: HostConfig<
     // -------MUTATION METHODS---------
     // ++++++++++++++++++++++++++++++++
 
-    commitUpdate: (...args) => {},
+    /**
+     * Here we perform all the updates that we queued with the prepareUpdate method
+     * The update occurs bottom up approach by building a new updated dom tree
+     * This is where we are supposed to do all the updates
+     *
+     * @param instance current component instance
+     * @param updatePayload payload returned from prepareUpdate
+     * @param type
+     * @param oldProps prev props
+     * @param newProps new props
+     * @param hostContext the fiber node which manages context for the given component (we are not touching it)
+     */
+    commitUpdate: (
+        instance,
+        updatePayload,
+        type,
+        oldProps,
+        newProps,
+        hostContext
+    ) => {
+        if (type === 'gameObject') {
+            commitPayload(instance.type, instance.instance, updatePayload);
+        }
+    },
     appendChildToContainer: (...args) => {},
     removeChildFromContainer: (...args) => {}
 };

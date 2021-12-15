@@ -30,9 +30,6 @@ export const Text = ({ x, y, text, style, children }: TextProps) => {
     }, []);
 
     useEffect(() => {
-        const propType = { x, y, text, style };
-        let z: Types.GameObjects.GameObjectConfig;
-
         return () => {
             process.env.NODE_ENV === 'development' &&
                 console.log('removing the text');
