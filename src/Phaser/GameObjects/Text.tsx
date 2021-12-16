@@ -7,12 +7,9 @@ import {
     GameObjectComponent
 } from './GameObject';
 import { GameElements } from './elements/types';
-interface TextProps extends BasicGameObjectComponentProps {
-    text: string;
-    x: number;
-    y: number;
-    style: Types.GameObjects.Text.TextStyle;
-}
+interface TextProps
+    extends BasicGameObjectComponentProps,
+        Omit<GameElements.Text, 'name'> {}
 
 export const Text = ({ x, y, text, style, children }: TextProps) => {
     const scene = useScene();

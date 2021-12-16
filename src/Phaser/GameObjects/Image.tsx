@@ -8,18 +8,9 @@ import { GameElements } from './elements/types';
 import { GameObjects } from 'phaser';
 import { invariant } from '../../utils/invariant';
 
-interface ImageProps extends BasicGameObjectComponentProps {
-    key: string;
-    x: number;
-    y: number;
-
-    origin?: number;
-    depth?: number;
-    scale?: number;
-
-    isInteractive?: boolean;
-    onClick?: (image: GameObjects.Image) => void;
-}
+interface ImageProps
+    extends BasicGameObjectComponentProps,
+        Omit<GameElements.Image, 'name'> {}
 
 const Image = ({
     x,
