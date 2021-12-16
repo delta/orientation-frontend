@@ -5,8 +5,6 @@ import {
     GameObjectComponent
 } from './GameObject';
 import { GameElements } from './elements/types';
-import { GameObjects } from 'phaser';
-import { invariant } from '../../utils/invariant';
 
 interface ImageProps
     extends BasicGameObjectComponentProps,
@@ -19,7 +17,6 @@ const Image = ({
     origin,
     depth,
     scale,
-    isInteractive,
     onClick,
     children
 }: ImageProps) => {
@@ -34,8 +31,7 @@ const Image = ({
         if (depth) newImageInstance.setDepth(depth);
         if (scale) newImageInstance.setScale(scale);
 
-        if (isInteractive) {
-            invariant(!onClick, 'onClick function is not provided');
+        if (onClick !== undefined) {
             newImageInstance.setInteractive();
             newImageInstance.on(
                 'pointerup',
@@ -65,7 +61,6 @@ const Image = ({
         depth,
         scale,
         origin,
-        isInteractive,
         onClick
     };
 

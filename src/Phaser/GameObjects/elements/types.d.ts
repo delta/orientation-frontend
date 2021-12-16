@@ -22,7 +22,6 @@ declare namespace GameElements {
         depth?: number;
         origin?: number;
         scale?: number;
-        isInteractive?: boolean;
         onClick?: (image: GameObject.Image) => void;
     }
 
