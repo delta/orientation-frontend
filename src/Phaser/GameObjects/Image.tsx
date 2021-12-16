@@ -33,10 +33,7 @@ const Image = ({
 
         if (onClick !== undefined) {
             newImageInstance.setInteractive();
-            newImageInstance.on(
-                'pointerup',
-                () => onClick && onClick(newImageInstance)
-            );
+            newImageInstance.on('pointerup', () => onClick(newImageInstance));
         }
 
         return newImageInstance;

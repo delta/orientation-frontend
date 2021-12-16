@@ -22,7 +22,7 @@ declare namespace GameElements {
         depth?: number;
         origin?: number;
         scale?: number;
-        onClick?: (image: GameObject.Image) => void;
+        onClick?: (image: GameObjects.Image) => void;
     }
 
     // Reconciler Fiber root instance of a game object

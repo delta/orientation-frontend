@@ -5,7 +5,7 @@ const TextMethodWrapper = (type: 'x' | 'y' | 'text' | 'style') => {
     process.env.NODE_ENV === 'development' &&
         console.warn(
             'Re-rendering text is quite expensive,',
-            'Consider using Bit Map Text if your project requires many re-renders'
+            'Consider using Bit Map Text if your Phaser Text Component requires many re-renders'
         );
     if (type === 'x')
         return (gameObj: GameObjects.Text, val: number) => {
@@ -28,14 +28,55 @@ const TextMethodWrapper = (type: 'x' | 'y' | 'text' | 'style') => {
         };
 };
 
+const ImageMethodWrapper = (
+    type: 'x' | 'y' | 'key' | 'origin' | 'depth' | 'scale'
+) => {
+    if (type === 'x')
+        return (gameObj: GameObjects.Image, val: number) => {
+            gameObj.setX(val);
+        };
+    else if (type === 'y')
+        return (gameObj: GameObjects.Image, val: number) => {
+            gameObj.setY(val);
+        };
+    else if (type === 'key')
+        return (gameObj: GameObjects.Image, val: string) => {
+            gameObj.setTexture(val);
+        };
+    else if (type === 'depth')
+        return (gameObj: GameObjects.Image, val?: number) => {
+            if (val === undefined) val = 1;
+            gameObj.setDepth(val);
+        };
+    else if (type === 'origin')
+        return (gameObj: GameObjects.Image, val?: number) => {
+            if (val === undefined) val = 1;
+            gameObj.setOrigin(val);
+        };
+    else if (type === 'scale')
+        return (gameObj: GameObjects.Image, val?: number) => {
+            if (val === undefined) val = 1;
+            gameObj.setScale(val);
+        };
+    else {
+        return (
+            gameObj: GameObjects.Image,
+            val?: (image: GameObjects.Image) => void
+        ) => {
+            if (val === undefined) val = (_image) => {};
+            gameObj.on('pointerup', () => val && val(gameObj));
+        };
+    }
+};
+
 /**
- * A compilation of all the methods need to update every phaser Game object
+ * A collection of all the methods need to update every phaser Game object
  */
 export const updateGameObjectData: Record<
     GameElements.AllowedGameObjectTypes,
     (type: any) => (...args: any) => any
 > = {
     TEXT: TextMethodWrapper,
-    Image: TextMethodWrapper,
+    IMAGE: ImageMethodWrapper,
     TileMap: TextMethodWrapper
 };
