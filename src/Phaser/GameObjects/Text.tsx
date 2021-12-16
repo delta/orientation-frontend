@@ -34,7 +34,7 @@ export const Text = ({ x, y, text, style, children }: TextProps) => {
             process.env.NODE_ENV === 'development' &&
                 console.log('removing the text');
             // removing the game object from the scene
-            // textInstance?.destroy(true);
+            textInstance?.destroy(true);
         };
     }, []);
 

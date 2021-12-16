@@ -3,9 +3,9 @@ import { Types, GameObjects, Scene } from 'phaser';
 import { ReactNode } from 'react';
 
 declare namespace GameElements {
-    declare type AllowedGameObjectTypes = 'TEXT' | 'Image' | 'TileMap';
+    declare type AllowedGameObjectTypes = 'TEXT' | 'IMAGE' | 'TileMap';
 
-    declare type GameObject = Text;
+    declare type GameObject = Text | Image;
     declare interface Text {
         name: 'TEXT';
         x: number;
@@ -14,13 +14,22 @@ declare namespace GameElements {
         style: Types.GameObjects.Text.TextStyle;
     }
 
+    declare interface Image {
+        name: 'IMAGE';
+        x: number;
+        y: number;
+        key: string;
+        depth?: number;
+        origin?: number;
+    }
+
     // Reconciler Fiber root instance of a game object
     // Aka this is element returned from createInstance hostConfig method of reconciler
     declare interface FiberGameObject {
         instanceType: 'PHASER';
         type: AllowedGameObjectTypes;
         instance: GameObjects.GameObject;
-        data: Text;
+        data: Text | Image;
         scene: Scene;
     }
 }
