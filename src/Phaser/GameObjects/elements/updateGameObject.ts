@@ -2,6 +2,11 @@ import { Types, GameObjects } from 'phaser';
 import { GameElements } from './types';
 
 const TextMethodWrapper = (type: 'x' | 'y' | 'text' | 'style') => {
+    process.env.NODE_ENV === 'development' &&
+        console.warn(
+            'Re-rendering text is quite expensive,',
+            'Consider using Bit Map Text if your project requires many re-renders'
+        );
     if (type === 'x')
         return (gameObj: GameObjects.Text, val: number) => {
             gameObj.setX(val);
