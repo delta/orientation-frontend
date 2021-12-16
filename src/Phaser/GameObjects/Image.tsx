@@ -13,9 +13,10 @@ interface ImageProps extends BasicGameObjectComponentProps {
 
     origin?: number;
     depth?: number;
+    scale?: number;
 }
 
-const Image = ({ x, y, key, origin, depth, children }: ImageProps) => {
+const Image = ({ x, y, key, origin, depth, scale, children }: ImageProps) => {
     const scene = useScene();
 
     const imageInstance = useMemo(() => {
@@ -25,6 +26,7 @@ const Image = ({ x, y, key, origin, depth, children }: ImageProps) => {
 
         if (origin) newImageInstance.setOrigin(origin);
         if (depth) newImageInstance.setDepth(depth);
+        if (scale) newImageInstance.setScale(scale);
 
         return newImageInstance;
     }, [scene]);
@@ -46,6 +48,7 @@ const Image = ({ x, y, key, origin, depth, children }: ImageProps) => {
         y,
         key,
         depth,
+        scale,
         origin
     };
 

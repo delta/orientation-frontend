@@ -21,6 +21,7 @@ declare namespace GameElements {
         key: string;
         depth?: number;
         origin?: number;
+        scale?: number;
     }
 
     // Reconciler Fiber root instance of a game object
