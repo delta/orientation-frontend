@@ -5,6 +5,8 @@ import {
     GameObjectComponent
 } from './GameObject';
 import { GameElements } from './elements/types';
+import { GameObjects } from 'phaser';
+import { invariant } from '../../utils/invariant';
 
 interface ImageProps extends BasicGameObjectComponentProps {
     key: string;
@@ -14,9 +16,22 @@ interface ImageProps extends BasicGameObjectComponentProps {
     origin?: number;
     depth?: number;
     scale?: number;
+
+    isInteractive?: boolean;
+    onClick?: (image: GameObjects.Image) => void;
 }
 
-const Image = ({ x, y, key, origin, depth, scale, children }: ImageProps) => {
+const Image = ({
+    x,
+    y,
+    key,
+    origin,
+    depth,
+    scale,
+    isInteractive,
+    onClick,
+    children
+}: ImageProps) => {
     const scene = useScene();
 
     const imageInstance = useMemo(() => {
@@ -27,6 +42,15 @@ const Image = ({ x, y, key, origin, depth, scale, children }: ImageProps) => {
         if (origin) newImageInstance.setOrigin(origin);
         if (depth) newImageInstance.setDepth(depth);
         if (scale) newImageInstance.setScale(scale);
+
+        if (isInteractive) {
+            invariant(!onClick, 'onClick function is not provided');
+            newImageInstance.setInteractive();
+            newImageInstance.on(
+                'pointerup',
+                () => onClick && onClick(newImageInstance)
+            );
+        }
 
         return newImageInstance;
     }, [scene]);
@@ -49,7 +73,9 @@ const Image = ({ x, y, key, origin, depth, scale, children }: ImageProps) => {
         key,
         depth,
         scale,
-        origin
+        origin,
+        isInteractive,
+        onClick
     };
 
     return (
