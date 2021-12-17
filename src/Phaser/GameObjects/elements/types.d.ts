@@ -3,9 +3,13 @@ import { Types, GameObjects, Scene } from 'phaser';
 import { ReactNode } from 'react';
 
 declare namespace GameElements {
-    declare type AllowedGameObjectTypes = 'TEXT' | 'IMAGE' | 'TileMap';
+    declare type AllowedGameObjectTypes =
+        | 'TEXT'
+        | 'IMAGE'
+        | 'SPRITE'
+        | 'TileMap';
 
-    declare type GameObject = Text | Image;
+    declare type GameObject = Text | Image | Sprite;
     declare interface Text {
         name: 'TEXT';
         x: number;
@@ -69,7 +73,7 @@ declare namespace GameElements {
         instanceType: 'PHASER';
         type: AllowedGameObjectTypes;
         instance: GameObjects.GameObject;
-        data: Text | Image;
+        data: Text | Image | Sprite;
         scene: Scene;
     }
 }

@@ -1,6 +1,6 @@
 import { createContext } from 'react';
-import { Scene } from 'phaser';
+import { PhaserScene } from './SceneWrapper';
 
-const SceneContext = createContext<Scene | null>(null);
+const SceneContext = createContext<PhaserScene | null>(null);
 
 export { SceneContext };

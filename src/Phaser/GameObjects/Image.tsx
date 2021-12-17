@@ -10,7 +10,7 @@ interface ImageProps
     extends BasicGameObjectComponentProps,
         Omit<GameElements.Image, 'name'> {}
 
-const Image = ({
+export const Image = ({
     x,
     y,
     key,

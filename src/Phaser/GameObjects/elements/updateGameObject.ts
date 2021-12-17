@@ -78,5 +78,6 @@ export const updateGameObjectData: Record<
 > = {
     TEXT: TextMethodWrapper,
     IMAGE: ImageMethodWrapper,
+    SPRITE: TextMethodWrapper,
     TileMap: TextMethodWrapper
 };

@@ -1,4 +1,5 @@
 import { Scene, Types } from 'phaser';
+import { GameElements } from '../GameObjects/elements/types';
 
 // A extension of Phaser scene which includes the preload, init and
 // create method which isn't part of default Phaser Scene
@@ -26,5 +27,19 @@ export class PhaserScene extends Scene {
         //
         super(config);
         return;
+    }
+
+    addAnimation(animations: GameElements.GameObjectUtilityType.Anims[]) {
+        animations.forEach((animation) => {
+            this.anims.create({
+                key: animation.key,
+                frames: this.anims.generateFrameNumbers(this.scene.key, {
+                    frames: animation.frames
+                }),
+                frameRate: animation.frameRate,
+                repeat: animation.repeat,
+                repeatDelay: animation.repeatDelay
+            });
+        });
     }
 }
