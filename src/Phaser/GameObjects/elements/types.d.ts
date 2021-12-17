@@ -14,15 +14,53 @@ declare namespace GameElements {
         style: Types.GameObjects.Text.TextStyle;
     }
 
-    declare interface Image {
+    declare interface Image
+        extends GameObjectUtilityType.Origin,
+            GameObjectUtilityType.Scale,
+            GameObjectUtilityType.Depth {
         name: 'IMAGE';
         x: number;
         y: number;
         key: string;
-        depth?: number;
-        origin?: number;
-        scale?: number;
         onClick?: (image: GameObjects.Image) => void;
+    }
+
+    declare interface Sprite
+        extends GameObjectUtilityType.Origin,
+            GameObjectUtilityType.Scale,
+            GameObjectUtilityType.Depth {
+        name: 'SPRITE';
+        x: number;
+        y: number;
+        key: string;
+        animations: GameObjectUtilityType.Anims[];
+    }
+
+    declare namespace GameObjectUtilityType {
+        declare interface Anims {
+            key: string;
+            frameRate: number;
+            repeat: number;
+            frames: number[];
+            repeatDelay?: number;
+        }
+
+        declare interface Origin {
+            origin?: number;
+            // TODO: the commented items are not implemented
+            // originX: number;
+            // originY: number;
+        }
+        declare interface Scale {
+            scale?: number;
+            // TODO: the commented items are not implemented
+            // scaleX: number;
+            // scaleY: number;
+        }
+
+        declare interface Depth {
+            depth?: number;
+        }
     }
 
     // Reconciler Fiber root instance of a game object
