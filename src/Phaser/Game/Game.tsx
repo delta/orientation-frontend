@@ -4,7 +4,7 @@ import { isEqual } from 'lodash';
 
 import { Renderer } from '../../renderer';
 import { GameContext } from './GameContext';
-
+import { GzRpgCharacterPlugin } from '../Plugins/GzRpgCharacter';
 interface GameProps {
     children?: JSX.Element | JSX.Element[];
 }
@@ -45,14 +45,23 @@ class Game extends Component<GameProps, GameState> {
         if (!this.gameRef.current) return;
         //TODO: Get the Phaser game as properties, and initialize them instead of hard coding
         const game = new PhaserGame({
-            height: 500,
-            width: 500,
+            height: window.innerHeight,
+            width: window.innerHeight,
             parent: this.gameRef.current,
             physics: {
                 default: 'arcade',
                 arcade: {
                     gravity: { y: 0 }
                 }
+            },
+            plugins: {
+                global: [
+                    {
+                        key: 'GzRpgCharacterPlugin',
+                        plugin: GzRpgCharacterPlugin,
+                        start: true
+                    }
+                ]
             }
         });
 

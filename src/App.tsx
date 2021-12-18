@@ -10,15 +10,12 @@ import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
 import { Scene } from './Phaser/Scene/Scene';
 import { Text } from './Phaser/GameObjects/Text';
+import { GameContext } from './Phaser/Game/GameContext';
 
 function App() {
     const [i, changeI] = useState(0);
-
     useEffect(() => {
-        setTimeout(() => {
-            console.log('changing i ');
-            changeI(10);
-        }, 2500);
+        setTimeout(() => {}, 2500);
     });
 
     return (
@@ -33,11 +30,43 @@ function App() {
                             <Route path="/game">
                                 <Game>
                                     <Scene
-                                        sceneKey="first-scene"
+                                        sceneKey="Entrance"
                                         autoStart={true}
-                                        create={() => {
-                                            console.log('Created');
-                                        }}
+                                        mapName="Entrance"
+                                        tilesetNames={[
+                                            'AdminGate',
+                                            'Modern',
+                                            'Fountain',
+                                            'SereneVillage',
+                                            'Trees'
+                                        ]}
+                                        layers={[
+                                            'BaseOverhead2',
+                                            'BaseOverhead1',
+                                            'Base',
+                                            'Background',
+                                            'Grass'
+                                        ]}
+                                    ></Scene>
+                                    <Scene
+                                        sceneKey="Admin"
+                                        autoStart={false}
+                                        mapName="Admin"
+                                        tilesetNames={[
+                                            'AdminBlock',
+                                            'Modern',
+                                            'Fountain',
+                                            'Roads',
+                                            'SereneVillage',
+                                            'Trees'
+                                        ]}
+                                        layers={[
+                                            'BaseOverhead2',
+                                            'BaseOverhead1',
+                                            'Base',
+                                            'Background',
+                                            'Grass'
+                                        ]}
                                     ></Scene>
                                 </Game>
                             </Route>
