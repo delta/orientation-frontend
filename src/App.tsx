@@ -35,37 +35,10 @@ function App() {
                                     <Scene
                                         sceneKey="first-scene"
                                         autoStart={true}
-                                    >
-                                        <Text
-                                            text="hello world"
-                                            x={10 + i}
-                                            y={10}
-                                            style={{
-                                                fontSize: '18px',
-                                                color: '#fff'
-                                            }}
-                                        ></Text>
-                                        <Text
-                                            text="Hello"
-                                            x={10 + i}
-                                            y={35}
-                                            style={{
-                                                fontSize: '18px',
-                                                color: '#fff'
-                                            }}
-                                        />
-                                    </Scene>
-                                    <Scene sceneKey="second-scene">
-                                        <Text
-                                            text="hello world 2.0"
-                                            x={50}
-                                            y={50}
-                                            style={{
-                                                fontSize: '18px',
-                                                color: '#fff'
-                                            }}
-                                        />
-                                    </Scene>
+                                        create={() => {
+                                            console.log('Created');
+                                        }}
+                                    ></Scene>
                                 </Game>
                             </Route>
                             <Route path="/auth">

@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { PhaserScene } from './SceneWrapper';
 import { GameContext } from '../Game/GameContext';
 import { SceneContext } from './sceneContext';
+import { GameScene } from './GameScene';
 
 interface ISceneProps {
     children?: React.ReactNode;
@@ -23,20 +24,31 @@ const Scene = ({
     preload
 }: ISceneProps) => {
     const game = useContext(GameContext);
-    const [sceneInstance, setSceneInstance] = useState<PhaserScene | null>(
-        null
-    );
+    const [sceneInstance, setSceneInstance] = useState<
+        PhaserScene | GameScene | null
+    >(null);
 
     useEffect(() => {
         if (!game) return;
         //TODO: have a props for sceneConfig ? only key has been implemented rn...
         const newScene = new PhaserScene({ key: sceneKey });
         // TODO: this is soo untidy, clean it up
-        newScene.init = init ? init : null;
-        newScene.preload = preload ? preload : null;
-        newScene.create = create ? create : null;
-        game?.scene.add(sceneKey, newScene, !!autoStart);
+        console.log('newScene Created', newScene.create);
+        // if (init) newScene.init = init;
+        // if (preload) newScene.preload = preload;
+        // if (create) newScene.create = create;
+        newScene.preload = () => {
+            GameScene.preload(newScene);
+        };
+        newScene.create = () => {
+            GameScene.create(newScene);
+        };
 
+        // newScene.create = ()=>{
+        //     console.log("newScene Created");
+        // }
+        game?.scene.add(sceneKey, newScene, false);
+        game.scene.start(sceneKey);
         // TODO: Find out how to wait till the assets are loaded before rendering the component
         //
 
