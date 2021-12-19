@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { UserContext } from '../contexts/userContext';
 
 interface AsyncFunc {
-  (): Promise<void>;
+  (game_name: string, score: number): Promise<void>;
 }
 
 type Greet = {
   greet: (() => void) | null;
-  run: AsyncFunc | null;
+  send_score: AsyncFunc | null;
 };
 
 const HomePage = () => {
@@ -19,7 +19,7 @@ const HomePage = () => {
   //   promise.greet();
   // }, []);
   const isLoggedIn = useContext(UserContext)?.isLoggedIn;
-  const [greet, setGreet] = useState<Greet>({ greet: null, run: null });
+  const [greet, setGreet] = useState<Greet>({ greet: null, send_score: null });
   useEffect(() => {
     const init = async () => {
       const wasm = await import('testWasm');
@@ -32,8 +32,8 @@ const HomePage = () => {
     <>
       <button
         onClick={async () => {
-          if (greet.run) {
-            const res = await greet.run();
+          if (greet.send_score) {
+            const res = await greet.send_score('test_game', 100);
             console.log(res);
           }
         }}
