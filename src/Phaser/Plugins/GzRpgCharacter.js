@@ -46,8 +46,8 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
             // Stop animations when not moving
             if (
                 this.body &&
-                this.body.velocity.x == 0 &&
-                this.body.velocity.y == 0
+                this.body.velocity.x === 0 &&
+                this.body.velocity.y === 0
             ) {
                 this.anims.stopAfterRepeat(0);
             }
@@ -68,7 +68,7 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
     SetInstruction(instruction) {
         if (!instruction.action) return;
         // Walking requires a direction
-        if (instruction.action == 'walk' && !instruction.option) return;
+        if (instruction.action === 'walk' && !instruction.option) return;
 
         this.instructions.push(instruction);
     }
@@ -83,6 +83,8 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
             switch (instruction.action) {
                 case 'walk':
                     this.DoWalk(instruction.option);
+                    break;
+                default:
                     break;
             }
         }
@@ -104,6 +106,8 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
                 break;
             case 'front':
                 this.body.setVelocityY(this.speed);
+                break;
+            default:
                 break;
         }
 

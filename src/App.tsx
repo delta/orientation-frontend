@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import './App.css';
 import './styles/output.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
@@ -9,15 +8,8 @@ import { Game } from './Phaser/Game/Game';
 import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
 import { Scene } from './Phaser/Scene/Scene';
-import { Text } from './Phaser/GameObjects/Text';
-import { GameContext } from './Phaser/Game/GameContext';
 
 function App() {
-    const [i, changeI] = useState(0);
-    useEffect(() => {
-        setTimeout(() => {}, 2500);
-    });
-
     return (
         <div className="min-h-screen bg-background">
             <ToastProvider variant={'top_right'}>
