@@ -1,6 +1,7 @@
 import { Scene, Types } from 'phaser';
 import { GameElements } from '../GameObjects/elements/types';
 import { Anims } from './anims';
+import { config } from '../../config/config';
 import SpawnPoints from '../../utils/spawnPoints';
 // A extension of Phaser scene which includes the preload, init and
 // create method which isn't part of default Phaser Scene
@@ -17,6 +18,7 @@ export class PhaserScene extends Scene {
     sceneKey: string;
     otherPlayers: any;
     defaultTiles: { [key: string]: any };
+    socketContext: any;
     constructor(
         config: string | Types.Scenes.SettingsConfig,
         mapName: string,
@@ -38,6 +40,8 @@ export class PhaserScene extends Scene {
             front: 18,
             back: 0
         };
+        // this.socketContext;
+        setInterval(this.sendPlayerPositionToServer, 500);
         return;
     }
     /**
@@ -45,15 +49,14 @@ export class PhaserScene extends Scene {
      */
     preload() {
         if (!this.mapName || this.mapName === '') return;
-        let baseUrl = 'http://localhost:3000';
         this.load.tilemapTiledJSON(
             `${this.mapName}`,
-            `${baseUrl}/Maps/${this.mapName}.json`
+            `${config.assetUrl}/Maps/${this.mapName}.json`
         );
         for (let i = 0; i < this.tilesetNames.length; i++) {
             this.load.image(
                 this.tilesetNames[i],
-                `${baseUrl}/TilesetImages/${this.tilesetNames[i]}.png`
+                `${config.assetUrl}/TilesetImages/${this.tilesetNames[i]}.png`
             );
         }
         this.load.on('progress', (percentage: number) => {
@@ -121,6 +124,8 @@ export class PhaserScene extends Scene {
             this.otherPlayers.push(tempPlayer);
         });
     }
+
+    sendPlayerPositionToServer() {}
 
     /**
      * Create method of a Phaser Scene, read phaser docs for more info
@@ -212,6 +217,19 @@ export class PhaserScene extends Scene {
         this.animsManager.create();
     }
 
+    updateMap() {
+        var origin = this.map.getTileAtWorldXY(this.player.x, this.player.y);
+        this.map.forEachTile((tile: any) => {
+            var dist = Phaser.Math.Distance.Chebyshev(
+                origin.x,
+                origin.y,
+                tile.x,
+                tile.y
+            );
+            tile.setAlpha(1 - 0.1 * dist);
+        });
+    }
+
     update(time: any, delta: any) {
         if (this.player.x < 0) this.player.x = 0;
         if (this.player.x > this.map.widthInPixels)
@@ -231,7 +249,7 @@ export class PhaserScene extends Scene {
             this.player.SetInstruction({ action: 'walk', option: 'front' });
 
         this.player.update();
-
+        // this.updateMap();
         return true;
     }
 

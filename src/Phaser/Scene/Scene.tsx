@@ -49,6 +49,10 @@ const Scene = ({
         };
     }, [game]);
 
+    // useEffect(() => {
+    //     sceneInstance.updatePositions(socketConext);
+    // }, [socketContext]);
+
     if (!sceneInstance) return null;
     return (
         <SceneContext.Provider value={sceneInstance}>

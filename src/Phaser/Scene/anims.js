@@ -2,6 +2,7 @@
  * This Anims class is tightly coupled to the Game Scene class and used to
  * seperate the sprite animation definitions into their own file.
  */
+import { config } from '../../config/config';
 export class Anims {
     constructor(scene) {
         if (!scene) return;
@@ -10,12 +11,11 @@ export class Anims {
     }
 
     preload() {
-        let baseUrl = `http://localhost:3000`;
         for (let i = 0; i < this.playerTypes.length; i++) {
             this.scene.load.atlas(
                 `${this.playerTypes[i]}`,
-                `${baseUrl}/sprites/${this.playerTypes[i]}.png`,
-                `${baseUrl}/sprites/${this.playerTypes[i]}.json`
+                `${config.assetUrl}/sprites/${this.playerTypes[i]}.png`,
+                `${config.assetUrl}/sprites/${this.playerTypes[i]}.json`
             );
         }
     }
