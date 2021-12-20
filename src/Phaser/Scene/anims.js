@@ -5,61 +5,64 @@
 export class Anims {
     constructor(scene) {
         if (!scene) return;
-
+        this.playerTypes = ['player', 'player2'];
         this.scene = scene;
     }
 
     preload() {
-        let baseUrl = 'http://localhost:3000';
-        this.scene.load.atlas(
-            'zeta',
-            `${baseUrl}/sprites/zeta_walk.png`,
-            `${baseUrl}/sprites/zeta_walk.json`
-        );
+        let baseUrl = `http://localhost:3000`;
+        for (let i = 0; i < this.playerTypes.length; i++) {
+            this.scene.load.atlas(
+                `${this.playerTypes[i]}`,
+                `${baseUrl}/sprites/${this.playerTypes[i]}.png`,
+                `${baseUrl}/sprites/${this.playerTypes[i]}.json`
+            );
+        }
     }
 
     create() {
         const anims = this.scene.anims;
+        for (let i = 0; i < this.playerTypes.length; i++) {
+            this.addWalkAnimations(anims, this.playerTypes[i]);
+        }
+    }
+    addWalkAnimations(anims, playerType) {
         anims.create({
-            key: 'zeta-walk-left',
-            frames: anims.generateFrameNames('zeta', {
-                prefix: 'zeta-walk-left.',
-                start: 0,
-                end: 3,
-                zeroPad: 3
+            key: `${playerType}-walk-left`,
+            frames: anims.generateFrameNames(`${playerType}`, {
+                prefix: `${playerType}-`,
+                start: 9,
+                end: 17
             }),
             frameRate: 10,
             repeat: -1
         });
         anims.create({
-            key: 'zeta-walk-right',
-            frames: anims.generateFrameNames('zeta', {
-                prefix: 'zeta-walk-right.',
-                start: 0,
-                end: 3,
-                zeroPad: 3
+            key: `${playerType}-walk-right`,
+            frames: anims.generateFrameNames(`${playerType}`, {
+                prefix: `${playerType}-`,
+                start: 27,
+                end: 35
             }),
             frameRate: 10,
             repeat: -1
         });
         anims.create({
-            key: 'zeta-walk-front',
-            frames: anims.generateFrameNames('zeta', {
-                prefix: 'zeta-walk-front.',
-                start: 0,
-                end: 3,
-                zeroPad: 3
+            key: `${playerType}-walk-front`,
+            frames: anims.generateFrameNames(`${playerType}`, {
+                prefix: `${playerType}-`,
+                start: 18,
+                end: 26
             }),
             frameRate: 10,
             repeat: -1
         });
         anims.create({
-            key: 'zeta-walk-back',
-            frames: anims.generateFrameNames('zeta', {
-                prefix: 'zeta-walk-back.',
+            key: `${playerType}-walk-back`,
+            frames: anims.generateFrameNames(`${playerType}`, {
+                prefix: `${playerType}-`,
                 start: 0,
-                end: 3,
-                zeroPad: 3
+                end: 3
             }),
             frameRate: 10,
             repeat: -1

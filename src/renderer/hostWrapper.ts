@@ -9,8 +9,8 @@ const hostConfigWrapper = (hostConfig: hostConfigType) => {
         const func = hostConfig[key];
         // @ts-ignore
         traceWrappedHostConfig[key] = (...args) => {
-            process.env.NODE_ENV === 'development' &&
-                console.log('$', key, { ...args });
+            // process.env.NODE_ENV === 'development' &&
+            // console.log('$', key, { ...args });
             return func(...args);
         };
     });

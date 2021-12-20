@@ -1,7 +1,7 @@
 import { Scene, Types } from 'phaser';
 import { GameElements } from '../GameObjects/elements/types';
 import { Anims } from './anims';
-
+import SpawnPoints from '../../utils/spawnPoints';
 // A extension of Phaser scene which includes the preload, init and
 // create method which isn't part of default Phaser Scene
 //
@@ -12,29 +12,32 @@ export class PhaserScene extends Scene {
     cursors: any;
     player: any;
     animsManager: any;
-    spawnPoint: { x: number; y: number };
+    spawnPoint: { x: number; y: number; facing: string };
     map: any;
     sceneKey: string;
+    otherPlayers: any;
+    defaultTiles: { [key: string]: any };
     constructor(
         config: string | Types.Scenes.SettingsConfig,
         mapName: string,
         tilesetNames: string[],
         layers: string[]
     ) {
-        // right now we are not adding the newPhaserScene methods
-        // user is responsible for adding the methods on their own
-        //
-        // TODO: get the methods in constructor call itself
-        //
-        console.log(config);
         super(config);
         this.sceneKey = '';
         if (config instanceof Object && config.key) this.sceneKey = config.key;
         this.tilesetNames = tilesetNames;
         this.layers = layers;
         this.mapName = mapName;
-        this.spawnPoint = { x: 168, y: 300 };
+        this.spawnPoint = { x: 168, y: 300, facing: 'back' };
+        this.otherPlayers = [];
         this.animsManager = new Anims(this);
+        this.defaultTiles = {
+            left: 13,
+            right: 33,
+            front: 18,
+            back: 0
+        };
         return;
     }
     /**
@@ -44,7 +47,7 @@ export class PhaserScene extends Scene {
         if (!this.mapName || this.mapName === '') return;
         let baseUrl = 'http://localhost:3000';
         this.load.tilemapTiledJSON(
-            'map',
+            `${this.mapName}`,
             `${baseUrl}/Maps/${this.mapName}.json`
         );
         for (let i = 0; i < this.tilesetNames.length; i++) {
@@ -63,8 +66,10 @@ export class PhaserScene extends Scene {
      * @param {any} data any data you wish to pass to the init function
      */
     init(data: any) {
-        console.log(data);
-        if (data.spawnPoint) this.spawnPoint = data.spawnPoint;
+        // load SpawnPoint.json from Map Folder into spawnPoints variable
+        if (data.origin) {
+            this.spawnPoint = (SpawnPoints as any)[data.origin];
+        }
     }
 
     setupObjectLayer(layerName: string, callBack: any) {
@@ -96,13 +101,34 @@ export class PhaserScene extends Scene {
         }
     }
 
+    loadOtherPlayers(players: any) {
+        // declare type of object
+        players.forEach((player: any) => {
+            // @ts-ignore
+            let tempPlayer = this.add.rpgcharacter({
+                x: player.x,
+                y: player.y,
+                name: player.name,
+                image: player.type,
+                speed: 100
+            });
+            tempPlayer.setTexture(
+                player.type,
+                `${player.type}-${this.defaultTiles[player.facing]}`
+            );
+            tempPlayer.setDepth(4);
+            tempPlayer.setScale(0.5);
+            this.otherPlayers.push(tempPlayer);
+        });
+    }
+
     /**
      * Create method of a Phaser Scene, read phaser docs for more info
      * @param {any} data any data you wish to pass to the create function
      */
     create(data: any) {
         console.log('creating');
-
+        (window as any).scene = this;
         // Set up simple keyboard controls
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -111,15 +137,33 @@ export class PhaserScene extends Scene {
         this.player = this.add.rpgcharacter({
             x: this.spawnPoint.x,
             y: this.spawnPoint.y,
-            name: 'zeta',
-            image: 'zeta',
-            speed: 225
+            name: 'player',
+            image: 'player',
+            speed: 100
         });
 
-        this.player.setTexture('zeta', 'zeta-front');
+        this.loadOtherPlayers([
+            {
+                name: 'player2',
+                x: this.spawnPoint.x,
+                y: this.spawnPoint.y - 100,
+                facing: 'left',
+                type: 'player'
+            },
+            {
+                name: 'player3',
+                x: this.spawnPoint.x - 30,
+                y: this.spawnPoint.y - 150,
+                facing: 'right',
+                type: 'player2'
+            }
+        ]);
 
-        this.map = this.make.tilemap({ key: 'map' });
-
+        this.player.setTexture(
+            'player',
+            `player-${this.defaultTiles[this.spawnPoint.facing]}`
+        );
+        this.map = this.make.tilemap({ key: this.mapName });
         let allTileSets = [];
         for (let i = 0; i < this.tilesetNames.length; i++) {
             const tempTileSet = this.map.addTilesetImage(
@@ -149,12 +193,18 @@ export class PhaserScene extends Scene {
         }
 
         this.player.setDepth(4);
+        this.player.setScale(0.5);
 
         this.setupObjectLayer('Portals', this.UsePortal.bind(this));
+        this.setupObjectLayer('Minigames', this.StartMinigame.bind(this));
+        this.setupObjectLayer('Text', this.ShowText.bind(this));
+        this.setupObjectLayer('Preview', this.ShowPreview.bind(this));
 
         // Set up the main (only?) camera
         const camera = this.cameras.main;
-        camera.zoom = window.innerHeight / this.map.heightInPixels;
+        let zoomFactor = 1.25;
+        camera.zoom =
+            (zoomFactor * window.innerHeight) / this.map.heightInPixels;
         // camera.centerOn(map.widthInPixels/2, this.map.heightInPixels);
         camera.startFollow(this.player);
         camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -193,9 +243,23 @@ export class PhaserScene extends Scene {
         if (target.properties && target.properties.type === 'portal') {
             console.log(target.properties.destination);
             this.scene.start(target.properties.destination, {
-                origin: this.scene.key
+                origin: target.properties.name
             });
         }
+    }
+
+    StartMinigame(player: any, target: any) {
+        console.log(target.properties.name);
+    }
+
+    ShowText(player: any, target: any) {
+        console.log(target.properties);
+    }
+
+    ShowPreview(player: any, target: any) {
+        // open in a new tab target.properties.link
+        // let win = window.open(target.properties.link, '_blank');
+        // win?.focus();
     }
 
     addAnimation(animations: GameElements.GameObjectUtilityType.Anims[]) {
