@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { PhaserScene } from './SceneWrapper';
 import { GameContext } from '../Game/GameContext';
 import { SceneContext } from './sceneContext';
-import { WsContext } from '../../contexts/wsContext';
 import { WebsocketApi } from '../../ws/ws';
 interface ISceneProps {
     children?: React.ReactNode;
