@@ -4,7 +4,7 @@ import { PhaserScene } from './SceneWrapper';
 import { GameContext } from '../Game/GameContext';
 import { invariant } from '../../utils/invariant';
 
-interface LoaderProps {
+export interface LoaderProps {
     imagePrefixPath?: string;
     images?: { url: string; key: string }[];
     audioPrefixPath?: string;
@@ -12,11 +12,27 @@ interface LoaderProps {
     spritesPrefixPath?: string;
     sprites?: { url: string; key: string }[];
     spriteSize?: { frameHeight: number; frameWidth: number };
+    tileMapsPrefixPath?: string;
+    tileMaps?: { url: string; key: string }[];
     nextScene: string;
     loadingAnimationFunction?: (...args: any) => any;
 }
 
 // A Custom scene to be set as a loader
+/**
+ * A Common Loader scene to load all the required assets for the game
+ * We can pass different types of assets like
+ * 1. Image
+ * 2. Audio
+ * 3. Sprites
+ * 4. tileMap (from JSON)
+ *
+ * This component loads all these assets, and we can pass a loadingAnimationFunction
+ * which can be used to display a loading screen.
+ *
+ * After loading the assets, the scene will shift control to the scene passed
+ * through the nextScene prop
+ */
 export const LoaderScene = ({
     imagePrefixPath,
     images,
@@ -25,6 +41,8 @@ export const LoaderScene = ({
     spritesPrefixPath,
     sprites,
     spriteSize,
+    tileMapsPrefixPath,
+    tileMaps,
     nextScene,
     loadingAnimationFunction
 }: LoaderProps) => {
@@ -33,6 +51,7 @@ export const LoaderScene = ({
     const validateProps = () => {
         invariant(!(imagePrefixPath && !images), 'Images not provided');
         invariant(!(audioPrefixPath && !audio), 'Audio not provided');
+        invariant(!(tileMapsPrefixPath && !tileMaps), 'Sprites not provided');
         invariant(
             !(spritesPrefixPath && (!sprites || !spriteSize)),
             'Sprites not provided'
@@ -81,27 +100,39 @@ export const LoaderScene = ({
                 }
             });
         }
+        if (tileMaps !== undefined) {
+            scene.load.setPath(tileMapsPrefixPath);
+            tileMaps.forEach((tilemap) => {
+                try {
+                    scene.load.tilemapTiledJSON(tilemap.key, tilemap.url);
+                } catch (err) {
+                    // we catch an error when the key is not unique
+                    console.log(err);
+                }
+            });
+        }
     };
 
     useEffect(() => {
         if (!game) return;
 
         validateProps();
-        const newScene = new PhaserScene(
-            { key: 'LoadScene' },
-            null,
-            '',
-            [],
-            [],
-            () => {}
-        );
+        const newScene = new PhaserScene({
+            config: { key: 'LoadScene' },
+            layers: [],
+            loadTilesetNames: [],
+            mapName: '',
+            tilesetNames: [],
+            sceneErrorHandler: () => {},
+            ws: null
+        });
         newScene.preload = () => {
             loadAssets(newScene);
             loadingAnimationFunction && loadingAnimationFunction();
         };
         // switching to the next scene once all the assets are loaded
         newScene.create = () => {
-            // newScene.scene.start(nextScene);
+            newScene.scene.start(nextScene);
         };
 
         game?.scene.add('LoadScene', newScene, true);

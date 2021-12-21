@@ -4,11 +4,23 @@ import { Anims } from './anims';
 import { config } from '../../config/config';
 import SpawnPoints from '../../utils/spawnPoints';
 import { WebsocketApi } from '../../ws/ws';
+
+interface ConstructorProps {
+    config: string | Types.Scenes.SettingsConfig;
+    mapName: string;
+    tilesetNames: string[];
+    loadTilesetNames: string[];
+    layers: string[];
+    sceneErrorHandler: any;
+    ws: WebsocketApi | null | undefined;
+}
+
 // A extension of Phaser scene which includes the preload, init and
 // create method which isn't part of default Phaser Scene
 //
 export class PhaserScene extends Scene {
     tilesetNames: string[];
+    loadTilesetNames: string[];
     layers: string[];
     mapName: string;
     cursors: any;
@@ -24,18 +36,28 @@ export class PhaserScene extends Scene {
     sceneErrorHandler: any;
     facing: string;
 
-    constructor(
-        config: string | Types.Scenes.SettingsConfig,
-        ws: WebsocketApi | null | undefined,
-        mapName: string,
-        tilesetNames: string[],
-        layers: string[],
-        sceneErrorHandler: any
-    ) {
+    // constructor(
+    //     config: string | Types.Scenes.SettingsConfig,
+    //     ws: WebsocketApi | null | undefined,
+    //     mapName: string,
+    //     tilesetNames: string[],
+    //     layers: string[],
+    //     sceneErrorHandler: any
+    // ) {
+    constructor({
+        config,
+        mapName,
+        tilesetNames,
+        loadTilesetNames,
+        layers,
+        sceneErrorHandler,
+        ws
+    }: ConstructorProps) {
         super(config);
         this.sceneKey = '';
         if (config instanceof Object && config.key) this.sceneKey = config.key;
-        this.tilesetNames = tilesetNames;
+        this.loadTilesetNames = loadTilesetNames;
+        this.tilesetNames = tilesetNames.concat(loadTilesetNames);
         this.layers = layers;
         this.mapName = mapName;
         this.spawnPoint = { x: 168, y: 300, facing: 'back' };
@@ -59,10 +81,10 @@ export class PhaserScene extends Scene {
             `${this.mapName}`,
             `${config.assetUrl}/Maps/${this.mapName}.json`
         );
-        for (let i = 0; i < this.tilesetNames.length; i++) {
+        for (let i = 0; i < this.loadTilesetNames.length; i++) {
             this.load.image(
-                this.tilesetNames[i],
-                `${config.assetUrl}/TilesetImages/${this.tilesetNames[i]}.png`
+                this.loadTilesetNames[i],
+                `${config.assetUrl}/TilesetImages/${this.loadTilesetNames[i]}.png`
             );
         }
         this.load.on('progress', (percentage: number) => {
@@ -239,6 +261,7 @@ export class PhaserScene extends Scene {
             allTileSets.push(tempTileSet);
         }
 
+        console.log('allTileSets: ', allTileSets);
         let allLayers: any = {};
         for (let i = 0; i < this.layers.length; i++) {
             allLayers[this.layers[i]] = this.map.createLayer(

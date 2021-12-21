@@ -11,6 +11,7 @@ interface ISceneProps {
     autoStart?: boolean;
     mapName?: string;
     tilesetNames?: string[];
+    loadTilesetNames?: string[];
     layers?: string[];
     ws: WebsocketApi;
 }
@@ -21,8 +22,9 @@ const Scene = ({
     autoStart,
     mapName,
     tilesetNames,
-    layers,
-    ws
+    ws,
+    loadTilesetNames,
+    layers
 }: ISceneProps) => {
     const game = useContext(GameContext);
     const [sceneInstance, setSceneInstance] = useState<PhaserScene | null>(
@@ -36,14 +38,15 @@ const Scene = ({
     useEffect(() => {
         if (!game) return;
         //TODO: have a props for sceneConfig ? only key has been implemented rn...
-        const newScene = new PhaserScene(
-            { key: sceneKey },
+        const newScene = new PhaserScene({
+            config: { key: sceneKey },
+            mapName: mapName ? mapName : '',
+            tilesetNames: tilesetNames ? tilesetNames : [],
+            loadTilesetNames: loadTilesetNames ? loadTilesetNames : [],
+            sceneErrorHandler,
             ws,
-            mapName ? mapName : '',
-            tilesetNames ? tilesetNames : [],
-            layers ? layers : [],
-            sceneErrorHandler
-        );
+            layers: layers ? layers : []
+        });
 
         game?.scene.add(sceneKey, newScene, !!autoStart);
         // TODO: Find out how to wait till the assets are loaded before rendering the component
