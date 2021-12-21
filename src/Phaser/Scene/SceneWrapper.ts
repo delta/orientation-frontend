@@ -3,6 +3,7 @@ import { GameElements } from '../GameObjects/elements/types';
 import { Anims } from './anims';
 import { config } from '../../config/config';
 import SpawnPoints from '../../utils/spawnPoints';
+import { WebsocketApi } from '../../ws/ws';
 // A extension of Phaser scene which includes the preload, init and
 // create method which isn't part of default Phaser Scene
 //
@@ -16,14 +17,20 @@ export class PhaserScene extends Scene {
     spawnPoint: { x: number; y: number; facing: string };
     map: any;
     sceneKey: string;
-    otherPlayers: any;
-    defaultTiles: { [key: string]: any };
+    otherPlayers: { [key: string]: any } | null;
     socketContext: any;
+    positionInteval: NodeJS.Timeout | null;
+    ws: WebsocketApi | null | undefined;
+    sceneErrorHandler: any;
+    facing: string;
+
     constructor(
         config: string | Types.Scenes.SettingsConfig,
+        ws: WebsocketApi | null | undefined,
         mapName: string,
         tilesetNames: string[],
-        layers: string[]
+        layers: string[],
+        sceneErrorHandler: any
     ) {
         super(config);
         this.sceneKey = '';
@@ -32,21 +39,20 @@ export class PhaserScene extends Scene {
         this.layers = layers;
         this.mapName = mapName;
         this.spawnPoint = { x: 168, y: 300, facing: 'back' };
-        this.otherPlayers = [];
+        this.otherPlayers = null;
         this.animsManager = new Anims(this);
-        this.defaultTiles = {
-            left: 13,
-            right: 33,
-            front: 18,
-            back: 0
-        };
-        // this.socketContext;
-        setInterval(this.sendPlayerPositionToServer, 500);
+        this.positionInteval = null;
+        this.ws = ws;
+        this.sceneErrorHandler = sceneErrorHandler;
+        this.facing = 'back';
         return;
     }
-    /**
-     * Preload method of Phaser Scene
-     */
+
+    destructor() {
+        console.log('Destroy');
+        if (this.positionInteval) clearInterval(this.positionInteval);
+    }
+
     preload() {
         if (!this.mapName || this.mapName === '') return;
         this.load.tilemapTiledJSON(
@@ -64,14 +70,118 @@ export class PhaserScene extends Scene {
         });
         this.animsManager.preload();
     }
-    /**
-     * Init method of a Phaser Scene, read phaser docs for more info
-     * @param {any} data any data you wish to pass to the init function
-     */
+
     init(data: any) {
-        // load SpawnPoint.json from Map Folder into spawnPoints variable
+        this.events.on('shutdown', () => {
+            this.destructor();
+        });
+
+        this.addUserToRoom();
+        this.listenForOtherPlayers();
+
+        this.positionInteval = setInterval(
+            this.sendPlayerPositionToServer.bind(this),
+            1000 / config.tickRate
+        );
+
         if (data.origin) {
             this.spawnPoint = (SpawnPoints as any)[data.origin];
+        }
+    }
+
+    // TODO
+    addUserToRoom() {
+        if (this.ws) {
+            try {
+                this.ws.registerUser({
+                    room: this.sceneKey,
+                    position: {
+                        x: this.spawnPoint.x,
+                        y: this.spawnPoint.y,
+                        direction: this.spawnPoint.facing
+                    }
+                });
+            } catch (err) {
+                this.sceneErrorHandler(err);
+            }
+        }
+    }
+
+    // TODO
+    moveUserToRoom(roomName: string) {
+        if (this.ws) {
+            try {
+                this.ws.changeRoom({
+                    from: this.sceneKey,
+                    to: roomName,
+                    position: {
+                        x: this.spawnPoint.x,
+                        y: this.spawnPoint.y,
+                        direction: this.spawnPoint.facing
+                    }
+                });
+            } catch (err) {
+                this.sceneErrorHandler(err);
+            }
+        }
+    }
+
+    // TODO
+    sendPlayerPositionToServer() {
+        if (this.ws) {
+            try {
+                this.ws.moveUser({
+                    room: this.sceneKey,
+                    position: {
+                        x: Math.round(this.player.x),
+                        y: Math.round(this.player.y),
+                        direction: this.facing
+                    }
+                });
+            } catch (err) {
+                this.sceneErrorHandler(err);
+            }
+        }
+    }
+
+    // TOOD
+    listenForOtherPlayers() {
+        document.addEventListener('ws-room-broadcasts', (e: any) => {
+            let players = e.detail;
+            this.updateOtherPlayers(players);
+        });
+    }
+
+    addNewPlayers(players: any) {
+        players.forEach((player: any) => {
+            // @ts-ignore
+            let tempPlayer = this.add.rpgcharacter(player);
+            tempPlayer.setDepth(4);
+            tempPlayer.setScale(0.5);
+            if (this.otherPlayers === null) this.otherPlayers = {};
+            this.otherPlayers[player.id] = tempPlayer;
+        });
+    }
+
+    updateOtherPlayers(players: any) {
+        if (typeof players == 'object') return;
+
+        if (players.length <= 1 || this.otherPlayers === null) return;
+
+        console.log(players);
+
+        for (let player of players) {
+            if (player.Id === this.player.id) return;
+
+            if (
+                this.otherPlayers &&
+                this.otherPlayers[player.Id] !== undefined
+            ) {
+                this.otherPlayers[player.Id].MoveAndUpdate(player);
+            } else {
+                console.log('New player');
+                this.addNewPlayers([player]);
+            }
         }
     }
 
@@ -104,70 +214,21 @@ export class PhaserScene extends Scene {
         }
     }
 
-    loadOtherPlayers(players: any) {
-        // declare type of object
-        players.forEach((player: any) => {
-            // @ts-ignore
-            let tempPlayer = this.add.rpgcharacter({
-                x: player.x,
-                y: player.y,
-                name: player.name,
-                image: player.type,
-                speed: 100
-            });
-            tempPlayer.setTexture(
-                player.type,
-                `${player.type}-${this.defaultTiles[player.facing]}`
-            );
-            tempPlayer.setDepth(4);
-            tempPlayer.setScale(0.5);
-            this.otherPlayers.push(tempPlayer);
-        });
-    }
-
-    sendPlayerPositionToServer() {}
-
-    /**
-     * Create method of a Phaser Scene, read phaser docs for more info
-     * @param {any} data any data you wish to pass to the create function
-     */
     create(data: any) {
         console.log('creating');
-        (window as any).scene = this;
-        // Set up simple keyboard controls
         this.cursors = this.input.keyboard.createCursorKeys();
 
         // Set up the player character
         // @ts-ignore
         this.player = this.add.rpgcharacter({
+            name: 'player',
             x: this.spawnPoint.x,
             y: this.spawnPoint.y,
-            name: 'player',
-            image: 'player',
-            speed: 100
+            id: 0,
+            type: 'player',
+            facing: this.spawnPoint.facing
         });
 
-        this.loadOtherPlayers([
-            {
-                name: 'player2',
-                x: this.spawnPoint.x,
-                y: this.spawnPoint.y - 100,
-                facing: 'left',
-                type: 'player'
-            },
-            {
-                name: 'player3',
-                x: this.spawnPoint.x - 30,
-                y: this.spawnPoint.y - 150,
-                facing: 'right',
-                type: 'player2'
-            }
-        ]);
-
-        this.player.setTexture(
-            'player',
-            `player-${this.defaultTiles[this.spawnPoint.facing]}`
-        );
         this.map = this.make.tilemap({ key: this.mapName });
         let allTileSets = [];
         for (let i = 0; i < this.tilesetNames.length; i++) {
@@ -217,19 +278,6 @@ export class PhaserScene extends Scene {
         this.animsManager.create();
     }
 
-    updateMap() {
-        var origin = this.map.getTileAtWorldXY(this.player.x, this.player.y);
-        this.map.forEachTile((tile: any) => {
-            var dist = Phaser.Math.Distance.Chebyshev(
-                origin.x,
-                origin.y,
-                tile.x,
-                tile.y
-            );
-            tile.setAlpha(1 - 0.1 * dist);
-        });
-    }
-
     update(time: any, delta: any) {
         if (this.player.x < 0) this.player.x = 0;
         if (this.player.x > this.map.widthInPixels)
@@ -249,7 +297,6 @@ export class PhaserScene extends Scene {
             this.player.SetInstruction({ action: 'walk', option: 'front' });
 
         this.player.update();
-        // this.updateMap();
         return true;
     }
 
@@ -259,7 +306,7 @@ export class PhaserScene extends Scene {
 
     UsePortal(player: any, target: any) {
         if (target.properties && target.properties.type === 'portal') {
-            console.log(target.properties.destination);
+            this.moveUserToRoom(target.properties.destination);
             this.scene.start(target.properties.destination, {
                 origin: target.properties.name
             });

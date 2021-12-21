@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { PhaserScene } from './SceneWrapper';
 import { GameContext } from '../Game/GameContext';
 import { SceneContext } from './sceneContext';
+import { WebsocketApi } from '../../ws/ws';
 interface ISceneProps {
     children?: React.ReactNode;
     sceneKey: string;
@@ -11,6 +12,7 @@ interface ISceneProps {
     mapName?: string;
     tilesetNames?: string[];
     layers?: string[];
+    ws: WebsocketApi;
 }
 
 const Scene = ({
@@ -19,21 +21,28 @@ const Scene = ({
     autoStart,
     mapName,
     tilesetNames,
-    layers
+    layers,
+    ws
 }: ISceneProps) => {
     const game = useContext(GameContext);
     const [sceneInstance, setSceneInstance] = useState<PhaserScene | null>(
         null
     );
 
+    const sceneErrorHandler = (err: any) => {
+        console.error('Scene error:', err);
+    };
+
     useEffect(() => {
         if (!game) return;
         //TODO: have a props for sceneConfig ? only key has been implemented rn...
         const newScene = new PhaserScene(
             { key: sceneKey },
+            ws,
             mapName ? mapName : '',
             tilesetNames ? tilesetNames : [],
-            layers ? layers : []
+            layers ? layers : [],
+            sceneErrorHandler
         );
 
         game?.scene.add(sceneKey, newScene, !!autoStart);
@@ -47,7 +56,7 @@ const Scene = ({
                 console.log('removing the scene');
             game?.scene.remove(sceneKey);
         };
-    }, [game, autoStart, layers, mapName, sceneKey, tilesetNames]);
+    }, [game, autoStart, layers, mapName, sceneKey, tilesetNames, ws]);
 
     // useEffect(() => {
     //     sceneInstance.updatePositions(socketConext);

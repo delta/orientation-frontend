@@ -4,17 +4,19 @@ import Phaser from 'phaser';
  * Parent class for all PC and NPC characters
  */
 export class RpgCharacter extends Phaser.GameObjects.Sprite {
-    constructor({ scene, x, y, image, name, path, speed }) {
-        super(scene, x, y, image);
+    constructor({ scene, name, x, y, id, type, facing }) {
+        super(scene, x, y, type);
 
-        this.path = path || false;
-        this.waypoint = 0;
-        this.isHit = -1;
-        this.hp = 3;
         this.name = name || 'anonymous';
-        this.speed = speed;
-        this.image = image;
-
+        this.speed = 100;
+        this.image = type;
+        this.defaultTiles = {
+            left: 13,
+            right: 33,
+            front: 18,
+            back: 0
+        };
+        this.id = id;
         // Character movements are passed as instruction objects to
         // be evaluated on the next call to update
         this.instructions = [];
@@ -26,31 +28,18 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         // scale the sprite
         this.scale = 0.5;
         this.body.setSize(this.width / 2, this.height / 5);
+        this.setTexture(type, `${type}-${this.defaultTiles[facing]}`);
     }
 
     update() {
-        if (this.isHit > 0) {
-            // While a character is hit, count dowm on each update to allow for recovery time
-            this.isHit--;
-        } else if (this.isHit === 0) {
-            // Character has recovered, reset their hit state
-            this.tint = 0xffffff;
-            this.isHit = -1;
-        } else {
-            // Always reset the local velocity to maintain a constant acceleration
-            this.body.setVelocity(0);
-            // Pre-programmed characters push appropriate walk instructions to follow their path
-            if (this.path) this.DoPatrol();
-            // Process the instructions array
-            this.DoInstructions();
-            // Stop animations when not moving
-            if (
-                this.body &&
-                this.body.velocity.x === 0 &&
-                this.body.velocity.y === 0
-            ) {
-                this.anims.stopAfterRepeat(0);
-            }
+        this.body.setVelocity(0);
+        this.DoInstructions();
+        if (
+            this.body &&
+            this.body.velocity.x === 0 &&
+            this.body.velocity.y === 0
+        ) {
+            this.anims.stopAfterRepeat(0);
         }
     }
 
@@ -121,6 +110,16 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
             this.anims.play(this.image + '-walk-left', true);
         else if (this.body.velocity.x > 0)
             this.anims.play(this.image + '-walk-right', true);
+    }
+
+    MoveAndUpdate(data) {
+        // TODO: Can write a better method for moving between coordinates
+        this.x = data.X;
+        this.y = data.Y;
+        this.setTexture(
+            'player',
+            `${'player'}-${this.defaultTiles[data.Direction]}`
+        );
     }
 }
 

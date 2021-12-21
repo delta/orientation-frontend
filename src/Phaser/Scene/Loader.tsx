@@ -87,7 +87,14 @@ export const LoaderScene = ({
         if (!game) return;
 
         validateProps();
-        const newScene = new PhaserScene({ key: 'LoadScene' }, '', [], []);
+        const newScene = new PhaserScene(
+            { key: 'LoadScene' },
+            null,
+            '',
+            [],
+            [],
+            () => {}
+        );
         newScene.preload = () => {
             loadAssets(newScene);
             loadingAnimationFunction && loadingAnimationFunction();
