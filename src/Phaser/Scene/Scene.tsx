@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { PhaserScene } from './SceneWrapper';
 import { GameContext } from '../Game/GameContext';
 import { SceneContext } from './sceneContext';
+import { WsContext } from '../../contexts/wsContext';
 interface ISceneProps {
     children?: React.ReactNode;
     sceneKey: string;
@@ -22,18 +23,25 @@ const Scene = ({
     layers
 }: ISceneProps) => {
     const game = useContext(GameContext);
+    const ws = useContext(WsContext);
     const [sceneInstance, setSceneInstance] = useState<PhaserScene | null>(
         null
     );
+
+    const sceneErrorHandler = (err: any) => {
+        console.error('Scene error:', err);
+    };
 
     useEffect(() => {
         if (!game) return;
         //TODO: have a props for sceneConfig ? only key has been implemented rn...
         const newScene = new PhaserScene(
             { key: sceneKey },
+            ws,
             mapName ? mapName : '',
             tilesetNames ? tilesetNames : [],
-            layers ? layers : []
+            layers ? layers : [],
+            sceneErrorHandler
         );
 
         game?.scene.add(sceneKey, newScene, !!autoStart);
@@ -47,7 +55,7 @@ const Scene = ({
                 console.log('removing the scene');
             game?.scene.remove(sceneKey);
         };
-    }, [game, autoStart, layers, mapName, sceneKey, tilesetNames]);
+    }, [game, autoStart, layers, mapName, sceneKey, tilesetNames, ws]);
 
     // useEffect(() => {
     //     sceneInstance.updatePositions(socketConext);

@@ -5,6 +5,7 @@ import { isEqual } from 'lodash';
 import { Renderer } from '../../renderer';
 import { GameContext } from './GameContext';
 import { GzRpgCharacterPlugin } from '../Plugins/GzRpgCharacter';
+import { WebsocketApi } from '../../ws/ws';
 interface GameProps {
     children?: JSX.Element | JSX.Element[];
 }
@@ -13,6 +14,7 @@ interface GameState {
     phaserGame: PhaserGame | null;
     mountContainer: any;
     booting: boolean;
+    ws: WebsocketApi;
 }
 
 // We have to use class component instead of functional component
@@ -30,7 +32,8 @@ class Game extends Component<GameProps, GameState> {
         this.state = {
             mountContainer: null,
             phaserGame: null,
-            booting: true
+            booting: true,
+            ws: new WebsocketApi()
         };
         this.gameRef = createRef<HTMLDivElement>();
     }

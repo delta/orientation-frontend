@@ -3,6 +3,7 @@ import { GameElements } from '../GameObjects/elements/types';
 import { Anims } from './anims';
 import { config } from '../../config/config';
 import SpawnPoints from '../../utils/spawnPoints';
+import { WebsocketApi } from '../../ws/ws';
 // A extension of Phaser scene which includes the preload, init and
 // create method which isn't part of default Phaser Scene
 //
@@ -19,11 +20,16 @@ export class PhaserScene extends Scene {
     otherPlayers: { [key: string]: any } | null;
     socketContext: any;
     positionInteval: NodeJS.Timeout | null;
+    ws: WebsocketApi | null | undefined;
+    sceneErrorHandler: any;
+
     constructor(
         config: string | Types.Scenes.SettingsConfig,
+        ws: WebsocketApi | null | undefined,
         mapName: string,
         tilesetNames: string[],
-        layers: string[]
+        layers: string[],
+        sceneErrorHandler: any
     ) {
         super(config);
         this.sceneKey = '';
@@ -35,12 +41,13 @@ export class PhaserScene extends Scene {
         this.otherPlayers = null;
         this.animsManager = new Anims(this);
         this.positionInteval = null;
+        this.ws = ws;
+        this.sceneErrorHandler = sceneErrorHandler;
         return;
     }
 
     destructor() {
         console.log('Destroy');
-        this.removeUserFromRoom();
         if (this.positionInteval) clearInterval(this.positionInteval);
     }
 
@@ -66,12 +73,14 @@ export class PhaserScene extends Scene {
         this.events.on('shutdown', () => {
             this.destructor();
         });
+
         this.addUserToRoom();
         this.listenForOtherPlayers();
         this.positionInteval = setInterval(
             this.sendPlayerPositionToServer,
             1000 / config.tickRate
         );
+
         if (data.origin) {
             this.spawnPoint = (SpawnPoints as any)[data.origin];
         }
@@ -107,16 +116,68 @@ export class PhaserScene extends Scene {
     }
 
     // TODO
-    addUserToRoom() {}
+    addUserToRoom() {
+        if (this.ws) {
+            try {
+                this.ws.registerUser({
+                    room: this.sceneKey,
+                    position: {
+                        x: this.spawnPoint.x,
+                        y: this.spawnPoint.y,
+                        direction: this.spawnPoint.facing
+                    }
+                });
+            } catch (err) {
+                this.sceneErrorHandler(err);
+            }
+        }
+    }
 
     // TODO
-    removeUserFromRoom() {}
+    moveUserToRoom(roomName: string) {
+        if (this.ws) {
+            try {
+                this.ws.changeRoom({
+                    from: this.sceneKey,
+                    to: roomName,
+                    position: {
+                        x: this.spawnPoint.x,
+                        y: this.spawnPoint.y,
+                        direction: this.spawnPoint.facing
+                    }
+                });
+            } catch (err) {
+                this.sceneErrorHandler(err);
+            }
+        }
+    }
 
     // TODO
-    sendPlayerPositionToServer() {}
+    sendPlayerPositionToServer() {
+        if (this.ws) {
+            try {
+                this.ws.moveUser({
+                    room: this.sceneKey,
+                    position: {
+                        x: this.player.x,
+                        y: this.player.y,
+                        direction: this.player.facing
+                    }
+                });
+            } catch (err) {
+                this.sceneErrorHandler(err);
+            }
+        }
+    }
 
     // TOOD
-    listenForOtherPlayers() {}
+    listenForOtherPlayers() {
+        document.addEventListener('ws-room-broadcasts', (e: any) => {
+            let players = e.detail;
+            console.log(players);
+            this.updateOtherPlayers(players);
+        });
+    }
 
     addNewPlayers(players: any) {
         players.forEach((player: any) => {
@@ -285,7 +346,7 @@ export class PhaserScene extends Scene {
 
     UsePortal(player: any, target: any) {
         if (target.properties && target.properties.type === 'portal') {
-            console.log(target.properties.destination);
+            this.moveUserToRoom(target.properties.destination);
             this.scene.start(target.properties.destination, {
                 origin: target.properties.name
             });
