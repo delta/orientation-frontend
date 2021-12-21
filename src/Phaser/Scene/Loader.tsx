@@ -15,7 +15,7 @@ export interface LoaderProps {
     tileMapsPrefixPath?: string;
     tileMaps?: { url: string; key: string }[];
     nextScene: string;
-    loadingAnimationFunction?: (...args: any) => any;
+    loadingAnimationFunction?: (scene: PhaserScene) => any;
 }
 
 // A Custom scene to be set as a loader
@@ -128,10 +128,11 @@ export const LoaderScene = ({
         });
         newScene.preload = () => {
             loadAssets(newScene);
-            loadingAnimationFunction && loadingAnimationFunction();
+            loadingAnimationFunction && loadingAnimationFunction(newScene);
         };
         // switching to the next scene once all the assets are loaded
         newScene.create = () => {
+            console.log('moving to next scene');
             newScene.scene.start(nextScene);
         };
 

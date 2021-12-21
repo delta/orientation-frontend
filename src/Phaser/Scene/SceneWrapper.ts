@@ -87,9 +87,6 @@ export class PhaserScene extends Scene {
                 `${config.assetUrl}/TilesetImages/${this.loadTilesetNames[i]}.png`
             );
         }
-        this.load.on('progress', (percentage: number) => {
-            console.log(percentage);
-        });
         this.animsManager.preload();
     }
 
