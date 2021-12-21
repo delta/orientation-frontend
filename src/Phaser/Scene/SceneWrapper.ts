@@ -18,6 +18,7 @@ export class PhaserScene extends Scene {
     sceneKey: string;
     otherPlayers: { [key: string]: any } | null;
     socketContext: any;
+    positionInteval: NodeJS.Timeout | null;
     constructor(
         config: string | Types.Scenes.SettingsConfig,
         mapName: string,
@@ -33,11 +34,58 @@ export class PhaserScene extends Scene {
         this.spawnPoint = { x: 168, y: 300, facing: 'back' };
         this.otherPlayers = null;
         this.animsManager = new Anims(this);
+        this.positionInteval = null;
+        return;
+    }
 
-        // this.socketContext;
-        // setInterval(this.sendPlayerPositionToServer, 500);
+    destructor() {
+        console.log('Destroy');
+        this.removeUserFromRoom();
+        if (this.positionInteval) clearInterval(this.positionInteval);
+    }
+
+    preload() {
+        if (!this.mapName || this.mapName === '') return;
+        this.load.tilemapTiledJSON(
+            `${this.mapName}`,
+            `${config.assetUrl}/Maps/${this.mapName}.json`
+        );
+        for (let i = 0; i < this.tilesetNames.length; i++) {
+            this.load.image(
+                this.tilesetNames[i],
+                `${config.assetUrl}/TilesetImages/${this.tilesetNames[i]}.png`
+            );
+        }
+        this.load.on('progress', (percentage: number) => {
+            console.log(percentage);
+        });
+        this.animsManager.preload();
+    }
+
+    init(data: any) {
+        this.events.on('shutdown', () => {
+            this.destructor();
+        });
+        this.addUserToRoom();
+        this.listenForOtherPlayers();
+        this.positionInteval = setInterval(
+            this.sendPlayerPositionToServer,
+            1000 / config.tickRate
+        );
+        if (data.origin) {
+            this.spawnPoint = (SpawnPoints as any)[data.origin];
+        }
+        // temporary set timeout, to show how to call the function, delete later on
         setTimeout(() => {
             this.updateOtherPlayers([
+                {
+                    name: 'player',
+                    x: this.spawnPoint.x - 30,
+                    y: this.spawnPoint.y - 130,
+                    id: 0,
+                    facing: 'back',
+                    type: 'player2'
+                },
                 {
                     name: 'player2',
                     x: this.spawnPoint.x + 20,
@@ -56,37 +104,45 @@ export class PhaserScene extends Scene {
                 }
             ]);
         }, 2000);
-        return;
     }
-    /**
-     * Preload method of Phaser Scene
-     */
-    preload() {
-        if (!this.mapName || this.mapName === '') return;
-        this.load.tilemapTiledJSON(
-            `${this.mapName}`,
-            `${config.assetUrl}/Maps/${this.mapName}.json`
-        );
-        for (let i = 0; i < this.tilesetNames.length; i++) {
-            this.load.image(
-                this.tilesetNames[i],
-                `${config.assetUrl}/TilesetImages/${this.tilesetNames[i]}.png`
-            );
-        }
-        this.load.on('progress', (percentage: number) => {
-            console.log(percentage);
+
+    // TODO
+    addUserToRoom() {}
+
+    // TODO
+    removeUserFromRoom() {}
+
+    // TODO
+    sendPlayerPositionToServer() {}
+
+    // TOOD
+    listenForOtherPlayers() {}
+
+    addNewPlayers(players: any) {
+        players.forEach((player: any) => {
+            // @ts-ignore
+            let tempPlayer = this.add.rpgcharacter(player);
+            tempPlayer.setDepth(4);
+            tempPlayer.setScale(0.5);
+            if (this.otherPlayers === null) this.otherPlayers = {};
+            this.otherPlayers[player.id] = tempPlayer;
         });
-        this.animsManager.preload();
     }
-    /**
-     * Init method of a Phaser Scene, read phaser docs for more info
-     * @param {any} data any data you wish to pass to the init function
-     */
-    init(data: any) {
-        // load SpawnPoint.json from Map Folder into spawnPoints variable
-        if (data.origin) {
-            this.spawnPoint = (SpawnPoints as any)[data.origin];
-        }
+
+    updateOtherPlayers(players: any) {
+        if (players.length < 0 || this.otherPlayers === null) return;
+        players.forEach((player: any, index: any) => {
+            if (player.id === this.player.id) return;
+            if (
+                this.otherPlayers &&
+                this.otherPlayers[player.id] !== undefined
+            ) {
+                this.otherPlayers[player.id].MoveAndUpdate(player);
+            } else {
+                console.log('New player');
+                this.addNewPlayers([player]);
+            }
+        });
     }
 
     setupObjectLayer(layerName: string, callBack: any) {
@@ -118,39 +174,6 @@ export class PhaserScene extends Scene {
         }
     }
 
-    addNewPlayers(players: any) {
-        // declare type of object
-        players.forEach((player: any) => {
-            // @ts-ignore
-            let tempPlayer = this.add.rpgcharacter(player);
-            tempPlayer.setDepth(4);
-            tempPlayer.setScale(0.5);
-            if (this.otherPlayers === null) this.otherPlayers = {};
-            this.otherPlayers[player.id] = tempPlayer;
-        });
-    }
-
-    sendPlayerPositionToServer() {}
-
-    updateOtherPlayers(players: any) {
-        if (players.length < 0 || this.otherPlayers === null) return;
-        players.forEach((player: any, index: any) => {
-            if (
-                this.otherPlayers &&
-                this.otherPlayers[player.id] !== undefined
-            ) {
-                this.otherPlayers[player.id].MoveAndUpdate(player);
-            } else {
-                console.log('New player');
-                this.addNewPlayers([player]);
-            }
-        });
-    }
-
-    /**
-     * Create method of a Phaser Scene, read phaser docs for more info
-     * @param {any} data any data you wish to pass to the create function
-     */
     create(data: any) {
         console.log('creating');
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -234,19 +257,6 @@ export class PhaserScene extends Scene {
         this.animsManager.create();
     }
 
-    updateMap() {
-        var origin = this.map.getTileAtWorldXY(this.player.x, this.player.y);
-        this.map.forEachTile((tile: any) => {
-            var dist = Phaser.Math.Distance.Chebyshev(
-                origin.x,
-                origin.y,
-                tile.x,
-                tile.y
-            );
-            tile.setAlpha(1 - 0.1 * dist);
-        });
-    }
-
     update(time: any, delta: any) {
         if (this.player.x < 0) this.player.x = 0;
         if (this.player.x > this.map.widthInPixels)
@@ -266,7 +276,6 @@ export class PhaserScene extends Scene {
             this.player.SetInstruction({ action: 'walk', option: 'front' });
 
         this.player.update();
-        // this.updateMap();
         return true;
     }
 

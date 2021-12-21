@@ -16,6 +16,7 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
             front: 18,
             back: 0
         };
+        this.id = id;
         // Character movements are passed as instruction objects to
         // be evaluated on the next call to update
         this.instructions = [];
