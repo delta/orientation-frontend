@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import { HomePage } from './pages/home';
 import { AuthPage } from './pages/auth';
-import { Game } from './Phaser/Game/Game';
+import { GamePage } from './pages/Game';
 
 import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
