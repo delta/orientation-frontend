@@ -22,6 +22,7 @@ export class PhaserScene extends Scene {
     positionInteval: NodeJS.Timeout | null;
     ws: WebsocketApi | null | undefined;
     sceneErrorHandler: any;
+    facing: string;
 
     constructor(
         config: string | Types.Scenes.SettingsConfig,
@@ -43,6 +44,7 @@ export class PhaserScene extends Scene {
         this.positionInteval = null;
         this.ws = ws;
         this.sceneErrorHandler = sceneErrorHandler;
+        this.facing = 'back';
         return;
     }
 
@@ -76,43 +78,15 @@ export class PhaserScene extends Scene {
 
         this.addUserToRoom();
         this.listenForOtherPlayers();
+
         this.positionInteval = setInterval(
-            this.sendPlayerPositionToServer,
+            this.sendPlayerPositionToServer.bind(this),
             1000 / config.tickRate
         );
 
         if (data.origin) {
             this.spawnPoint = (SpawnPoints as any)[data.origin];
         }
-        // temporary set timeout, to show how to call the function, delete later on
-        setTimeout(() => {
-            this.updateOtherPlayers([
-                {
-                    name: 'player',
-                    x: this.spawnPoint.x - 30,
-                    y: this.spawnPoint.y - 130,
-                    id: 0,
-                    facing: 'back',
-                    type: 'player2'
-                },
-                {
-                    name: 'player2',
-                    x: this.spawnPoint.x + 20,
-                    y: this.spawnPoint.y - 100,
-                    id: 1,
-                    facing: 'right',
-                    type: 'player'
-                },
-                {
-                    name: 'player3',
-                    x: this.spawnPoint.x - 30,
-                    y: this.spawnPoint.y - 130,
-                    id: 2,
-                    facing: 'front',
-                    type: 'player2'
-                }
-            ]);
-        }, 2000);
     }
 
     // TODO
@@ -159,9 +133,9 @@ export class PhaserScene extends Scene {
                 this.ws.moveUser({
                     room: this.sceneKey,
                     position: {
-                        x: this.player.x,
-                        y: this.player.y,
-                        direction: this.player.facing
+                        x: Math.round(this.player.x),
+                        y: Math.round(this.player.y),
+                        direction: this.facing
                     }
                 });
             } catch (err) {
@@ -174,7 +148,6 @@ export class PhaserScene extends Scene {
     listenForOtherPlayers() {
         document.addEventListener('ws-room-broadcasts', (e: any) => {
             let players = e.detail;
-            console.log(players);
             this.updateOtherPlayers(players);
         });
     }
@@ -191,19 +164,25 @@ export class PhaserScene extends Scene {
     }
 
     updateOtherPlayers(players: any) {
-        if (players.length < 0 || this.otherPlayers === null) return;
-        players.forEach((player: any, index: any) => {
-            if (player.id === this.player.id) return;
+        if (typeof players == 'object') return;
+
+        if (players.length <= 1 || this.otherPlayers === null) return;
+
+        console.log(players);
+
+        for (let player of players) {
+            if (player.Id === this.player.id) return;
+
             if (
                 this.otherPlayers &&
-                this.otherPlayers[player.id] !== undefined
+                this.otherPlayers[player.Id] !== undefined
             ) {
-                this.otherPlayers[player.id].MoveAndUpdate(player);
+                this.otherPlayers[player.Id].MoveAndUpdate(player);
             } else {
                 console.log('New player');
                 this.addNewPlayers([player]);
             }
-        });
+        }
     }
 
     setupObjectLayer(layerName: string, callBack: any) {
@@ -249,25 +228,6 @@ export class PhaserScene extends Scene {
             type: 'player',
             facing: this.spawnPoint.facing
         });
-
-        this.addNewPlayers([
-            {
-                name: 'player2',
-                x: this.spawnPoint.x,
-                y: this.spawnPoint.y - 100,
-                id: 1,
-                facing: 'left',
-                type: 'player'
-            },
-            {
-                name: 'player3',
-                x: this.spawnPoint.x - 30,
-                y: this.spawnPoint.y - 150,
-                id: 2,
-                facing: 'right',
-                type: 'player2'
-            }
-        ]);
 
         this.map = this.make.tilemap({ key: this.mapName });
         let allTileSets = [];

@@ -114,11 +114,11 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
 
     MoveAndUpdate(data) {
         // TODO: Can write a better method for moving between coordinates
-        this.x = data.x;
-        this.y = data.y;
+        this.x = data.X;
+        this.y = data.Y;
         this.setTexture(
-            data.type,
-            `${data.type}-${this.defaultTiles[data.facing]}`
+            'player',
+            `${'player'}-${this.defaultTiles[data.Direction]}`
         );
     }
 }

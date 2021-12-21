@@ -5,6 +5,7 @@ import { PhaserScene } from './SceneWrapper';
 import { GameContext } from '../Game/GameContext';
 import { SceneContext } from './sceneContext';
 import { WsContext } from '../../contexts/wsContext';
+import { WebsocketApi } from '../../ws/ws';
 interface ISceneProps {
     children?: React.ReactNode;
     sceneKey: string;
@@ -12,6 +13,7 @@ interface ISceneProps {
     mapName?: string;
     tilesetNames?: string[];
     layers?: string[];
+    ws: WebsocketApi;
 }
 
 const Scene = ({
@@ -20,10 +22,10 @@ const Scene = ({
     autoStart,
     mapName,
     tilesetNames,
-    layers
+    layers,
+    ws
 }: ISceneProps) => {
     const game = useContext(GameContext);
-    const ws = useContext(WsContext);
     const [sceneInstance, setSceneInstance] = useState<PhaserScene | null>(
         null
     );

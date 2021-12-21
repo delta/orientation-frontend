@@ -13,7 +13,6 @@ import { Game } from './Phaser/Game/Game';
 import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
 import { Scene } from './Phaser/Scene/Scene';
-import { WsContext } from './contexts/wsContext';
 import { useMemo } from 'react';
 import { WebsocketApi } from './ws/ws';
 
@@ -37,49 +36,51 @@ function App() {
                                 <HomePage />
                             </Route>
                             <Route path="/game">
-                                <WsContext.Provider value={ws}>
-                                    <Game>
-                                        <Scene
-                                            sceneKey="Entrance"
-                                            autoStart={true}
-                                            mapName="Entrance"
-                                            tilesetNames={[
-                                                'AdminGate',
-                                                'Modern',
-                                                'Fountain',
-                                                'SereneVillage',
-                                                'Trees'
-                                            ]}
-                                            layers={[
-                                                'BaseOverhead2',
-                                                'BaseOverhead1',
-                                                'Base',
-                                                'Background',
-                                                'Grass'
-                                            ]}
-                                        ></Scene>
-                                        <Scene
-                                            sceneKey="Admin"
-                                            autoStart={false}
-                                            mapName="Admin"
-                                            tilesetNames={[
-                                                'AdminBlock',
-                                                'Modern',
-                                                'Fountain',
-                                                'Roads',
-                                                'SereneVillage',
-                                                'Trees'
-                                            ]}
-                                            layers={[
-                                                'BaseOverhead2',
-                                                'BaseOverhead1',
-                                                'Base',
-                                                'Background',
-                                                'Grass'
-                                            ]}
-                                        ></Scene>
-                                    </Game>
-                                </WsContext.Provider>
+                                {/* <WsContext.Provider > */}
+                                <Game>
+                                    <Scene
+                                        ws={ws as WebsocketApi}
+                                        sceneKey="Entrance"
+                                        autoStart={true}
+                                        mapName="Entrance"
+                                        tilesetNames={[
+                                            'AdminGate',
+                                            'Modern',
+                                            'Fountain',
+                                            'SereneVillage',
+                                            'Trees'
+                                        ]}
+                                        layers={[
+                                            'BaseOverhead2',
+                                            'BaseOverhead1',
+                                            'Base',
+                                            'Background',
+                                            'Grass'
+                                        ]}
+                                    ></Scene>
+                                    <Scene
+                                        ws={ws as WebsocketApi}
+                                        sceneKey="Admin"
+                                        autoStart={false}
+                                        mapName="Admin"
+                                        tilesetNames={[
+                                            'AdminBlock',
+                                            'Modern',
+                                            'Fountain',
+                                            'Roads',
+                                            'SereneVillage',
+                                            'Trees'
+                                        ]}
+                                        layers={[
+                                            'BaseOverhead2',
+                                            'BaseOverhead1',
+                                            'Base',
+                                            'Background',
+                                            'Grass'
+                                        ]}
+                                    ></Scene>
+                                </Game>
+                                {/* </WsContext.Provider> */}
                             </Route>
                             <Route path="/auth">
                                 <AuthPage />
