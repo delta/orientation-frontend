@@ -72,7 +72,18 @@ const Scene = ({
                 console.log('removing the scene');
             game?.scene.remove(sceneKey);
         };
-    }, [game, autoStart, layers, mapName, sceneKey, tilesetNames, ws]);
+    }, [
+        game,
+        sceneKey,
+        mapName,
+        tilesetNames,
+        loadTilesetNames,
+        ws,
+        layers,
+        spriteAnims,
+        spriteFrameRate,
+        autoStart
+    ]);
 
     // useEffect(() => {
     //     sceneInstance.updatePositions(socketConext);

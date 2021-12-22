@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
 import { PhaserScene } from './SceneWrapper';
 import { GameContext } from '../Game/GameContext';
@@ -134,7 +134,7 @@ export const LoaderScene = ({
         return () => {
             game?.scene.remove('LoadScene');
         };
-    }, [game]);
+    });
 
     return 'Scene' as unknown as JSX.Element;
 };

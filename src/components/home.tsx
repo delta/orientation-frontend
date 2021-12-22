@@ -15,7 +15,7 @@ const HomePage = () => {
                     doloremque ut quo fugiat eveniet tempora, atque alias earum
                     ullam inventore itaque sapiente iste?
                 </p>
-                <Link to="/game">
+                <Link to={isLoggedIn ? '/game' : '/auth/login'}>
                     <button className="p-4 bg-green-600 rounded-lg font-bold text-text mt-5 hover:bg-gray-600">
                         Start the journey
                     </button>
