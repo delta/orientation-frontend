@@ -1,9 +1,9 @@
 import { Scene, Types } from 'phaser';
 import { GameElements } from '../GameObjects/elements/types';
-import { Anims } from './anims';
 import { config } from '../../config/config';
 import SpawnPoints from '../../utils/spawnPoints';
 import { WebsocketApi } from '../../ws/ws';
+import { phaserLoadingAnimation } from '../../utils/loadingAnimation';
 
 interface ConstructorProps {
     config: string | Types.Scenes.SettingsConfig;
@@ -92,6 +92,7 @@ export class PhaserScene extends Scene {
                 `${config.assetUrl}/TilesetImages/${this.loadTilesetNames[i]}.png`
             );
         }
+        phaserLoadingAnimation(this);
     }
 
     init(data: any) {

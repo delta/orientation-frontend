@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from 'react';
 import { PhaserScene } from './SceneWrapper';
 import { GameContext } from '../Game/GameContext';
 import { invariant } from '../../utils/invariant';
+import { phaserLoadingAnimation } from '../../utils/loadingAnimation';
 
 export interface LoaderProps {
     imagePrefixPath?: string;
@@ -14,7 +15,6 @@ export interface LoaderProps {
     tileMapsPrefixPath?: string;
     tileMaps?: { url: string; key: string }[];
     nextScene: string;
-    loadingAnimationFunction?: (scene: PhaserScene) => any;
 }
 
 // A Custom scene to be set as a loader
@@ -41,8 +41,7 @@ export const LoaderScene = ({
     sprites,
     tileMapsPrefixPath,
     tileMaps,
-    nextScene,
-    loadingAnimationFunction
+    nextScene
 }: LoaderProps) => {
     const game = useContext(GameContext);
 
@@ -122,7 +121,7 @@ export const LoaderScene = ({
         });
         newScene.preload = () => {
             loadAssets(newScene);
-            loadingAnimationFunction && loadingAnimationFunction(newScene);
+            phaserLoadingAnimation(newScene);
         };
         // switching to the next scene once all the assets are loaded
         newScene.create = () => {

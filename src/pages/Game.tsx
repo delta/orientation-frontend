@@ -4,8 +4,9 @@ import { useHistory } from 'react-router-dom';
 import { Scene } from '../Phaser/Scene/Scene';
 import { Game } from '../Phaser/Game/Game';
 // import { LoaderScene } from '../Phaser/Scene/Loader';
-import { Loader } from '../components/scenes/LoaderScene';
 import { WebsocketApi } from '../ws/ws';
+import { CONSTANTS } from '../config/constants';
+import { LoaderScene } from '../Phaser/Scene/Loader';
 
 export const GamePage = () => {
     const history = useHistory();
@@ -19,41 +20,28 @@ export const GamePage = () => {
 
     return (
         <Game>
-            <Loader nextScene={'Entrance'} />
-            <Scene
-                ws={ws as WebsocketApi}
-                sceneKey="Entrance"
-                mapName="Entrance"
-                tilesetNames={['Modern', 'Fountain', 'SereneVillage', 'Trees']}
-                loadTilesetNames={['AdminGate']}
-                layers={[
-                    'BaseOverhead2',
-                    'BaseOverhead1',
-                    'Base',
-                    'Background',
-                    'Grass'
-                ]}
-            ></Scene>
-            <Scene
-                ws={ws as WebsocketApi}
-                sceneKey="Admin"
-                mapName="Admin"
-                tilesetNames={[
-                    'Modern',
-                    'Fountain',
-                    'Roads',
-                    'SereneVillage',
-                    'Trees'
-                ]}
-                loadTilesetNames={['AdminBlock']}
-                layers={[
-                    'BaseOverhead2',
-                    'BaseOverhead1',
-                    'Base',
-                    'Background',
-                    'Grass'
-                ]}
-            ></Scene>
+            <LoaderScene nextScene="Entrance" {...CONSTANTS.LOADER} />
+            {
+                <React.Fragment>
+                    {CONSTANTS.SCENES.map((scene, i) => {
+                        return (
+                            <Scene
+                                key={i}
+                                ws={ws as WebsocketApi}
+                                sceneKey={scene.SCENE_KEY}
+                                mapName={scene.MAP_NAME}
+                                tilesetNames={scene.TILESET_NAMES}
+                                loadTilesetNames={scene.LOAD_TILESET_NAMES}
+                                layers={scene.LAYERS}
+                                spriteAnims={CONSTANTS.SPRITE_ANIMATION}
+                                spriteFrameRate={
+                                    CONSTANTS.SPRITE_ANIMATION_FRAME_RATE
+                                }
+                            ></Scene>
+                        );
+                    })}
+                </React.Fragment>
+            }
         </Game>
     );
 };
