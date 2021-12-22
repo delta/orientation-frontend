@@ -2,9 +2,12 @@
  * This Anims class is tightly coupled to the Game Scene class and used to
  * seperate the sprite animation definitions into their own file.
  */
+import { PhaserScene } from '.';
 import { config } from '../../config/config';
 export class Anims {
-    constructor(scene) {
+    playerTypes: string[] = [];
+    scene?: PhaserScene;
+    constructor(scene: PhaserScene) {
         if (!scene) return;
         this.playerTypes = ['player', 'player2'];
         this.scene = scene;
@@ -12,7 +15,7 @@ export class Anims {
 
     preload() {
         for (let i = 0; i < this.playerTypes.length; i++) {
-            this.scene.load.atlas(
+            this.scene?.load.atlas(
                 `${this.playerTypes[i]}`,
                 `${config.assetUrl}/sprites/${this.playerTypes[i]}.png`,
                 `${config.assetUrl}/sprites/${this.playerTypes[i]}.json`
@@ -21,12 +24,16 @@ export class Anims {
     }
 
     create() {
-        const anims = this.scene.anims;
+        const anims = this.scene?.anims;
+        if (!anims) return;
         for (let i = 0; i < this.playerTypes.length; i++) {
             this.addWalkAnimations(anims, this.playerTypes[i]);
         }
     }
-    addWalkAnimations(anims, playerType) {
+    addWalkAnimations(
+        anims: Phaser.Animations.AnimationManager,
+        playerType: string
+    ) {
         anims.create({
             key: `${playerType}-walk-left`,
             frames: anims.generateFrameNames(`${playerType}`, {

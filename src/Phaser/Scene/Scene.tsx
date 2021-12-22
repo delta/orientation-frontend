@@ -5,6 +5,8 @@ import { PhaserScene } from './SceneWrapper';
 import { GameContext } from '../Game/GameContext';
 import { SceneContext } from './sceneContext';
 import { WebsocketApi } from '../../ws/ws';
+import { CONSTANTS } from '../../config/constants';
+
 interface ISceneProps {
     children?: React.ReactNode;
     sceneKey: string;
@@ -45,7 +47,9 @@ const Scene = ({
             loadTilesetNames: loadTilesetNames ? loadTilesetNames : [],
             sceneErrorHandler,
             ws,
-            layers: layers ? layers : []
+            layers: layers ? layers : [],
+            spriteAnims: CONSTANTS.SPRITE_ANIMATION,
+            spriteFrameRate: CONSTANTS.SPRITE_ANIMATION_FRAME_RATE
         });
 
         game?.scene.add(sceneKey, newScene, !!autoStart);

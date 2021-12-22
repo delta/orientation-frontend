@@ -13,6 +13,14 @@ interface ConstructorProps {
     layers: string[];
     sceneErrorHandler: any;
     ws: WebsocketApi | null | undefined;
+    spriteAnims?: Array<{
+        playerKey: string;
+        left: { start: number; end: number };
+        right: { start: number; end: number };
+        front: { start: number; end: number };
+        back: { start: number; end: number };
+    }>;
+    spriteFrameRate?: number;
 }
 
 // A extension of Phaser scene which includes the preload, init and
@@ -25,7 +33,7 @@ export class PhaserScene extends Scene {
     mapName: string;
     cursors: any;
     player: any;
-    animsManager: any;
+    // animsManager: any;
     spawnPoint: { x: number; y: number; facing: string };
     map: any;
     sceneKey: string;
@@ -35,15 +43,8 @@ export class PhaserScene extends Scene {
     ws: WebsocketApi | null | undefined;
     sceneErrorHandler: any;
     facing: string;
-
-    // constructor(
-    //     config: string | Types.Scenes.SettingsConfig,
-    //     ws: WebsocketApi | null | undefined,
-    //     mapName: string,
-    //     tilesetNames: string[],
-    //     layers: string[],
-    //     sceneErrorHandler: any
-    // ) {
+    spriteAnims?: any;
+    spriteFrameRate = 10;
     constructor({
         config,
         mapName,
@@ -51,7 +52,9 @@ export class PhaserScene extends Scene {
         loadTilesetNames,
         layers,
         sceneErrorHandler,
-        ws
+        ws,
+        spriteAnims,
+        spriteFrameRate
     }: ConstructorProps) {
         super(config);
         this.sceneKey = '';
@@ -62,11 +65,13 @@ export class PhaserScene extends Scene {
         this.mapName = mapName;
         this.spawnPoint = { x: 168, y: 300, facing: 'back' };
         this.otherPlayers = null;
-        this.animsManager = new Anims(this);
+        // this.animsManager = new Anims(this);
         this.positionInteval = null;
         this.ws = ws;
         this.sceneErrorHandler = sceneErrorHandler;
         this.facing = 'back';
+        this.spriteAnims = spriteAnims;
+        this.spriteFrameRate = spriteFrameRate ? spriteFrameRate : 10;
         return;
     }
 
@@ -87,7 +92,6 @@ export class PhaserScene extends Scene {
                 `${config.assetUrl}/TilesetImages/${this.loadTilesetNames[i]}.png`
             );
         }
-        this.animsManager.preload();
     }
 
     init(data: any) {
@@ -295,7 +299,7 @@ export class PhaserScene extends Scene {
         camera.startFollow(this.player);
         camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.animsManager.create();
+        this.addSpriteAnimations();
     }
 
     update(time: any, delta: any) {
@@ -345,6 +349,28 @@ export class PhaserScene extends Scene {
         // open in a new tab target.properties.link
         // let win = window.open(target.properties.link, '_blank');
         // win?.focus();
+    }
+
+    addSpriteAnimations() {
+        if (!this.spriteAnims) return;
+        const anims = this.anims;
+        const spriteAnims = this.spriteAnims;
+        spriteAnims?.forEach((s: any) => {
+            ['left', 'right', 'front', 'back'].forEach((direction) => {
+                anims.create({
+                    key: `${s.playerKey}-walk-${direction}`,
+                    frames: anims.generateFrameNames(`${s.playerKey}`, {
+                        prefix: `${s.playerKey}-`,
+                        //@ts-ignore
+                        start: s[direction].start,
+                        //@ts-ignore
+                        end: s[direction].end
+                    }),
+                    frameRate: this.spriteFrameRate,
+                    repeat: -1
+                });
+            });
+        });
     }
 
     addAnimation(animations: GameElements.GameObjectUtilityType.Anims[]) {

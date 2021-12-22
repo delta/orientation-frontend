@@ -5,6 +5,8 @@ import {
 import { config } from '../../config/config';
 import { PhaserScene } from '../../Phaser/Scene';
 
+const playerNames = ['player', 'player2'];
+
 const loadSceneData: Omit<LoaderSceneProps, 'nextScene'> = {
     imagePrefixPath: config.assetUrl + '/TilesetImages',
     images: [
@@ -14,14 +16,11 @@ const loadSceneData: Omit<LoaderSceneProps, 'nextScene'> = {
         { key: 'SereneVillage', url: 'SereneVillage.png' },
         { key: 'Roads', url: 'Roads.png' },
         { key: 'Trees', url: 'Trees.png' }
-    ]
-    // tileMapsPrefixPath: config.assetUrl + "/TilesetImages",
-    // tileMaps: [
-    // ],
-    // spritesPrefixPath: config.assetUrl + "/sprites",
-    // sprites: [
-    //     {key: "player1", url: "player1"}
-    // ],
+    ],
+    spritesPrefixPath: config.assetUrl + '/sprites',
+    sprites: playerNames.map((p) => {
+        return { key: p, atlasURL: p + '.json', textureURL: p + '.png' };
+    })
 };
 
 interface LoaderProps {

@@ -10,8 +10,7 @@ export interface LoaderProps {
     audioPrefixPath?: string;
     audio?: { url: string; key: string }[];
     spritesPrefixPath?: string;
-    sprites?: { url: string; key: string }[];
-    spriteSize?: { frameHeight: number; frameWidth: number };
+    sprites?: Array<{ key: string; textureURL: string; atlasURL: string }>;
     tileMapsPrefixPath?: string;
     tileMaps?: { url: string; key: string }[];
     nextScene: string;
@@ -40,7 +39,6 @@ export const LoaderScene = ({
     audio,
     spritesPrefixPath,
     sprites,
-    spriteSize,
     tileMapsPrefixPath,
     tileMaps,
     nextScene,
@@ -52,10 +50,7 @@ export const LoaderScene = ({
         invariant(!(imagePrefixPath && !images), 'Images not provided');
         invariant(!(audioPrefixPath && !audio), 'Audio not provided');
         invariant(!(tileMapsPrefixPath && !tileMaps), 'Sprites not provided');
-        invariant(
-            !(spritesPrefixPath && (!sprites || !spriteSize)),
-            'Sprites not provided'
-        );
+        invariant(!(spritesPrefixPath && !sprites), 'Sprites not provided');
 
         if (images && !imagePrefixPath) imagePrefixPath = '';
         if (audio && !audioPrefixPath) audioPrefixPath = '';
@@ -90,9 +85,8 @@ export const LoaderScene = ({
             scene.load.setPath(spritesPrefixPath);
             sprites?.forEach((sprite) => {
                 try {
-                    scene.load.spritesheet({
-                        ...sprite,
-                        frameConfig: spriteSize
+                    scene.load.atlas({
+                        ...sprite
                     });
                 } catch (err) {
                     // we catch an error when the key is not unique
