@@ -5,14 +5,24 @@ import { PhaserScene } from './SceneWrapper';
 import { GameContext } from '../Game/GameContext';
 import { SceneContext } from './sceneContext';
 import { WebsocketApi } from '../../ws/ws';
+
 interface ISceneProps {
     children?: React.ReactNode;
     sceneKey: string;
     autoStart?: boolean;
     mapName?: string;
     tilesetNames?: string[];
+    loadTilesetNames?: string[];
     layers?: string[];
     ws: WebsocketApi;
+    spriteAnims?: Array<{
+        playerKey: string;
+        left: { start: number; end: number };
+        right: { start: number; end: number };
+        front: { start: number; end: number };
+        back: { start: number; end: number };
+    }>;
+    spriteFrameRate?: number;
 }
 
 const Scene = ({
@@ -21,8 +31,11 @@ const Scene = ({
     autoStart,
     mapName,
     tilesetNames,
+    ws,
+    loadTilesetNames,
     layers,
-    ws
+    spriteAnims,
+    spriteFrameRate
 }: ISceneProps) => {
     const game = useContext(GameContext);
     const [sceneInstance, setSceneInstance] = useState<PhaserScene | null>(
@@ -36,14 +49,17 @@ const Scene = ({
     useEffect(() => {
         if (!game) return;
         //TODO: have a props for sceneConfig ? only key has been implemented rn...
-        const newScene = new PhaserScene(
-            { key: sceneKey },
+        const newScene = new PhaserScene({
+            config: { key: sceneKey },
+            mapName: mapName ? mapName : '',
+            tilesetNames: tilesetNames ? tilesetNames : [],
+            loadTilesetNames: loadTilesetNames ? loadTilesetNames : [],
+            sceneErrorHandler,
             ws,
-            mapName ? mapName : '',
-            tilesetNames ? tilesetNames : [],
-            layers ? layers : [],
-            sceneErrorHandler
-        );
+            layers: layers ? layers : [],
+            spriteAnims,
+            spriteFrameRate
+        });
 
         game?.scene.add(sceneKey, newScene, !!autoStart);
         // TODO: Find out how to wait till the assets are loaded before rendering the component
@@ -56,7 +72,18 @@ const Scene = ({
                 console.log('removing the scene');
             game?.scene.remove(sceneKey);
         };
-    }, [game, autoStart, layers, mapName, sceneKey, tilesetNames, ws]);
+    }, [
+        game,
+        sceneKey,
+        mapName,
+        tilesetNames,
+        loadTilesetNames,
+        ws,
+        layers,
+        spriteAnims,
+        spriteFrameRate,
+        autoStart
+    ]);
 
     // useEffect(() => {
     //     sceneInstance.updatePositions(socketConext);

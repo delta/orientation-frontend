@@ -1,19 +1,39 @@
 import { Scene, Types } from 'phaser';
 import { GameElements } from '../GameObjects/elements/types';
-import { Anims } from './anims';
 import { config } from '../../config/config';
 import SpawnPoints from '../../utils/spawnPoints';
 import { WebsocketApi } from '../../ws/ws';
+import { phaserLoadingAnimation } from '../../utils/loadingAnimation';
+
+interface ConstructorProps {
+    config: string | Types.Scenes.SettingsConfig;
+    mapName: string;
+    tilesetNames: string[];
+    loadTilesetNames: string[];
+    layers: string[];
+    sceneErrorHandler: any;
+    ws: WebsocketApi | null | undefined;
+    spriteAnims?: Array<{
+        playerKey: string;
+        left: { start: number; end: number };
+        right: { start: number; end: number };
+        front: { start: number; end: number };
+        back: { start: number; end: number };
+    }>;
+    spriteFrameRate?: number;
+}
+
 // A extension of Phaser scene which includes the preload, init and
 // create method which isn't part of default Phaser Scene
 //
 export class PhaserScene extends Scene {
     tilesetNames: string[];
+    loadTilesetNames: string[];
     layers: string[];
     mapName: string;
     cursors: any;
     player: any;
-    animsManager: any;
+    // animsManager: any;
     spawnPoint: { x: number; y: number; facing: string };
     map: any;
     sceneKey: string;
@@ -23,28 +43,35 @@ export class PhaserScene extends Scene {
     ws: WebsocketApi | null | undefined;
     sceneErrorHandler: any;
     facing: string;
-
-    constructor(
-        config: string | Types.Scenes.SettingsConfig,
-        ws: WebsocketApi | null | undefined,
-        mapName: string,
-        tilesetNames: string[],
-        layers: string[],
-        sceneErrorHandler: any
-    ) {
+    spriteAnims?: any;
+    spriteFrameRate = 10;
+    constructor({
+        config,
+        mapName,
+        tilesetNames,
+        loadTilesetNames,
+        layers,
+        sceneErrorHandler,
+        ws,
+        spriteAnims,
+        spriteFrameRate
+    }: ConstructorProps) {
         super(config);
         this.sceneKey = '';
         if (config instanceof Object && config.key) this.sceneKey = config.key;
-        this.tilesetNames = tilesetNames;
+        this.loadTilesetNames = loadTilesetNames;
+        this.tilesetNames = tilesetNames.concat(loadTilesetNames);
         this.layers = layers;
         this.mapName = mapName;
         this.spawnPoint = { x: 168, y: 300, facing: 'back' };
         this.otherPlayers = null;
-        this.animsManager = new Anims(this);
+        // this.animsManager = new Anims(this);
         this.positionInteval = null;
         this.ws = ws;
         this.sceneErrorHandler = sceneErrorHandler;
         this.facing = 'back';
+        this.spriteAnims = spriteAnims;
+        this.spriteFrameRate = spriteFrameRate ? spriteFrameRate : 10;
         return;
     }
 
@@ -59,16 +86,13 @@ export class PhaserScene extends Scene {
             `${this.mapName}`,
             `${config.assetUrl}/Maps/${this.mapName}.json`
         );
-        for (let i = 0; i < this.tilesetNames.length; i++) {
+        for (let i = 0; i < this.loadTilesetNames.length; i++) {
             this.load.image(
-                this.tilesetNames[i],
-                `${config.assetUrl}/TilesetImages/${this.tilesetNames[i]}.png`
+                this.loadTilesetNames[i],
+                `${config.assetUrl}/TilesetImages/${this.loadTilesetNames[i]}.png`
             );
         }
-        this.load.on('progress', (percentage: number) => {
-            console.log(percentage);
-        });
-        this.animsManager.preload();
+        phaserLoadingAnimation(this);
     }
 
     init(data: any) {
@@ -239,6 +263,7 @@ export class PhaserScene extends Scene {
             allTileSets.push(tempTileSet);
         }
 
+        console.log('allTileSets: ', allTileSets);
         let allLayers: any = {};
         for (let i = 0; i < this.layers.length; i++) {
             allLayers[this.layers[i]] = this.map.createLayer(
@@ -275,7 +300,7 @@ export class PhaserScene extends Scene {
         camera.startFollow(this.player);
         camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.animsManager.create();
+        this.addSpriteAnimations();
     }
 
     update(time: any, delta: any) {
@@ -325,6 +350,28 @@ export class PhaserScene extends Scene {
         // open in a new tab target.properties.link
         // let win = window.open(target.properties.link, '_blank');
         // win?.focus();
+    }
+
+    addSpriteAnimations() {
+        if (!this.spriteAnims) return;
+        const anims = this.anims;
+        const spriteAnims = this.spriteAnims;
+        spriteAnims?.forEach((s: any) => {
+            ['left', 'right', 'front', 'back'].forEach((direction) => {
+                anims.create({
+                    key: `${s.playerKey}-walk-${direction}`,
+                    frames: anims.generateFrameNames(`${s.playerKey}`, {
+                        prefix: `${s.playerKey}-`,
+                        //@ts-ignore
+                        start: s[direction].start,
+                        //@ts-ignore
+                        end: s[direction].end
+                    }),
+                    frameRate: this.spriteFrameRate,
+                    repeat: -1
+                });
+            });
+        });
     }
 
     addAnimation(animations: GameElements.GameObjectUtilityType.Anims[]) {
