@@ -1,6 +1,7 @@
+import { Scene } from 'phaser';
 import { PhaserScene } from '../Phaser/Scene';
 
-export const phaserLoadingAnimation = (scene: PhaserScene) => {
+export const phaserLoadingAnimation = (scene: PhaserScene | Scene) => {
     const width = scene.cameras.main.width;
     const height = scene.cameras.main.height;
     const progressBar = scene.add.graphics();
