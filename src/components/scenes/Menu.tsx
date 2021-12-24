@@ -1,10 +1,9 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Scene } from 'phaser';
 
 import { phaserLoadingAnimation } from '../../utils/loadingAnimation';
 import { WebsocketApi } from '../../ws/ws';
 import { GameContext } from '../../Phaser/Game/GameContext';
-import SpawnPoints from '../../utils/spawnPoints';
 
 interface MenuSceneProps {
     SceneKey: string;
@@ -67,7 +66,7 @@ export const MenuScene = (props: MenuSceneProps) => {
                 });
 
                 bg.setScale(scale).setScrollFactor(0);
-                const heading = scene.add.text(width, height, 'UTOPIA', {
+                scene.add.text(width, height, 'UTOPIA', {
                     fontFamily: 'PixelFont',
                     fontSize: '90px',
                     stroke: '#232121',
