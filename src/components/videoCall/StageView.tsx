@@ -4,7 +4,6 @@ import React, { ReactElement } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { AudioRenderer } from './AudioRenderer';
 import { DesktopStage } from './desktop/DesktopStage';
-import { MobileStage } from './mobile/MobileStage';
 import { StageProps } from './StageProps';
 import styles from './styles.module.css';
 
@@ -13,11 +12,8 @@ export const StageView = (stageProps: StageProps) => {
     const { room } = stageProps.roomState;
 
     let mainElement: ReactElement;
-    if (isMobile) {
-        mainElement = <MobileStage {...stageProps} />;
-    } else {
-        mainElement = <DesktopStage {...stageProps} />;
-    }
+
+    mainElement = <DesktopStage {...stageProps} />;
 
     return (
         <div className={styles.container}>

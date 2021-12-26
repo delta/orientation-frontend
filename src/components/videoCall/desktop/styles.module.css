@@ -5,8 +5,6 @@
     grid-template-rows: auto min-content;
     min-height: 0;
 }
-.sidebar div {
-}
 .stage {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -25,8 +23,6 @@
     display: grid;
     gap: 8px;
     grid-auto-rows: min-content;
-}
-.leftSidebar div {
 }
 .sidebar {
     grid-column: 11 / 13;

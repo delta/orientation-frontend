@@ -18,13 +18,15 @@ function Main() {
 
     const connectVc = async () => {
         //Requesting server for an access token. Server SDK generates 1 and this is passed to the livekit server
-        let resp = await axios.get('http://localhost:8000/joinvc');
-        updateToken(resp.data);
+        let resp: any = await axios.get('http://localhost:8000/api/joinvc', {
+            withCredentials: true
+        });
+        updateToken(resp.data.token);
         let comp = (
             <div className={styles.cont}>
                 <LiveKitRoom
                     url={url}
-                    token={resp.data}
+                    token={resp.data.token}
                     queuefunc={queueUser}
                     onConnected={(room) => onConnected(room)}
                 ></LiveKitRoom>
