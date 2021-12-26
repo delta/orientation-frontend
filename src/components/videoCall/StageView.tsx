@@ -8,7 +8,6 @@ import { StageProps } from './StageProps';
 import styles from './styles.module.css';
 
 export const StageView = (stageProps: StageProps) => {
-    const isMobile = useMediaQuery({ query: '(max-width: 800px)' });
     const { room } = stageProps.roomState;
 
     let mainElement: ReactElement;

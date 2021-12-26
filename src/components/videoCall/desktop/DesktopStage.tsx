@@ -1,5 +1,5 @@
 import { Track, VideoTrack } from 'livekit-client';
-import React, { ReactElement, useState, useEffect } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { ControlsView } from '../ControlsView';
 import { ParticipantView } from '../ParticipantView';
 import { ScreenShareView } from '../ScreenShareView';
@@ -48,7 +48,7 @@ export const DesktopStage = ({
     const spotlight = (e: any) => {
         console.log(e.target.id);
         let curMain = otherParticipants.find(
-            (p: any) => p.identity == e.target.id
+            (p: any) => p.identity === e.target.id
         );
         if (curMain) {
             setShowOverlay(false);
@@ -114,7 +114,7 @@ export const DesktopStage = ({
                     )}
                 </div>
                 <div className={styles.stageCenter}>
-                    {enter == 0 ? mainView : centreVideo}
+                    {enter === 0 ? mainView : centreVideo}
                 </div>
                 <div className={styles.sidebar}>
                     {otherParticipants.slice(0, 5).map((participant: any) => {

@@ -30,19 +30,20 @@ export interface RoomOptions {
     sortParticipants?: (participants: Participant[]) => void;
 }
 
-export function useRoom(options?: RoomOptions): RoomState {
+export function useRoom(optionsRoom?: RoomOptions): RoomState {
     const [room, setRoom] = useState<Room>();
     const [isConnecting, setIsConnecting] = useState(false);
     const [error, setError] = useState<Error>();
     const [participants, setParticipants] = useState<Participant[]>([]);
     const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
 
-    const sortFunc = options?.sortParticipants ?? sortParticipants;
-
     const connectFn = useCallback(
         async (url: string, token: string, options?: ConnectOptions) => {
             setIsConnecting(true);
             try {
+                const sortFunc =
+                    optionsRoom?.sortParticipants ?? sortParticipants;
+
                 const newRoom = await connect(url, token, options);
                 setRoom(newRoom);
                 const onParticipantsChanged = () => {

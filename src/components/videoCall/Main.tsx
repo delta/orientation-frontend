@@ -1,6 +1,5 @@
 import React from 'react';
 import { LiveKitRoom } from './LiveKitRoom';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import 'react-aspect-ratio/aspect-ratio.css';
@@ -14,25 +13,24 @@ function Main() {
     const history = useHistory();
 
     useEffect(() => {
+        const connectVc = async () => {
+            //Requesting server for an access token. Server SDK generates 1 and this is passed to the livekit server
+            let resp: any = await axiosInstance.get('/api/joinvc');
+            updateToken(resp.data.token);
+            let comp = (
+                <div className={styles.cont}>
+                    <LiveKitRoom
+                        url={url}
+                        token={resp.data.token}
+                        queuefunc={queueUser}
+                        onConnected={(room) => onConnected(room)}
+                    ></LiveKitRoom>
+                </div>
+            );
+            updateVc(comp);
+        };
         connectVc();
     }, []);
-
-    const connectVc = async () => {
-        //Requesting server for an access token. Server SDK generates 1 and this is passed to the livekit server
-        let resp: any = await axiosInstance.get('/api/joinvc');
-        updateToken(resp.data.token);
-        let comp = (
-            <div className={styles.cont}>
-                <LiveKitRoom
-                    url={url}
-                    token={resp.data.token}
-                    queuefunc={queueUser}
-                    onConnected={(room) => onConnected(room)}
-                ></LiveKitRoom>
-            </div>
-        );
-        updateVc(comp);
-    };
 
     const queueUser = (size: number) => {
         //console.log('People in room',size)

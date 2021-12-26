@@ -30,14 +30,6 @@ export function useParticipant(participant: Participant): ParticipantState {
         TrackPublication[]
     >([]);
 
-    const onPublicationsChanged = () => {
-        setPublications(Array.from(participant.tracks.values()));
-        setSubscribedTracks(
-            Array.from(participant.tracks.values()).filter((pub) => {
-                return pub.isSubscribed && pub.track !== undefined;
-            })
-        );
-    };
     const unpublishTrack = async (track: LocalTrack) => {
         if (!(participant instanceof LocalParticipant)) {
             throw new Error('could not unpublish, not a local participant');
@@ -47,6 +39,14 @@ export function useParticipant(participant: Participant): ParticipantState {
     };
 
     useEffect(() => {
+        const onPublicationsChanged = () => {
+            setPublications(Array.from(participant.tracks.values()));
+            setSubscribedTracks(
+                Array.from(participant.tracks.values()).filter((pub) => {
+                    return pub.isSubscribed && pub.track !== undefined;
+                })
+            );
+        };
         const onMuted = (pub: TrackPublication) => {
             if (pub.kind === Track.Kind.Audio) {
                 setAudioMuted(true);
