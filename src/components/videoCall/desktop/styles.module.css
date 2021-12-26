@@ -1,0 +1,43 @@
+.container {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto min-content;
+    min-height: 0;
+}
+.sidebar div {
+}
+.stage {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 100%;
+    gap: 8px;
+    overflow: hidden;
+    padding-top: 20px;
+}
+
+.stageCenter {
+    grid-column: 3 / 11;
+    height: 92.5vh;
+}
+.leftSidebar {
+    grid-column: 1 / 3;
+    display: grid;
+    gap: 8px;
+    grid-auto-rows: min-content;
+}
+.leftSidebar div {
+}
+.sidebar {
+    grid-column: 11 / 13;
+    display: grid;
+    gap: 8px;
+    grid-auto-rows: min-content;
+}
+
+.controlsArea {
+    height: 100px;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+}
