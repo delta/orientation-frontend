@@ -7,6 +7,7 @@ import { GamePage } from './pages/Game';
 import Main from './components/videoCall/Main';
 import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
+import { Portal } from './pages/modal';
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                         <Switch>
                             <Route path="/" exact>
                                 <HomePage />
+                                <Portal to="" />
                             </Route>
                             <Route path="/game">
                                 <GamePage />
