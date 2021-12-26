@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 type AllowedPortals = 'minigame/2048' | 'hello-world';
 
@@ -26,4 +26,8 @@ export const PortalContextProvider: React.FC = ({ children }) => {
             {children}
         </PortalContext.Provider>
     );
+};
+
+export const usePortal = () => {
+    return useContext(PortalContext);
 };

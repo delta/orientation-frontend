@@ -15,6 +15,7 @@ const imageAssets = [
     { key: 'playButton', url: 'PlayButton.png' },
     { key: 'leaf', url: 'leaf.png' }
 ];
+import { usePortal } from '../contexts/portalContext';
 
 export const GamePage = () => {
     const history = useHistory();
@@ -25,6 +26,14 @@ export const GamePage = () => {
             history.push('/auth/login');
         }
     }, [history]);
+
+    const portal = usePortal();
+
+    // opens the moda with the given data
+    const openModal = (data: string) => {
+        portal?.setOpen(true);
+        portal?.setCurrentMethod(data as any);
+    };
 
     return (
         <div>
@@ -64,8 +73,13 @@ export const GamePage = () => {
                                     spriteFrameRate={
                                         CONSTANTS.SPRITE_ANIMATION_FRAME_RATE
                                     }
+<<<<<<< HEAD
                                     zoom={scene.ZOOM}
                                     playerDepth={scene.DEPTH}
+=======
+                                    // playerDepth={scene.DEPTH}
+                                    openModal={openModal}
+>>>>>>> bd63c58 (feat(mini-games): open modal on key press)
                                 ></Scene>
                             );
                         })}

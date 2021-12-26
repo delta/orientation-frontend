@@ -14,10 +14,6 @@ import { Modal } from '../components/modal';
 import { PortalContext } from '../contexts/portalContext';
 import { clsx } from '../utils/clsx';
 
-interface ModalProps {
-    to: string;
-}
-
 const MiniGame2048 = () => {
     return (
         <div>
@@ -52,7 +48,7 @@ const MiniGame2048 = () => {
     );
 };
 
-export const Portal = ({}: ModalProps) => {
+export const Portal = () => {
     const portalContext = useContext(PortalContext);
 
     const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -84,35 +80,15 @@ export const Portal = ({}: ModalProps) => {
         return window.removeEventListener('message', handler);
     }, [iframeRef]);
 
-    const closeModal2 = () => {
-        portalContext?.setOpen(false);
-    };
-
-    let [isOpen, setIsOpen] = useState(true);
-
     function closeModal() {
-        setIsOpen(false);
-    }
-
-    function openModal() {
-        setIsOpen(true);
+        portalContext?.setOpen(false);
     }
 
     if (!el) return null;
 
     return createPortal(
         <>
-            <div className="fixed inset-0 flex items-center justify-center">
-                <button
-                    type="button"
-                    onClick={openModal}
-                    className="px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 z-50"
-                >
-                    Open dialog
-                </button>
-            </div>
-
-            <Transition appear show={isOpen} as={Fragment}>
+            <Transition appear show={!!portalContext?.open} as={Fragment}>
                 <Dialog
                     as="div"
                     className="fixed inset-0 z-10 overflow-y-auto"
