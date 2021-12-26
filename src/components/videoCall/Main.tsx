@@ -5,11 +5,12 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import 'react-aspect-ratio/aspect-ratio.css';
 import styles from './styles.module.css';
-
+import { config } from '../../config/config';
+import { axiosInstance } from '../../utils/axios';
 function Main() {
     const [token, updateToken] = useState(''); //Access token
     const [videoComp, updateVc] = useState(<></>);
-    const url = 'ws://localhost:7880'; //Livekit URL
+    const url = config.livekitUrl; //Livekit URL
     const history = useHistory();
 
     useEffect(() => {
@@ -18,9 +19,7 @@ function Main() {
 
     const connectVc = async () => {
         //Requesting server for an access token. Server SDK generates 1 and this is passed to the livekit server
-        let resp: any = await axios.get('http://localhost:8000/api/joinvc', {
-            withCredentials: true
-        });
+        let resp: any = await axiosInstance.get('/api/joinvc');
         updateToken(resp.data.token);
         let comp = (
             <div className={styles.cont}>
