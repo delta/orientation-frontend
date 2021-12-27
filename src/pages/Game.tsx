@@ -7,6 +7,14 @@ import { Game } from '../Phaser/Game/Game';
 import { WebsocketApi } from '../ws/ws';
 import { CONSTANTS } from '../config/constants';
 import { LoaderScene } from '../Phaser/Scene/Loader';
+import { MenuScene } from '../components/scenes/Menu';
+import { config } from '../config/config';
+
+const imageAssets = [
+    { key: 'bg', url: 'bg.png' },
+    { key: 'playButton', url: 'PlayButton.png' },
+    { key: 'leaf', url: 'leaf.png' }
+];
 
 export const GamePage = () => {
     const history = useHistory();
@@ -19,29 +27,49 @@ export const GamePage = () => {
     }, [history]);
 
     return (
-        <Game>
-            <LoaderScene nextScene="Entrance" {...CONSTANTS.LOADER} />
-            {
-                <React.Fragment>
-                    {CONSTANTS.SCENES.map((scene, i) => {
-                        return (
-                            <Scene
-                                key={i}
-                                ws={ws as WebsocketApi}
-                                sceneKey={scene.SCENE_KEY}
-                                mapName={scene.MAP_NAME}
-                                tilesetNames={scene.TILESET_NAMES}
-                                loadTilesetNames={scene.LOAD_TILESET_NAMES}
-                                layers={scene.LAYERS}
-                                spriteAnims={CONSTANTS.SPRITE_ANIMATION}
-                                spriteFrameRate={
-                                    CONSTANTS.SPRITE_ANIMATION_FRAME_RATE
-                                }
-                            ></Scene>
-                        );
-                    })}
-                </React.Fragment>
-            }
-        </Game>
+        <div>
+            <div
+                id="phaser-font"
+                style={{
+                    fontFamily: 'PixelFont',
+                    height: '0px',
+                    visibility: 'hidden'
+                }}
+            >
+                You are not supposed to see this. But here you go
+                https://www.youtube.com/watch?v=xvFZjo5PgG0
+            </div>
+            <Game>
+                <LoaderScene nextScene="Menu" {...CONSTANTS.LOADER} />
+                <MenuScene
+                    SceneKey="Menu"
+                    imageAssets={imageAssets}
+                    imageAssetsPrefixPath={config.assetUrl + '/Images'}
+                    ws={ws}
+                    nextScene="Entrance"
+                />
+                {
+                    <React.Fragment>
+                        {CONSTANTS.SCENES.map((scene, i) => {
+                            return (
+                                <Scene
+                                    key={i}
+                                    ws={ws as WebsocketApi}
+                                    sceneKey={scene.SCENE_KEY}
+                                    mapName={scene.MAP_NAME}
+                                    tilesetNames={scene.TILESET_NAMES}
+                                    loadTilesetNames={scene.LOAD_TILESET_NAMES}
+                                    layers={scene.LAYERS}
+                                    spriteAnims={CONSTANTS.SPRITE_ANIMATION}
+                                    spriteFrameRate={
+                                        CONSTANTS.SPRITE_ANIMATION_FRAME_RATE
+                                    }
+                                ></Scene>
+                            );
+                        })}
+                    </React.Fragment>
+                }
+            </Game>
+        </div>
     );
 };

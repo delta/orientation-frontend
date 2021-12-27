@@ -18,7 +18,8 @@ const SpawnPoints = {
         x: 308,
         y: 408,
         facing: 'back'
-    }
+    },
+    menu: { x: 170, y: 380, facing: 'back' }
 };
 
 export default SpawnPoints;

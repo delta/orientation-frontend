@@ -8,7 +8,12 @@ const HomePage = () => {
     return (
         <>
             <div className="p-20 h-screen flex justify-center items-start flex-col">
-                <h1 className="text-5xl text-text">Welcome to Utopia 👋</h1>
+                <h1
+                    className="text-5xl text-text"
+                    style={{ fontFamily: 'GothFont' }}
+                >
+                    Welcome to Utopia 👋
+                </h1>
                 <p className="text-gray-400 mt-5 text-lg">
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.
                     Fugit consequuntur odio aut nobis ab quis? Reiciendis
