@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 
 type AllowedPortals = 'minigame/2048' | 'hello-world';
 
-interface PortalContext {
+interface IPortalContext {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     currentMethod: AllowedPortals | null;
@@ -11,7 +11,7 @@ interface PortalContext {
     >;
 }
 
-export const PortalContext = createContext<PortalContext | null>(null);
+export const PortalContext = createContext<IPortalContext | null>(null);
 
 export const PortalContextProvider: React.FC = ({ children }) => {
     const [open, setOpen] = useState(false);

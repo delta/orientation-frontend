@@ -119,7 +119,8 @@ export const LoaderScene = ({
             sceneErrorHandler: () => {},
             ws: null,
             zoom: 1.25,
-            playerDepth: 4
+            playerDepth: 4,
+            openModal: () => {}
         });
         newScene.preload = () => {
             loadAssets(newScene);

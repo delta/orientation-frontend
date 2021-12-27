@@ -75,7 +75,7 @@
                         {
                          "name":"name",
                          "type":"string",
-                         "value":"game2"
+                         "value":"2048"
                         }, 
                         {
                          "name":"type",
@@ -97,7 +97,7 @@
                         {
                          "name":"name",
                          "type":"string",
-                         "value":"game1"
+                         "value":"2048"
                         }, 
                         {
                          "name":"type",

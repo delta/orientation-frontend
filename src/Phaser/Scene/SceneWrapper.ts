@@ -455,7 +455,11 @@ export class PhaserScene extends Scene {
         Markiplier.on('down', () => {
             if (this.intractableData) {
                 if (this.intractableData.type === 'minigame')
-                    this.openModal(this.intractableData.data);
+                    this.openModal(
+                        this.intractableData.data.type +
+                            '/' +
+                            this.intractableData.data.name
+                    );
             }
         });
     }
@@ -527,8 +531,6 @@ export class PhaserScene extends Scene {
             this.intractableData = null;
         };
         this.addTimeout(callback, cleanup);
-        console.log((this.cameras.main.height * 2) / 5);
-        console.log('MINIGAME : ', target.properties.name);
     }
 
     ShowText(player: any, target: any) {

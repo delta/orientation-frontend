@@ -83,6 +83,7 @@ GameManager.prototype.actuate = function () {
 
   // Clear the state when the game is over (game over only, not win)
   if (this.over) {
+    this.sendHighScoreToParent(this.score);
     this.storageManager.clearGameState();
   } else {
     this.storageManager.setGameState(this.serialize());
@@ -97,6 +98,15 @@ GameManager.prototype.actuate = function () {
   });
 
 };
+
+GameManager.prototype.sendHighScoreToParent = function(score) {
+  console.log("Sending message to parent");
+  window.parent.postMessage({
+    source:"modal-iframe",
+    name:"highscore",
+    value: score
+  })
+}
 
 // Represent the current game as an object
 GameManager.prototype.serialize = function () {

@@ -7,7 +7,7 @@ import { GamePage } from './pages/Game';
 import Main from './components/videoCall/Main';
 import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
-import { Portal } from './pages/modal';
+import { Portal } from './pages/portal';
 import { PortalContextProvider } from './contexts/portalContext';
 
 function App() {

@@ -1,23 +1,20 @@
 import { Dialog, Transition, Disclosure } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/solid';
-import React, {
-    createRef,
-    useEffect,
-    useRef,
-    Fragment,
-    useState,
-    useContext
-} from 'react';
+import React, { useEffect, Fragment } from 'react';
 import { createPortal } from 'react-dom';
 
-import { Modal } from '../components/modal';
-import { PortalContext } from '../contexts/portalContext';
+import { usePortal } from '../contexts/portalContext';
 import { clsx } from '../utils/clsx';
 
 const MiniGame2048 = () => {
     return (
         <div>
-            <iframe width={45 * 16} height={450} src="/minigames/2048"></iframe>
+            <iframe
+                width={45 * 16}
+                height={450}
+                src="minigames/2048"
+                title="minigames/2048"
+            ></iframe>
             <Disclosure>
                 {({ open }) => (
                     <>
@@ -49,36 +46,49 @@ const MiniGame2048 = () => {
 };
 
 export const Portal = () => {
-    const portalContext = useContext(PortalContext);
+    const portalContext = usePortal();
 
-    const iframeRef = useRef<HTMLIFrameElement>(null);
     const el = document.getElementById('modal');
 
     useEffect(() => {
-        if (!iframeRef.current) return;
-
-        const handler = (event: any) => {
+        // a handler to communicate with between react app and phaser game
+        const handler = (event: MessageEvent<any>) => {
             /**
              * MESSAGE FORMAT
-             * source - modal-iframe
+             * source - "modal-iframe"
              * message - any
              * error - any
              */
-            console.log(event.data);
+            if (event.data.source !== 'modal-iframe') return;
+            process.env.NODE_ENV === 'development' && console.log(event.data);
+
+            if (event.data.name === 'highscore') {
+                process.env.NODE_ENV === 'development' &&
+                    console.log(
+                        'user requested for updating new score : ',
+                        event.data.value
+                    );
+
+                if (isNaN(event.data.value)) {
+                    console.error('Score is not a number');
+                }
+
+                // Send the data to backend
+            }
+
             // const data = JSON.parse(event.data);
         };
 
         /**
          * MESSAGE FORMAT
-         * source - modal-iframe
+         * source - "modal-iframe"
          * message - any
          * error - any
          */
-
         window.addEventListener('message', handler);
 
-        return window.removeEventListener('message', handler);
-    }, [iframeRef]);
+        return () => window.removeEventListener('message', handler);
+    }, []);
 
     function closeModal() {
         portalContext?.setOpen(false);
