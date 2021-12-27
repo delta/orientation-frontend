@@ -22,7 +22,12 @@ interface InputComponentProps {
         label: string;
         placeholder?: string; // text input
         textInputType?: 'input' | 'textArea'; // text input
-        options?: { name: string; available: boolean; code: string }[]; // select input
+        options?: {
+            name: string;
+            available: boolean;
+            code: string;
+            img?: string;
+        }[]; // select input
         buttonText?: string;
     };
 }
@@ -64,6 +69,7 @@ const formData: {
         | 'start'
         | 'username'
         | 'department'
+        | 'spriteType'
         | 'description'
         | 'gender'
         | 'submit';
@@ -72,7 +78,12 @@ const formData: {
     textInputType?: 'input' | 'textArea';
     buttonText?: string;
     type: 'text' | 'select' | 'button';
-    options?: { name: string; available: boolean; code: string }[];
+    options?: {
+        name: string;
+        available: boolean;
+        code: string;
+        img?: string;
+    }[];
 }[] = [
     {
         question: 'We need some more details before starting ',
@@ -88,6 +99,32 @@ const formData: {
         label: 'What do you wanna be known as in Utopia',
         placeholder: 'Enter your name here...',
         type: 'text'
+    },
+    {
+        question: 'How do u want to look like in Utopia ?',
+        userData: 'spriteType',
+        label: 'How do u wanna look in UTOPIA',
+        options: [
+            {
+                name: 'Select how you want to look like',
+                available: false,
+                code: 'nth',
+                img: '/favicon.ico'
+            },
+            {
+                name: 'male',
+                available: true,
+                code: 'male',
+                img: '/favicon.ico'
+            },
+            {
+                name: 'female',
+                available: true,
+                code: 'female',
+                img: '/favicon.ico'
+            }
+        ],
+        type: 'select'
     },
     {
         question: 'Which department are you from',
@@ -219,57 +256,76 @@ const SelectComponent = ({
                             leaveTo="opacity-0 z-100"
                         >
                             <Listbox.Options className="select-box absolute w-4/5 py-1 mt-1 overflow-auto bg-background rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 ">
-                                {data?.options?.map((dept, deptIdx) => (
-                                    <Listbox.Option
-                                        key={deptIdx}
-                                        className={({ active }) =>
-                                            `${
-                                                active
-                                                    ? 'text-text bg-base'
-                                                    : 'text-text'
-                                            }  ${
-                                                dept.available
-                                                    ? ''
-                                                    : 'opacity-50'
-                                            } text-lg  cursor-pointer select-none relative py-2 pl-10 pr-4 m-2 bg-background border-2 border-text hover:bg-gray-700`
-                                        }
-                                        value={dept}
-                                        disabled={!dept.available}
-                                    >
-                                        {({ selected, active }) => (
-                                            <>
-                                                <span
-                                                    className={`${
-                                                        selected
-                                                            ? 'font-medium'
-                                                            : 'font-normal'
-                                                    } ${
-                                                        dept.available
-                                                            ? ''
-                                                            : 'opacity-50'
-                                                    } block truncate`}
-                                                >
-                                                    {dept.name}
-                                                </span>
-                                                {selected ? (
+                                {data?.options?.map(
+                                    (selectOption, selectOptionIndex) => (
+                                        <Listbox.Option
+                                            key={selectOptionIndex}
+                                            className={({ active }) =>
+                                                `${
+                                                    active
+                                                        ? 'text-text bg-base'
+                                                        : 'text-text'
+                                                }  ${
+                                                    selectOption.available
+                                                        ? ''
+                                                        : 'opacity-50'
+                                                } text-lg  cursor-pointer select-none relative py-2 pl-10 pr-4 m-2 bg-background border-2 border-text hover:bg-gray-700`
+                                            }
+                                            value={selectOption}
+                                            disabled={!selectOption.available}
+                                        >
+                                            {({ selected, active }) => (
+                                                <>
                                                     <span
-                                                        className={`${
-                                                            active
-                                                                ? 'text-text'
-                                                                : 'text-text '
+                                                        className={
+                                                            `${
+                                                                selected
+                                                                    ? 'font-medium'
+                                                                    : 'font-normal'
+                                                            } ${
+                                                                selectOption.available
+                                                                    ? ''
+                                                                    : 'opacity-50'
+                                                            } block truncate` +
+                                                            selectOption.img
+                                                                ? 'flex justify-between items-center p-2'
+                                                                : ''
                                                         }
-				absolute inset-y-0 left-0 flex items-center pl-3 `}
                                                     >
-                                                        <CheckIcon
-                                                            className="w-5 h-5"
-                                                            aria-hidden="true"
-                                                        />
+                                                        <span>
+                                                            {selectOption.name}
+                                                        </span>
+                                                        {selectOption.img ? (
+                                                            <img
+                                                                src={
+                                                                    selectOption.img
+                                                                }
+                                                                alt="hello"
+                                                                width={30}
+                                                                height={30}
+                                                            />
+                                                        ) : null}
                                                     </span>
-                                                ) : null}
-                                            </>
-                                        )}
-                                    </Listbox.Option>
-                                ))}
+                                                    {selected ? (
+                                                        <span
+                                                            className={`${
+                                                                active
+                                                                    ? 'text-text'
+                                                                    : 'text-text '
+                                                            }
+				absolute inset-y-0 left-0 flex items-center pl-3 `}
+                                                        >
+                                                            <CheckIcon
+                                                                className="w-5 h-5"
+                                                                aria-hidden="true"
+                                                            />
+                                                        </span>
+                                                    ) : null}
+                                                </>
+                                            )}
+                                        </Listbox.Option>
+                                    )
+                                )}
                             </Listbox.Options>
                         </Transition>
                     </div>
@@ -329,6 +385,7 @@ const TextComponent = ({
         // only check in text component is that,
         // it cannot be empty
         // console.log(inputValue);
+
         setTimeout(() => {
             console.log('inside timeout');
             if (!inputValue)
@@ -677,7 +734,7 @@ export const Register = () => {
         await postFormDataToServer();
     };
 
-    if (!isLoggedIn) return <Redirect to="/auth/login" />;
+    // if (!isLoggedIn) return <Redirect to="/auth/login" />;
 
     return (
         <div
