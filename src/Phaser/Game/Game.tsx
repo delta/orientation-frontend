@@ -47,9 +47,11 @@ class Game extends Component<GameProps, GameState> {
         // just checking to prevent typescript error
         if (!this.gameRef.current) return;
         //TODO: Get the Phaser game as properties, and initialize them instead of hard coding
+        const canvasWidth = (window.innerWidth * 3) / 5;
+        const canvasHeight = (canvasWidth * 3) / 4;
         const game = new PhaserGame({
-            height: window.innerHeight,
-            width: window.innerHeight,
+            height: canvasHeight,
+            width: canvasWidth,
             parent: this.gameRef.current,
             physics: {
                 default: 'arcade',
@@ -160,7 +162,13 @@ class Game extends Component<GameProps, GameState> {
         // TODO: Right now we dont have any way to render, non Phaser
         // elements inside our container. We have to figure out a way to do that.
 
-        return <div id="phaser-game" ref={this.gameRef} />;
+        return (
+            <div
+                id="phaser-game"
+                ref={this.gameRef}
+                style={{ fontFamily: 'GothGirlFont' }}
+            ></div>
+        );
     }
 }
 
