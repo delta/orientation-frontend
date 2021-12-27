@@ -329,6 +329,15 @@ const SelectComponent = ({
                             </Listbox.Options>
                         </Transition>
                     </div>
+                    {selected.img && selected.available ? (
+                        <img
+                            src={selected.img}
+                            className="absolute"
+                            width={150}
+                            height={150}
+                            style={{ right: '-7.5%', top: '30%' }}
+                        />
+                    ) : null}
                 </Listbox>
             </div>
             <br />
