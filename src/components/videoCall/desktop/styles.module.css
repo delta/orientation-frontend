@@ -34,6 +34,9 @@
 .controlsArea {
     height: 100px;
     display: grid;
+    position: absolute;
     align-items: center;
     justify-items: center;
+    margin-top: 840px;
+    margin-left: 40%;
 }

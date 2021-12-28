@@ -68,26 +68,6 @@ export const DesktopStage = ({
         }
     };
 
-    let mainView: ReactElement;
-    if (screenTrack) {
-        mainView = (
-            <ScreenShareView track={screenTrack} height="100%" width="100%" />
-        );
-    } else {
-        mainView = (
-            <ParticipantRenderer
-                key={participants[0].identity}
-                participant={participants[0]}
-                width="100%"
-                height="100%"
-                orientation="landscape"
-                showOverlay={showOverlay}
-                onMouseEnter={() => setShowOverlay(true)}
-                onMouseLeave={() => setShowOverlay(false)}
-            />
-        );
-    }
-
     return (
         // global container
         <div className={styles.container}>
@@ -105,7 +85,6 @@ export const DesktopStage = ({
                                     showOverlay={showOverlay}
                                     onMouseEnter={() => setShowOverlay(true)}
                                     onMouseLeave={() => setShowOverlay(false)}
-                                    onClick={spotlight}
                                 />
                             );
                         })
@@ -113,9 +92,7 @@ export const DesktopStage = ({
                         <></>
                     )}
                 </div>
-                <div className={styles.stageCenter}>
-                    {enter === 0 ? mainView : centreVideo}
-                </div>
+
                 <div className={styles.sidebar}>
                     {otherParticipants.slice(0, 5).map((participant: any) => {
                         return (
@@ -128,7 +105,6 @@ export const DesktopStage = ({
                                 showOverlay={showOverlay}
                                 onMouseEnter={() => setShowOverlay(true)}
                                 onMouseLeave={() => setShowOverlay(false)}
-                                onClick={spotlight}
                             />
                         );
                     })}
