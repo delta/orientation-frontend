@@ -67,7 +67,7 @@ export class PhaserScene extends Scene {
         this.otherPlayers = null;
         // this.animsManager = new Anims(this);
         this.positionInteval = null;
-        // this.ws = ws;
+        this.ws = ws;
         this.sceneErrorHandler = sceneErrorHandler;
         this.facing = 'back';
         this.spriteAnims = spriteAnims;
