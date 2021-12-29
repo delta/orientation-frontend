@@ -1,3 +1,5 @@
+use rand::distributions::Alphanumeric;
+use rand::{thread_rng, Rng};
 use std::collections::HashMap;
 
 use reqwest;
@@ -7,21 +9,38 @@ use wasm_bindgen::prelude::*;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct JsonRes {
     pub status: bool,
-    pub message: String
+    pub message: String,
 }
-
-static SALT: &str = "+U-;/E&z9cMcf'wEO/Ro";
-
-// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
-// allocator.
-/* #[cfg(feature = "wee_alloc")]
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT; */
 
 #[wasm_bindgen]
 pub async fn send_score(url: String, game_name: String, score: u32) -> Result<JsValue, JsValue> {
+    let max_len = 75;
+    let score_string = score.to_string();
+    let extra_len = max_len - url.chars().count() - score_string.chars().count();
+    let data = if extra_len > 0 {
+        let left = extra_len / 2;
+        base64::encode(
+            format!(
+                "{}${}${}${}",
+                thread_rng()
+                    .sample_iter(&Alphanumeric)
+                    .take(left)
+                    .map(char::from)
+                    .collect::<String>(),
+                game_name,
+                score_string,
+                thread_rng()
+                    .sample_iter(&Alphanumeric)
+                    .take(extra_len - left)
+                    .map(char::from)
+                    .collect::<String>()
+            )
+            .as_bytes(),
+        )
+    } else {
+        base64::encode(format!("a${}${}$a", game_name, score_string,).as_bytes())
+    };
     let mut map = HashMap::new();
-    let data = base64::encode(format!("{}${}${}", SALT, game_name, score.to_string()).as_bytes());
     // println!("{}", score);
     map.insert("data", data);
     let res = reqwest::Client::new()
