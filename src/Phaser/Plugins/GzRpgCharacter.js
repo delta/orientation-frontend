@@ -20,7 +20,7 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         // Character movements are passed as instruction objects to
         // be evaluated on the next call to update
         this.instructions = [];
-
+        console.log(scene, id);
         // Attach this sprite to the loaded physics engine
         scene.physics.world.enable(this, 0);
         // Add this sprite to the scene
@@ -29,6 +29,7 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         this.scale = 0.5;
         this.body.setSize(this.width / 2, this.height / 5);
         this.setTexture(type, `${type}-${this.defaultTiles[facing]}`);
+        this.facing = 'back';
     }
 
     update() {
@@ -58,6 +59,8 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         if (!instruction.action) return;
         // Walking requires a direction
         if (instruction.action === 'walk' && !instruction.option) return;
+
+        this.facing = instruction.option;
 
         this.instructions.push(instruction);
     }
@@ -112,13 +115,14 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
             this.anims.play(this.image + '-walk-right', true);
     }
 
-    MoveAndUpdate(data) {
+    MoveAndUpdate(player) {
         // TODO: Can write a better method for moving between coordinates
-        this.x = data.X;
-        this.y = data.Y;
+        console.log('moveUpdate', player);
+        this.x = player.Position.X;
+        this.y = player.Position.Y;
         this.setTexture(
             'player',
-            `${'player'}-${this.defaultTiles[data.Direction]}`
+            `${'player'}-${this.defaultTiles[player.Position.Direction]}`
         );
     }
 }
@@ -136,6 +140,7 @@ export class GzRpgCharacterPlugin extends Phaser.Plugins.BasePlugin {
 
     createRpgCharacter(params) {
         //return this.displayList.add(new RpgCharacter({scene: this.scene, ...params}));
+        // console.trace(this.scene);
         return new RpgCharacter({ scene: this.scene, ...params });
     }
 }

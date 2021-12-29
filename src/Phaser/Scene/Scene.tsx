@@ -48,6 +48,7 @@ const Scene = ({
 
     useEffect(() => {
         if (!game) return;
+
         //TODO: have a props for sceneConfig ? only key has been implemented rn...
         const newScene = new PhaserScene({
             config: { key: sceneKey },

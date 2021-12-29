@@ -76,7 +76,7 @@ export class PhaserScene extends Scene {
     }
 
     destructor() {
-        console.log('Destroy');
+        // console.log('Destroy');
         if (this.positionInteval) clearInterval(this.positionInteval);
     }
 
@@ -99,14 +99,6 @@ export class PhaserScene extends Scene {
         this.events.on('shutdown', () => {
             this.destructor();
         });
-
-        this.addUserToRoom();
-        this.listenForOtherPlayers();
-
-        this.positionInteval = setInterval(
-            this.sendPlayerPositionToServer.bind(this),
-            1000 / config.tickRate
-        );
 
         if (data.origin) {
             this.spawnPoint = (SpawnPoints as any)[data.origin];
@@ -159,7 +151,7 @@ export class PhaserScene extends Scene {
                     position: {
                         x: Math.round(this.player.x),
                         y: Math.round(this.player.y),
-                        direction: this.facing
+                        direction: this.player.facing
                     }
                 });
             } catch (err) {
@@ -171,40 +163,58 @@ export class PhaserScene extends Scene {
     // TOOD
     listenForOtherPlayers() {
         document.addEventListener('ws-room-broadcasts', (e: any) => {
-            let players = e.detail;
+            // debugger;d
+            let players: Array<string> = e.detail;
+
+            if (players.length === 1) return;
+
             this.updateOtherPlayers(players);
         });
     }
 
-    addNewPlayers(players: any) {
-        players.forEach((player: any) => {
-            // @ts-ignore
-            let tempPlayer = this.add.rpgcharacter(player);
-            tempPlayer.setDepth(4);
-            tempPlayer.setScale(0.5);
-            if (this.otherPlayers === null) this.otherPlayers = {};
-            this.otherPlayers[player.id] = tempPlayer;
-        });
+    addNewPlayers(player: any) {
+        // console.log(player);
+        // @ts-ignore
+        let p = {
+            name: `${Date.now()}`,
+            x: player.Position.X,
+            y: player.Position.Y,
+            id: player.Id,
+            type: 'player',
+            facing: player.Position.Direction
+        };
+
+        //@ts-ignore
+        let tempPlayer = this.add.rpgcharacter(p);
+        tempPlayer.setDepth(4);
+        tempPlayer.setScale(0.5);
+
+        if (this.otherPlayers === null) this.otherPlayers = {};
+
+        this.otherPlayers[player.Id] = tempPlayer;
     }
 
-    updateOtherPlayers(players: any) {
-        if (typeof players == 'object') return;
+    updateOtherPlayers(players: Array<string>) {
+        console.log(this.otherPlayers, this.player.id);
+        // console.log(players);
 
-        if (players.length <= 1 || this.otherPlayers === null) return;
-
-        console.log(players);
-
-        for (let player of players) {
-            if (player.Id === this.player.id) return;
-
-            if (
-                this.otherPlayers &&
-                this.otherPlayers[player.Id] !== undefined
-            ) {
-                this.otherPlayers[player.Id].MoveAndUpdate(player);
+        for (let s of players) {
+            let player = JSON.parse(s);
+            console.log(player);
+            // if its me dont update
+            if (player.Id != this.player.id) {
+                if (
+                    this.otherPlayers &&
+                    this.otherPlayers[player.Id] !== undefined
+                ) {
+                    console.log('update');
+                    this.otherPlayers[player.Id].MoveAndUpdate(player);
+                } else {
+                    console.log('New player');
+                    this.addNewPlayers(player);
+                }
             } else {
-                console.log('New player');
-                this.addNewPlayers([player]);
+                console.log('hmmmmmm');
             }
         }
     }
@@ -239,7 +249,7 @@ export class PhaserScene extends Scene {
     }
 
     create(data: any) {
-        console.log('creating');
+        // console.log('creating');
         this.cursors = this.input.keyboard.createCursorKeys();
 
         // Set up the player character
@@ -248,7 +258,7 @@ export class PhaserScene extends Scene {
             name: 'player',
             x: this.spawnPoint.x,
             y: this.spawnPoint.y,
-            id: 0,
+            id: localStorage.getItem('userId') || 0,
             type: 'player',
             facing: this.spawnPoint.facing
         });
@@ -263,7 +273,7 @@ export class PhaserScene extends Scene {
             allTileSets.push(tempTileSet);
         }
 
-        console.log('allTileSets: ', allTileSets);
+        // console.log('allTileSets: ', allTileSets);
         let allLayers: any = {};
         for (let i = 0; i < this.layers.length; i++) {
             allLayers[this.layers[i]] = this.map.createLayer(
@@ -301,6 +311,14 @@ export class PhaserScene extends Scene {
         camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.addSpriteAnimations();
+
+        this.addUserToRoom();
+        this.listenForOtherPlayers();
+
+        this.positionInteval = setInterval(
+            this.sendPlayerPositionToServer.bind(this),
+            1000 / config.tickRate
+        );
     }
 
     update(time: any, delta: any) {
@@ -326,7 +344,7 @@ export class PhaserScene extends Scene {
     }
 
     HitScript(player: any, target: any) {
-        console.log('hit');
+        // console.log('hit');
     }
 
     UsePortal(player: any, target: any) {
@@ -339,11 +357,11 @@ export class PhaserScene extends Scene {
     }
 
     StartMinigame(player: any, target: any) {
-        console.log(target.properties.name);
+        // console.log(target.properties.name);
     }
 
     ShowText(player: any, target: any) {
-        console.log(target.properties);
+        // console.log(target.properties);
     }
 
     ShowPreview(player: any, target: any) {
