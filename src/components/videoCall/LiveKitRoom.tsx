@@ -67,7 +67,7 @@ export const LiveKitRoom = ({
                 room.disconnect();
             };
         });
-    }, []);
+    }, [connectOptions, onConnected, queuefunc, roomState, token, url]);
 
     const selectedStageRenderer = stageRenderer ?? StageView;
 

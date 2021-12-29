@@ -143,7 +143,7 @@ export function useRoom(optionsRoom?: RoomOptions): RoomState {
                 return undefined;
             }
         },
-        []
+        [optionsRoom?.sortParticipants]
     );
 
     return {

@@ -55,7 +55,7 @@ export const AudioSelectButton = ({
                 listAudioDevices
             );
         };
-    }, []);
+    }, [listAudioDevices]);
 
     const handleMenuItem = (item: MenuItem) => {
         const device = sources.find((d) => d.label === item.label);
