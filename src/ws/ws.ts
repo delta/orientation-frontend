@@ -72,10 +72,11 @@ export class WebsocketApi {
             let response = event.data;
             let responseMessage: responseMessageType = JSON.parse(response);
 
+            console.log(responseMessage.MessageType);
+
             switch (responseMessage.MessageType) {
                 // ws connection will be closed by server after this response
                 case 'already-connected':
-                    console.log('already-connected', responseMessage.Data);
                     const alreadyConnectedEvent = new CustomEvent<string>(
                         'ws-already-connected',
                         {
@@ -98,14 +99,11 @@ export class WebsocketApi {
 
                 // all user postion in rendered map/room
                 case 'room-broadcast':
-                    console.log(
-                        'room-broadcast',
-                        JSON.parse(responseMessage.Data as string)
-                    );
-                    const roomBroadcastsEvent = new CustomEvent<WUser[]>(
+                    console.log('room-broadcast', responseMessage.Data);
+                    const roomBroadcastsEvent = new CustomEvent<any>(
                         'ws-room-broadcasts',
                         {
-                            detail: JSON.parse(responseMessage.Data as string)
+                            detail: responseMessage.Data
                         }
                     );
 
@@ -144,7 +142,7 @@ export class WebsocketApi {
                 data: req
             };
 
-            console.log('move user');
+            // console.log('move user');
             this.socket.send(JSON.stringify(requestMessage));
 
             return;
