@@ -1,49 +1,10 @@
-import { Dialog, Transition, Disclosure } from '@headlessui/react';
-import { ChevronUpIcon } from '@heroicons/react/solid';
+import { Dialog, Transition } from '@headlessui/react';
 import React, { useEffect, Fragment } from 'react';
 import { createPortal } from 'react-dom';
+import { MiniGame2048 } from '../components/modal/MiniGame2048';
 
 import { usePortal } from '../contexts/portalContext';
 import { clsx } from '../utils/clsx';
-
-const MiniGame2048 = () => {
-    return (
-        <div>
-            <iframe
-                width={45 * 16}
-                height={450}
-                src="minigames/2048"
-                title="minigames/2048"
-            ></iframe>
-            <Disclosure>
-                {({ open }) => (
-                    <>
-                        <Disclosure.Button
-                            className={clsx(
-                                'flex justify-between w-full px-4 py-2 text-sm mt-5',
-                                ' font-medium text-left text-black bg-green-100 ',
-                                'rounded-lg hover:bg-green-200 focus:outline-none focus-visible:ring',
-                                'focus-visible:ring-purple-500 focus-visible:ring-opacity-75'
-                            )}
-                        >
-                            <span>How to play?</span>
-                            <ChevronUpIcon
-                                className={`${
-                                    open ? 'transform rotate-180' : ''
-                                } w-5 h-5 text-black`}
-                            />
-                        </Disclosure.Button>
-                        <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
-                            Use your <strong>arrow keys</strong> to move the
-                            tiles. When two tiles with the same number touch,
-                            they <strong>merge into one!</strong>
-                        </Disclosure.Panel>
-                    </>
-                )}
-            </Disclosure>
-        </div>
-    );
-};
 
 export const Portal = () => {
     const portalContext = usePortal();
@@ -135,7 +96,7 @@ export const Portal = () => {
                         >
                             <div
                                 className={clsx(
-                                    'inline-block w-full max-w-3xl p-6 my-8 bg-white shadow-xl rounded-2xl',
+                                    'inline-block w-full max-w-max p-6 my-8 bg-white shadow-xl rounded-2xl',
                                     'overflow-hidden text-left align-middle',
                                     'transition-all transform'
                                 )}

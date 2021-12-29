@@ -9,13 +9,13 @@ import { CONSTANTS } from '../config/constants';
 import { LoaderScene } from '../Phaser/Scene/Loader';
 import { MenuScene } from '../components/scenes/Menu';
 import { config } from '../config/config';
+import { usePortal } from '../contexts/portalContext';
 
 const imageAssets = [
     { key: 'bg', url: 'bg.png' },
     { key: 'playButton', url: 'PlayButton.png' },
     { key: 'leaf', url: 'leaf.png' }
 ];
-import { usePortal } from '../contexts/portalContext';
 
 export const GamePage = () => {
     const history = useHistory();
@@ -73,13 +73,9 @@ export const GamePage = () => {
                                     spriteFrameRate={
                                         CONSTANTS.SPRITE_ANIMATION_FRAME_RATE
                                     }
-<<<<<<< HEAD
                                     zoom={scene.ZOOM}
                                     playerDepth={scene.DEPTH}
-=======
-                                    // playerDepth={scene.DEPTH}
                                     openModal={openModal}
->>>>>>> bd63c58 (feat(mini-games): open modal on key press)
                                 ></Scene>
                             );
                         })}

@@ -9,7 +9,7 @@ pub struct JsonRes {
     pub status: bool,
 }
 
-static BACKEND_URL: &str = "http://localhost:3001";
+static BACKEND_URL: &str = "http://localhost:8001";
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.

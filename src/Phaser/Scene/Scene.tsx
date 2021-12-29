@@ -39,13 +39,9 @@ const Scene = ({
     layers,
     spriteAnims,
     spriteFrameRate,
-<<<<<<< HEAD
     zoom,
-    playerDepth
-=======
     playerDepth,
     openModal
->>>>>>> bd63c58 (feat(mini-games): open modal on key press)
 }: ISceneProps) => {
     const game = useContext(GameContext);
     const [sceneInstance, setSceneInstance] = useState<PhaserScene | null>(
@@ -70,13 +66,10 @@ const Scene = ({
             layers: layers ? layers : [],
             spriteAnims,
             spriteFrameRate,
-<<<<<<< HEAD
             zoom,
-            playerDepth
-=======
+            playerDepth,
             // playerDepth
             openModal
->>>>>>> bd63c58 (feat(mini-games): open modal on key press)
         });
 
         game?.scene.add(sceneKey, newScene, !!autoStart);

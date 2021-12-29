@@ -14,7 +14,7 @@ interface IPortalContext {
 export const PortalContext = createContext<IPortalContext | null>(null);
 
 export const PortalContextProvider: React.FC = ({ children }) => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     const [currentMethod, setCurrentMethod] = useState<AllowedPortals | null>(
         null
     );
