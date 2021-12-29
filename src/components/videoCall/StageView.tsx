@@ -1,7 +1,7 @@
 import { faVolumeMute } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { ReactElement } from 'react';
-import { useMediaQuery } from 'react-responsive';
+// import { useMediaQuery } from 'react-responsive';
 import { AudioRenderer } from './AudioRenderer';
 import { DesktopStage } from './desktop/DesktopStage';
 import { StageProps } from './StageProps';

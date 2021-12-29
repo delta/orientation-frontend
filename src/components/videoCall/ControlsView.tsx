@@ -1,6 +1,6 @@
 import { Room } from 'livekit-client';
 import { ReactElement } from 'react';
-import { useParticipant } from './useParticipant';
+// import { useParticipant } from './useParticipant';
 import { AudioSelectButton } from './AudioSelectButton';
 import { ControlButton } from './ControlButton';
 import styles from './styles.module.css';
@@ -22,7 +22,7 @@ export const ControlsView = ({
     enableVideo,
     onLeave
 }: ControlsProps) => {
-    const { unpublishTrack } = useParticipant(room.localParticipant);
+    // const { unpublishTrack } = useParticipant(room.localParticipant);
 
     const history = useHistory();
     if (enableScreenShare === undefined) {

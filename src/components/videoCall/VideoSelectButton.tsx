@@ -51,7 +51,7 @@ export const VideoSelectButton = ({
                 listVideoDevices
             );
         };
-    }, []);
+    }, [listVideoDevices]);
 
     const handleMenuItem = (item: MenuItem) => {
         const device = sources.find((d) => d.label === item.label);

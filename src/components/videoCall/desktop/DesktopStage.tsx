@@ -1,8 +1,8 @@
 import { Track, VideoTrack } from 'livekit-client';
-import React, { ReactElement, useState } from 'react';
+import React, { useState } from 'react';
 import { ControlsView } from '../ControlsView';
 import { ParticipantView } from '../ParticipantView';
-import { ScreenShareView } from '../ScreenShareView';
+// import { ScreenShareView } from '../ScreenShareView';
 import { StageProps } from '../StageProps';
 import styles from './styles.module.css';
 
@@ -14,8 +14,8 @@ export const DesktopStage = ({
 }: StageProps) => {
     const { isConnecting, error, participants, room } = roomState;
     const [showOverlay, setShowOverlay] = useState(false);
-    const [centreVideo, changeCentre] = useState(<></>);
-    const [enter, changeEnter] = useState(0);
+    // const [centreVideo, changeCentre] = useState(<></>);
+    // const [enter, changeEnter] = useState(0);
     if (error) {
         return <div>error {error.message}</div>;
     }
@@ -45,28 +45,28 @@ export const DesktopStage = ({
         }
     });
     const otherParticipants = participants;
-    const spotlight = (e: any) => {
-        console.log(e.target.id);
-        let curMain = otherParticipants.find(
-            (p: any) => p.identity === e.target.id
-        );
-        if (curMain) {
-            setShowOverlay(false);
-            changeCentre(
-                <ParticipantRenderer
-                    key={curMain.identity}
-                    participant={curMain}
-                    width="100%"
-                    height="100%"
-                    orientation="landscape"
-                    showOverlay={!showOverlay}
-                    onMouseEnter={() => setShowOverlay(true)}
-                    onMouseLeave={() => setShowOverlay(false)}
-                />
-            );
-            changeEnter(1);
-        }
-    };
+    // const spotlight = (e: any) => {
+    //     console.log(e.target.id);
+    //     let curMain = otherParticipants.find(
+    //         (p: any) => p.identity === e.target.id
+    //     );
+    //     if (curMain) {
+    //         setShowOverlay(false);
+    //         changeCentre(
+    //             <ParticipantRenderer
+    //                 key={curMain.identity}
+    //                 participant={curMain}
+    //                 width="100%"
+    //                 height="100%"
+    //                 orientation="landscape"
+    //                 showOverlay={!showOverlay}
+    //                 onMouseEnter={() => setShowOverlay(true)}
+    //                 onMouseLeave={() => setShowOverlay(false)}
+    //             />
+    //         );
+    //         changeEnter(1);
+    //     }
+    // };
 
     return (
         // global container

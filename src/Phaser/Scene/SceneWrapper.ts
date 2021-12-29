@@ -67,7 +67,7 @@ export class PhaserScene extends Scene {
         this.otherPlayers = null;
         // this.animsManager = new Anims(this);
         this.positionInteval = null;
-        this.ws = ws;
+        // this.ws = ws;
         this.sceneErrorHandler = sceneErrorHandler;
         this.facing = 'back';
         this.spriteAnims = spriteAnims;
@@ -202,7 +202,7 @@ export class PhaserScene extends Scene {
             let player = JSON.parse(s);
             console.log(player);
             // if its me dont update
-            if (player.Id != this.player.id) {
+            if (Number(player.Id) !== Number(this.player.id)) {
                 if (
                     this.otherPlayers &&
                     this.otherPlayers[player.Id] !== undefined
