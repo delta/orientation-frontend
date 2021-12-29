@@ -135,7 +135,6 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
 
     MoveAndUpdate(player) {
         // TODO: Can write a better method for moving between coordinates
-        // console.log('moveUpdate', player);
         this.x = player.Position.X;
         this.y = player.Position.Y;
         this.setTexture(

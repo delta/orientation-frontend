@@ -50,6 +50,9 @@ export class PhaserScene extends Scene {
         string,
         { userId: number; name: string; spriteType: string }
     > = {};
+    room: any;
+    roomForceUpdate: any;
+    isVideoOn = true;
     constructor({
         config,
         mapName,
@@ -77,7 +80,10 @@ export class PhaserScene extends Scene {
         this.facing = 'back';
         this.spriteAnims = spriteAnims;
         this.spriteFrameRate = spriteFrameRate ? spriteFrameRate : 10;
-
+        this.room = null;
+        this.roomForceUpdate = null;
+        this.isVideoOn = true;
+        this.handleVcToggle();
         return;
     }
 
@@ -111,6 +117,19 @@ export class PhaserScene extends Scene {
         }
     }
 
+    handleVcToggle() {
+        document.addEventListener('vc-room-created', (e: any) => {
+            console.log(e.detail, this.sceneKey);
+            this.room = e.detail.room;
+            this.roomForceUpdate = e.detail.forceUpdate;
+            (window as any).room = this.room;
+            (window as any).roomForceUpdate = this.roomForceUpdate;
+        });
+        document.addEventListener('vc-room-trial', (e: any) => {
+            console.log(e.detail, this.sceneKey);
+        });
+    }
+
     // TODO
     addUserToRoom() {
         if (this.ws) {
@@ -142,6 +161,8 @@ export class PhaserScene extends Scene {
                         direction: this.spawnPoint.facing
                     }
                 });
+                this.room.disconnect();
+                this.isVideoOn = false;
             } catch (err) {
                 this.sceneErrorHandler(err);
             }
@@ -175,6 +196,16 @@ export class PhaserScene extends Scene {
             if (players.length === 1) return;
 
             this.updateOtherPlayers(players);
+        });
+    }
+
+    removeOtherPlayer() {
+        document.addEventListener('ws-room-left', (e: any) => {
+            console.log(e.detail);
+            if (this.otherPlayers) {
+                this.otherPlayers[e.detail].destroy();
+                delete this.otherPlayers[e.detail];
+            }
         });
     }
 
@@ -238,25 +269,18 @@ export class PhaserScene extends Scene {
 
     updateOtherPlayers(players: Array<string>) {
         // console.log(this.otherPlayers, this.player.id);
-        // console.log(players);
-
         for (let s of players) {
             let player = JSON.parse(s);
-            // console.log(player);
             // if its me dont update
             if (Number(player.Id) !== Number(this.player.id)) {
                 if (
                     this.otherPlayers &&
                     this.otherPlayers[player.Id] !== undefined
                 ) {
-                    console.log('update');
                     this.otherPlayers[player.Id].MoveAndUpdate(player);
                 } else {
-                    console.log('New player', player);
                     this.addNewPlayers(player);
                 }
-            } else {
-                // console.log('hmmmmmm');
             }
         }
     }
@@ -358,11 +382,24 @@ export class PhaserScene extends Scene {
 
         this.addUserToRoom();
         this.listenForOtherPlayers();
+        this.removeOtherPlayer();
 
         this.positionInteval = setInterval(
             this.sendPlayerPositionToServer.bind(this),
             1000 / config.tickRate
         );
+
+        let videoInput = this.input.keyboard.addKey('v');
+        videoInput.on('down', () => {
+            console.log('Test');
+            if (this.isVideoOn) {
+                this.isVideoOn = false;
+                this.room.disconnect();
+            } else {
+                this.isVideoOn = true;
+                this.roomForceUpdate();
+            }
+        });
     }
 
     update(time: any, delta: any) {

@@ -1,5 +1,5 @@
 import { ConnectOptions, Participant, Room } from 'livekit-client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ControlsProps } from './ControlsView';
 import { ParticipantProps } from './ParticipantView';
 import { StageProps } from './StageProps';
@@ -28,6 +28,8 @@ export interface RoomProps {
     ) => React.ReactElement | null;
     controlRenderer?: (props: ControlsProps) => React.ReactElement | null;
     queuefunc: (size: number) => void;
+    forceUpdate: () => void;
+    value: number;
 }
 
 export const LiveKitRoom = ({
@@ -41,8 +43,11 @@ export const LiveKitRoom = ({
     onConnected,
     onLeave,
     queuefunc,
-    adaptiveVideo
+    adaptiveVideo,
+    forceUpdate,
+    value
 }: RoomProps) => {
+    console.log('LiveKitRoom');
     const roomState = useRoom({ sortParticipants });
     if (!connectOptions) {
         connectOptions = {};
@@ -50,8 +55,8 @@ export const LiveKitRoom = ({
     if (adaptiveVideo) {
         connectOptions.autoManageVideo = true;
     }
-
     useEffect(() => {
+        console.log('running connect');
         roomState.connect(url, token, connectOptions).then((room) => {
             if (!room) {
                 return;
@@ -61,14 +66,23 @@ export const LiveKitRoom = ({
                 if (room.participants.size >= 10) {
                     queuefunc(room.participants.size);
                 }
+                const roomCreateEvent = new CustomEvent<any>(
+                    'vc-room-created',
+                    {
+                        detail: {
+                            room: room,
+                            forceUpdate: forceUpdate
+                        }
+                    }
+                );
+                document.dispatchEvent(roomCreateEvent);
                 onConnected(room);
             }
             return () => {
                 room.disconnect();
             };
         });
-        // eslint-disable-next-line
-    }, []);
+    }, [value]);
 
     const selectedStageRenderer = stageRenderer ?? StageView;
 
