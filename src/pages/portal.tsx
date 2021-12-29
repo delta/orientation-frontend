@@ -1,55 +1,82 @@
 import { Dialog, Transition } from '@headlessui/react';
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import { createPortal } from 'react-dom';
 import { MiniGame2048 } from '../components/modal/MiniGame2048';
 
 import { usePortal } from '../contexts/portalContext';
 import { clsx } from '../utils/clsx';
 
+interface AsyncFunc {
+    (url: string, game_name: string, score: number): Promise<void>;
+}
+
+type Greet = {
+    send_score: AsyncFunc | null;
+};
+
 export const Portal = () => {
     const portalContext = usePortal();
 
     const el = document.getElementById('modal');
+    const [send, setSend] = useState<Greet>({ send_score: null });
+
+    useEffect(() => {
+        const init = async () => {
+            const wasm = await import('testWasm');
+            setSend(wasm);
+        };
+        init();
+    }, []);
 
     useEffect(() => {
         // a handler to communicate with between react app and phaser game
-        const handler = (event: MessageEvent<any>) => {
+        if (send === null || send.send_score === null) return;
+        else {
+            const handler = async (event: MessageEvent<any>) => {
+                /**
+                 * MESSAGE FORMAT
+                 * source - "modal-iframe"
+                 * message - any
+                 * error - any
+                 */
+                if (event.data.source !== 'modal-iframe') return;
+                process.env.NODE_ENV === 'development' &&
+                    console.log(event.data);
+
+                if (event.data.type === 'highscore') {
+                    process.env.NODE_ENV === 'development' &&
+                        console.log(
+                            `user requested for updating\n Game: ${event.data.name} \n New Score : ${event.data.value}`
+                        );
+
+                    if (isNaN(event.data.value)) {
+                        console.error('Score is not a number');
+                    }
+
+                    // Send the data to backend
+                    // @ts-ignore
+                    const res = await send.send_score(
+                        'http://localhost:3001/api/addscore',
+                        event.data.name,
+                        event.data.value
+                    );
+                    console.log(res);
+                }
+
+                // const data = JSON.parse(event.data);
+            };
+
             /**
              * MESSAGE FORMAT
              * source - "modal-iframe"
              * message - any
              * error - any
              */
-            if (event.data.source !== 'modal-iframe') return;
-            process.env.NODE_ENV === 'development' && console.log(event.data);
+            window.addEventListener('message', handler);
 
-            if (event.data.name === 'highscore') {
-                process.env.NODE_ENV === 'development' &&
-                    console.log(
-                        'user requested for updating new score : ',
-                        event.data.value
-                    );
-
-                if (isNaN(event.data.value)) {
-                    console.error('Score is not a number');
-                }
-
-                // Send the data to backend
-            }
-
-            // const data = JSON.parse(event.data);
-        };
-
-        /**
-         * MESSAGE FORMAT
-         * source - "modal-iframe"
-         * message - any
-         * error - any
-         */
-        window.addEventListener('message', handler);
-
-        return () => window.removeEventListener('message', handler);
-    }, []);
+            return () => window.removeEventListener('message', handler);
+        }
+    }, [send]);
 
     function closeModal() {
         portalContext?.setOpen(false);

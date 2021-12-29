@@ -7,9 +7,10 @@ use wasm_bindgen::prelude::*;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct JsonRes {
     pub status: bool,
+    pub message: String
 }
 
-static BACKEND_URL: &str = "http://localhost:8001";
+static SALT: &str = "+U-;/E&z9cMcf'wEO/Ro";
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -18,12 +19,13 @@ static BACKEND_URL: &str = "http://localhost:8001";
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT; */
 
 #[wasm_bindgen]
-pub async fn send_score(game_name: String, score: u32) -> Result<JsValue, JsValue> {
+pub async fn send_score(url: String, game_name: String, score: u32) -> Result<JsValue, JsValue> {
     let mut map = HashMap::new();
-    map.insert("game", game_name);
-    map.insert("score", score.to_string());
+    let data = base64::encode(format!("{}${}${}", SALT, game_name, score.to_string()).as_bytes());
+    // println!("{}", score);
+    map.insert("data", data);
     let res = reqwest::Client::new()
-        .post(format!("{}/api/addscore", BACKEND_URL))
+        .post(url)
         .header("Accept", "application/json")
         .fetch_credentials_include()
         .json(&map)

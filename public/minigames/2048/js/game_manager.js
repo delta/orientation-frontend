@@ -1,4 +1,5 @@
 function GameManager(size, InputManager, Actuator, StorageManager) {
+  this.name = "2048"
   this.size           = size; // Size of the grid
   this.inputManager   = new InputManager;
   this.storageManager = new StorageManager;
@@ -103,7 +104,8 @@ GameManager.prototype.sendHighScoreToParent = function(score) {
   console.log("Sending message to parent");
   window.parent.postMessage({
     source:"modal-iframe",
-    name:"highscore",
+    name:this.name,
+    type: "highscore",
     value: score
   })
 }
