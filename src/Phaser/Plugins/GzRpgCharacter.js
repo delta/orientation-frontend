@@ -16,6 +16,22 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
             front: 18,
             back: 0
         };
+        let displayName = name === 'player' ? 'you' : name;
+        if (String(displayName).length > 10) {
+            displayName = String(displayName).substring(0, 8) + '...';
+        }
+        this.text = this.scene.add
+            .text(this.x + 2, this.y + 20, displayName, {
+                fontFamily: 'PixelFont',
+                fontSize: '20px',
+                color: '#e8f22e',
+                stroke: '#232121',
+                strokeThickness: 2,
+                align: 'left'
+            })
+            .setDepth(100)
+            .setOrigin(0.5, 0.5)
+            .setScale(0.5);
         this.id = id;
         // Character movements are passed as instruction objects to
         // be evaluated on the next call to update
@@ -42,6 +58,8 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         ) {
             this.anims.stopAfterRepeat(0);
         }
+        this.text.setX(this.x + 2);
+        this.text.setY(this.y + 20);
     }
 
     /**
