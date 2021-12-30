@@ -28,8 +28,6 @@ export interface RoomProps {
     ) => React.ReactElement | null;
     controlRenderer?: (props: ControlsProps) => React.ReactElement | null;
     queuefunc: (size: number) => void;
-    forceUpdate: () => void;
-    value: number;
 }
 
 export const LiveKitRoom = ({
@@ -43,9 +41,7 @@ export const LiveKitRoom = ({
     onConnected,
     onLeave,
     queuefunc,
-    adaptiveVideo,
-    forceUpdate,
-    value
+    adaptiveVideo
 }: RoomProps) => {
     console.log('LiveKitRoom');
     const roomState = useRoom({ sortParticipants });
@@ -55,6 +51,10 @@ export const LiveKitRoom = ({
     if (adaptiveVideo) {
         connectOptions.autoManageVideo = true;
     }
+    const [value, setValue] = useState(0); // integer state
+    const forceUpdate = () => {
+        setValue((value) => value + 1);
+    };
     useEffect(() => {
         console.log('running connect');
         roomState.connect(url, token, connectOptions).then((room) => {

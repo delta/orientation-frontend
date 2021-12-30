@@ -12,11 +12,6 @@ function Main() {
     const url = config.livekitUrl; //Livekit URL
     const history = useHistory();
     const [showVideo, setShowVideo] = useState(true);
-    const [value, setValue] = useState(0); // integer state
-    const forceUpdate = () => {
-        console.log('force update');
-        setValue((value) => value + 1);
-    };
 
     const queueUser = useCallback(
         (size: number) => {
@@ -40,8 +35,6 @@ function Main() {
                             token={resp.data.token}
                             queuefunc={queueUser}
                             onConnected={(room) => onConnected(room)}
-                            forceUpdate={forceUpdate}
-                            value={value}
                         ></LiveKitRoom>
                     </div>
                 );
@@ -49,7 +42,7 @@ function Main() {
             };
             await connectVc();
         })();
-    }, [value]);
+    }, []);
 
     return <div className="roomContainer">{videoComp}</div>;
 }
