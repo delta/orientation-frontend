@@ -66,7 +66,7 @@ export const LiveKitRoom = ({
             }
             if (onConnected) {
                 //User limit
-                if (room.participants.size >= 1) {
+                if (room.participants.size >= 10) {
                     toast?.pushError('Sorry call limit reached');
                     room.disconnect();
                 }
