@@ -130,7 +130,7 @@ export function useRoom(optionsRoom?: RoomOptions): RoomState {
 
                 setIsConnecting(false);
                 onSubscribedTrackChanged();
-
+                console.log(participants);
                 return newRoom;
             } catch (error) {
                 setIsConnecting(false);

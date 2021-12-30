@@ -50,6 +50,11 @@ export class PhaserScene extends Scene {
         string,
         { userId: number; name: string; spriteType: string }
     > = {};
+    room: any;
+    roomForceUpdate: any;
+    isVideoOn = true;
+    handleOtherPlayersBinded: any;
+    handleRoomLeftBinded: any;
     constructor({
         config,
         mapName,
@@ -77,13 +82,23 @@ export class PhaserScene extends Scene {
         this.facing = 'back';
         this.spriteAnims = spriteAnims;
         this.spriteFrameRate = spriteFrameRate ? spriteFrameRate : 10;
-
+        this.room = null;
+        this.roomForceUpdate = null;
+        this.isVideoOn = true;
+        this.handleVcToggle();
+        this.handleOtherPlayersBinded = null;
+        this.handleRoomLeftBinded = null;
         return;
     }
 
     destructor() {
-        // console.log('Destroy');
         if (this.positionInteval) clearInterval(this.positionInteval);
+        document.removeEventListener(
+            'ws-room-broadcasts',
+            this.handleOtherPlayersBinded
+        );
+        document.removeEventListener('ws-room-left', this.handleRoomLeftBinded);
+        this.otherPlayers = null;
     }
 
     preload() {
@@ -109,6 +124,15 @@ export class PhaserScene extends Scene {
         if (data.origin) {
             this.spawnPoint = (SpawnPoints as any)[data.origin];
         }
+    }
+
+    handleVcToggle() {
+        document.addEventListener('vc-room-created', (e: any) => {
+            this.room = e.detail.room;
+            this.roomForceUpdate = e.detail.forceUpdate;
+            (window as any).room = this.room;
+            (window as any).roomForceUpdate = this.roomForceUpdate;
+        });
     }
 
     // TODO
@@ -142,6 +166,8 @@ export class PhaserScene extends Scene {
                         direction: this.spawnPoint.facing
                     }
                 });
+                this.room.disconnect();
+                this.isVideoOn = false;
             } catch (err) {
                 this.sceneErrorHandler(err);
             }
@@ -166,20 +192,35 @@ export class PhaserScene extends Scene {
         }
     }
 
+    handleOtherPlayers(e: any) {
+        let players: Array<string> = e.detail;
+        if (players.length === 1) return;
+        this.updateOtherPlayers(players);
+    }
+
     // TOOD
     listenForOtherPlayers() {
-        document.addEventListener('ws-room-broadcasts', (e: any) => {
-            // debugger;d
-            let players: Array<string> = e.detail;
+        this.handleOtherPlayersBinded = this.handleOtherPlayers.bind(this);
+        document.addEventListener(
+            'ws-room-broadcasts',
+            this.handleOtherPlayersBinded
+        );
+    }
 
-            if (players.length === 1) return;
+    handleRoomLeft(e: any) {
+        if (this.otherPlayers) {
+            this.otherPlayers[e.detail].text.setVisible(false);
+            this.otherPlayers[e.detail].destroy();
+            delete this.otherPlayers[e.detail];
+        }
+    }
 
-            this.updateOtherPlayers(players);
-        });
+    removePlayerOnRoomLeave() {
+        this.handleRoomLeftBinded = this.handleRoomLeft.bind(this);
+        document.addEventListener('ws-room-left', this.handleRoomLeftBinded);
     }
 
     async addNewPlayers(player: any) {
-        // console.log(player);
         let playerData = this.userMap[player.Id];
         if (!playerData) {
             // if the user doesn't exist in our map,
@@ -191,7 +232,6 @@ export class PhaserScene extends Scene {
                 );
                 // debugger;
                 if (resp.status === 200) {
-                    // console.log(resp.data.userMap);
                     this.userMap[resp.data.userMap.userId] = resp.data.userMap;
                     localStorage.setItem(
                         'user-map',
@@ -237,26 +277,18 @@ export class PhaserScene extends Scene {
     }
 
     updateOtherPlayers(players: Array<string>) {
-        // console.log(this.otherPlayers, this.player.id);
-        // console.log(players);
-
         for (let s of players) {
             let player = JSON.parse(s);
-            // console.log(player);
             // if its me dont update
             if (Number(player.Id) !== Number(this.player.id)) {
                 if (
                     this.otherPlayers &&
                     this.otherPlayers[player.Id] !== undefined
                 ) {
-                    console.log('update');
                     this.otherPlayers[player.Id].MoveAndUpdate(player);
                 } else {
-                    console.log('New player', player);
                     this.addNewPlayers(player);
                 }
-            } else {
-                // console.log('hmmmmmm');
             }
         }
     }
@@ -292,7 +324,6 @@ export class PhaserScene extends Scene {
 
     create(data: any) {
         this.userMap = JSON.parse(localStorage.getItem('user-map') as any);
-        // console.log('creating');
         this.cursors = this.input.keyboard.createCursorKeys();
 
         const userId = localStorage.getItem('userId') || 0;
@@ -317,7 +348,6 @@ export class PhaserScene extends Scene {
             allTileSets.push(tempTileSet);
         }
 
-        // console.log('allTileSets: ', allTileSets);
         let allLayers: any = {};
         for (let i = 0; i < this.layers.length; i++) {
             allLayers[this.layers[i]] = this.map.createLayer(
@@ -358,11 +388,23 @@ export class PhaserScene extends Scene {
 
         this.addUserToRoom();
         this.listenForOtherPlayers();
+        this.removePlayerOnRoomLeave();
 
         this.positionInteval = setInterval(
             this.sendPlayerPositionToServer.bind(this),
             1000 / config.tickRate
         );
+
+        let videoInput = this.input.keyboard.addKey('v');
+        videoInput.on('down', () => {
+            if (this.isVideoOn) {
+                this.isVideoOn = false;
+                this.room.disconnect();
+            } else {
+                this.isVideoOn = true;
+                this.roomForceUpdate();
+            }
+        });
     }
 
     update(time: any, delta: any) {

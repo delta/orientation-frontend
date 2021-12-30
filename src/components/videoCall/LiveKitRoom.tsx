@@ -1,5 +1,5 @@
 import { ConnectOptions, Participant, Room } from 'livekit-client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ControlsProps } from './ControlsView';
 import { ParticipantProps } from './ParticipantView';
 import { StageProps } from './StageProps';
@@ -50,8 +50,12 @@ export const LiveKitRoom = ({
     if (adaptiveVideo) {
         connectOptions.autoManageVideo = true;
     }
-
+    const [value, setValue] = useState(0); // integer state
+    const forceUpdate = () => {
+        setValue((value) => value + 1);
+    };
     useEffect(() => {
+        console.log('running connect');
         roomState.connect(url, token, connectOptions).then((room) => {
             if (!room) {
                 return;
@@ -61,14 +65,23 @@ export const LiveKitRoom = ({
                 if (room.participants.size >= 10) {
                     queuefunc(room.participants.size);
                 }
+                const roomCreateEvent = new CustomEvent<any>(
+                    'vc-room-created',
+                    {
+                        detail: {
+                            room: room,
+                            forceUpdate: forceUpdate
+                        }
+                    }
+                );
+                document.dispatchEvent(roomCreateEvent);
                 onConnected(room);
             }
             return () => {
                 room.disconnect();
             };
         });
-        // eslint-disable-next-line
-    }, []);
+    }, [value]);
 
     const selectedStageRenderer = stageRenderer ?? StageView;
 

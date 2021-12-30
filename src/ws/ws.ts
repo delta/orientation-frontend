@@ -29,8 +29,12 @@ interface requestMessageType {
 }
 // ws response message type
 interface responseMessageType {
-    MessageType: 'new-user' | 'already-connected' | 'room-broadcast';
-    Data: string | WUser;
+    MessageType:
+        | 'new-user'
+        | 'already-connected'
+        | 'room-broadcast'
+        | 'user-left';
+    Data: any;
 }
 
 const socketNotOpenedError = new Error('websocket connection is not opened');
@@ -72,7 +76,7 @@ export class WebsocketApi {
             let response = event.data;
             let responseMessage: responseMessageType = JSON.parse(response);
 
-            console.log(responseMessage.MessageType);
+            // console.log(responseMessage.MessageType);
 
             switch (responseMessage.MessageType) {
                 // ws connection will be closed by server after this response
@@ -99,7 +103,6 @@ export class WebsocketApi {
 
                 // all user postion in rendered map/room
                 case 'room-broadcast':
-                    console.log('room-broadcast', responseMessage.Data);
                     const roomBroadcastsEvent = new CustomEvent<any>(
                         'ws-room-broadcasts',
                         {
@@ -109,6 +112,14 @@ export class WebsocketApi {
 
                     document.dispatchEvent(roomBroadcastsEvent);
 
+                    break;
+
+                case 'user-left':
+                    console.log('user-left', responseMessage.Data);
+                    const roomLeftEvent = new CustomEvent<any>('ws-room-left', {
+                        detail: JSON.parse(responseMessage.Data)
+                    });
+                    document.dispatchEvent(roomLeftEvent);
                     break;
 
                 default:
