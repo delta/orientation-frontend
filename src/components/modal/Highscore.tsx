@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { clsx } from '../../utils/clsx';
 
 interface singleHighScoreObject {
-    spriteId: string;
+    spriteName: string;
     username: string;
     score: number;
     dept: string;
@@ -10,15 +10,62 @@ interface singleHighScoreObject {
 }
 
 interface highScoreProps {
-    userData?: singleHighScoreObject[];
-    offset?: number;
+    userData: singleHighScoreObject[];
 }
 
 const spriteIdMap: Record<string, string> = {
-    1: '/favicon.ico'
+    player: '/favicon.ico'
 };
 
 export const HighScoreTable = (props: highScoreProps) => {
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPage, setTotalPage] = useState(0);
+    const [activeElements, setActiveElements] = useState<
+        singleHighScoreObject[]
+    >([]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+        setTotalPage(Math.ceil(props.userData.length / 10));
+    }, [props.userData.length]);
+
+    useEffect(() => {
+        let end = currentPage * 10;
+
+        const data = props.userData.slice(end - 10, end);
+        setActiveElements(data);
+    }, [currentPage, props.userData]);
+
+    const Pages = useMemo(() => {
+        let data: JSX.Element[] = [];
+        for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+            if (i <= 0) continue;
+            if (i > totalPage) break;
+            let temp = (
+                <li>
+                    <p
+                        className={clsx(
+                            'bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700',
+                            'leading-tight py-2 px-3 cursor-pointer',
+                            i === currentPage
+                                ? 'text-accent1 bg-green-300 bg-opacity-25 cursor-default'
+                                : ''
+                        )}
+                        onClick={() => {
+                            if (i === currentPage) return;
+                            setCurrentPage(i);
+                        }}
+                        key={i}
+                    >
+                        {i}
+                    </p>
+                </li>
+            );
+            data.push(temp);
+        }
+        return data;
+    }, [currentPage, totalPage]);
+
     return (
         <section className="antialiased relative h-4/5 my-5 py-5 bg-gray-100 text-gray-600 px-4">
             <div className="flex flex-col justify-center h-full">
@@ -41,7 +88,7 @@ export const HighScoreTable = (props: highScoreProps) => {
                                         </th>
                                         <th className="p-2 whitespace-nowrap">
                                             <div className="font-semibold text-left">
-                                                Username
+                                                Name
                                             </div>
                                         </th>
                                         <th className="p-2 whitespace-nowrap">
@@ -57,12 +104,12 @@ export const HighScoreTable = (props: highScoreProps) => {
                                     </tr>
                                 </thead>
                                 <tbody className="text-sm divide-y divide-gray-100">
-                                    {props?.userData?.map(
+                                    {activeElements.map(
                                         (singleLeaderBoard, index) => {
                                             index =
                                                 index +
-                                                Number(props?.offset) +
-                                                1;
+                                                1 +
+                                                (currentPage - 1) * 10;
                                             return (
                                                 <tr key={index}>
                                                     <td className="p-2 whitespace-nowrap">
@@ -90,7 +137,7 @@ export const HighScoreTable = (props: highScoreProps) => {
                                                                     src={
                                                                         spriteIdMap[
                                                                             singleLeaderBoard
-                                                                                .spriteId
+                                                                                .spriteName
                                                                         ]
                                                                     }
                                                                     width="40"
@@ -152,71 +199,28 @@ export const HighScoreTable = (props: highScoreProps) => {
                         <li>
                             <p
                                 className={clsx(
-                                    'bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700',
-                                    'ml-0 rounded-l-lg leading-tight py-2 px-3'
+                                    'bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 cursor-pointer',
+                                    'ml-0 rounded-l-lg leading-tight py-2 px-3',
+                                    currentPage === 1 ? 'hidden' : ''
                                 )}
+                                onClick={() =>
+                                    setCurrentPage((prevPage) => prevPage - 1)
+                                }
                             >
                                 Previous
                             </p>
                         </li>
+                        {Pages}
                         <li>
                             <p
                                 className={clsx(
-                                    'bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700',
-                                    'leading-tight py-2 px-3'
+                                    'bg-white border border-gray-300 text-gray-500 cursor-pointer',
+                                    'hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3',
+                                    currentPage === totalPage ? 'hidden' : ''
                                 )}
-                            >
-                                1
-                            </p>
-                        </li>
-                        <li>
-                            <p
-                                className={clsx(
-                                    'bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700',
-                                    'leading-tight py-2 px-3'
-                                )}
-                            >
-                                2
-                            </p>
-                        </li>
-                        <li>
-                            <p
-                                aria-current="page"
-                                className={clsx(
-                                    'bg-blue-50 border border-gray-300 text-blue-600',
-                                    'hover:bg-blue-100 hover:text-blue-700',
-                                    'py-2 px-3'
-                                )}
-                            >
-                                3
-                            </p>
-                        </li>
-                        <li>
-                            <p
-                                className={clsx(
-                                    'bg-white border border-gray-300 text-gray-500 hover:bg-gray-100',
-                                    'hover:text-gray-700 leading-tight py-2 px-3'
-                                )}
-                            >
-                                4
-                            </p>
-                        </li>
-                        <li>
-                            <p
-                                className={clsx(
-                                    'bg-white border border-gray-300 text-gray-500',
-                                    'hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3'
-                                )}
-                            >
-                                5
-                            </p>
-                        </li>
-                        <li>
-                            <p
-                                className={clsx(
-                                    'bg-white border border-gray-300 text-gray-500',
-                                    'hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3'
-                                )}
+                                onClick={() =>
+                                    setCurrentPage((prevPage) => prevPage + 1)
+                                }
                             >
                                 Next
                             </p>

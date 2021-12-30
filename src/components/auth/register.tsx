@@ -300,7 +300,9 @@ const SelectComponent = ({
                                                                 src={
                                                                     selectOption.img
                                                                 }
-                                                                alt="hello"
+                                                                alt={
+                                                                    selectOption.img
+                                                                }
                                                                 width={30}
                                                                 height={30}
                                                             />
@@ -333,6 +335,7 @@ const SelectComponent = ({
                         <img
                             src={selected.img}
                             className="absolute"
+                            alt={selected.img}
                             width={150}
                             height={150}
                             style={{ right: '-7.5%', top: '30%' }}
@@ -743,7 +746,7 @@ export const Register = () => {
         await postFormDataToServer();
     };
 
-    // if (!isLoggedIn) return <Redirect to="/auth/login" />;
+    if (!isLoggedIn) return <Redirect to="/auth/login" />;
 
     return (
         <div

@@ -4,11 +4,51 @@ import { ChevronUpIcon } from '@heroicons/react/solid';
 import { HighScoreTable } from './Highscore';
 import { clsx } from '../../utils/clsx';
 import { axiosInstance } from '../../utils/axios';
+import { useEffect, useState } from 'react';
 
 export const MiniGame2048 = () => {
-    const getLeaderboard = async (page: number) => {
+    const [leaderBoardData, setLeaderBoardData] = useState<
+        {
+            username: string;
+            name: string;
+            spriteName: string;
+            dept: string;
+            score: number;
+        }[]
+    >([]);
+
+    const getLeaderboard = async () => {
         try {
-            const resp = await axiosInstance.get('/api/leaderboard/' + page);
+            const leaderBoardResp = await axiosInstance.get(
+                '/api/leaderboard/2048'
+            );
+            // we are fetching user data again, w
+            // as the data in localstorage might not be up to date
+            console.log('got leaderboard data : ', leaderBoardResp);
+            const userMapData = await axiosInstance.get('/api/user/map');
+            console.log('usermap data : ', userMapData);
+
+            if (leaderBoardResp.status === 200 && userMapData.status === 200) {
+                console.log('parsing user data');
+                const userMap = {};
+                userMapData.data.userMap.forEach((user: any) => {
+                    //@ts-ignore
+                    userMap[user.userId] = user;
+                });
+
+                const allLeaderBoardData: any[] =
+                    leaderBoardResp.data.leaderboard.map((l: any) => {
+                        return {
+                            name: l.name,
+                            username: l.name,
+                            spriteName: (userMap as any)[l.id].spriteType,
+                            dept: l.department,
+                            score: l.score
+                        };
+                    });
+
+                setLeaderBoardData(allLeaderBoardData);
+            }
 
             /**
              * Resp format
@@ -24,36 +64,9 @@ export const MiniGame2048 = () => {
         } catch (err) {}
     };
 
-    const fakeLeaderboardData = [
-        {
-            username: 'aabce',
-            name: 'aabce',
-            spriteId: '1',
-            dept: 'ABC',
-            score: 46201
-        },
-        {
-            username: 'aabce2',
-            name: 'aabce',
-            spriteId: '1',
-            dept: 'ABC',
-            score: 46201
-        },
-        {
-            username: 'aabce3',
-            name: 'aabce',
-            spriteId: '1',
-            dept: 'ABC',
-            score: 46201
-        },
-        {
-            username: 'aabce4',
-            name: 'aabce',
-            spriteId: '1',
-            dept: 'ABC',
-            score: 46201
-        }
-    ];
+    useEffect(() => {
+        getLeaderboard();
+    }, []);
 
     return (
         <div>
@@ -148,10 +161,7 @@ export const MiniGame2048 = () => {
                                 minHeight: '500px'
                             }}
                         >
-                            <HighScoreTable
-                                userData={fakeLeaderboardData}
-                                offset={0}
-                            />
+                            <HighScoreTable userData={leaderBoardData} />
                         </div>
                     </Tab.Panel>
                 </Tab.Panels>

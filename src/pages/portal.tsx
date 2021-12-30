@@ -6,6 +6,7 @@ import { MiniGame2048 } from '../components/modal/MiniGame2048';
 import { usePortal } from '../contexts/portalContext';
 import { config } from '../config/config';
 import { clsx } from '../utils/clsx';
+import { Modal } from '../components/modal';
 
 interface AsyncFunc {
     (url: string, game_name: string, score: number): Promise<void>;
@@ -32,6 +33,20 @@ export const Portal = () => {
             return 'hello world';
         }
         return '';
+    }, [portalContext]);
+
+    const getPortalData = useMemo(() => {
+        const { currentMethod } = portalContext || {};
+
+        if (currentMethod === 'minigame/2048') {
+            return <MiniGame2048 />;
+        }
+
+        if (currentMethod === 'hello-world') {
+            return <Modal />;
+        }
+
+        return null;
     }, [portalContext]);
 
     useEffect(() => {
@@ -172,9 +187,7 @@ export const Portal = () => {
                                         </svg>
                                     </span>
                                 </Dialog.Title>
-                                <div className="mt-2">
-                                    <MiniGame2048 />
-                                </div>
+                                <div className="mt-2">{getPortalData}</div>
                             </div>
                         </Transition.Child>
                     </div>
