@@ -53,6 +53,8 @@ export class PhaserScene extends Scene {
     room: any;
     roomForceUpdate: any;
     isVideoOn = true;
+    handleOtherPlayersBinded: any;
+    handleRoomLeftBinded: any;
     constructor({
         config,
         mapName,
@@ -84,12 +86,21 @@ export class PhaserScene extends Scene {
         this.roomForceUpdate = null;
         this.isVideoOn = true;
         this.handleVcToggle();
+        this.handleOtherPlayersBinded = null;
+        this.handleRoomLeftBinded = null;
+        console.log(this.sceneKey, 'Constructed');
         return;
     }
 
     destructor() {
-        // console.log('Destroy');
+        console.log('Destructor Called');
         if (this.positionInteval) clearInterval(this.positionInteval);
+        document.removeEventListener(
+            'ws-room-broadcasts',
+            this.handleOtherPlayersBinded
+        );
+        document.removeEventListener('ws-room-left', this.handleRoomLeftBinded);
+        this.otherPlayers = null;
     }
 
     preload() {
@@ -109,6 +120,7 @@ export class PhaserScene extends Scene {
 
     init(data: any) {
         this.events.on('shutdown', () => {
+            console.log('What');
             this.destructor();
         });
 
@@ -124,9 +136,6 @@ export class PhaserScene extends Scene {
             this.roomForceUpdate = e.detail.forceUpdate;
             (window as any).room = this.room;
             (window as any).roomForceUpdate = this.roomForceUpdate;
-        });
-        document.addEventListener('vc-room-trial', (e: any) => {
-            console.log(e.detail, this.sceneKey);
         });
     }
 
@@ -187,26 +196,33 @@ export class PhaserScene extends Scene {
         }
     }
 
-    // TOOD
-    listenForOtherPlayers() {
-        document.addEventListener('ws-room-broadcasts', (e: any) => {
-            // debugger;d
-            let players: Array<string> = e.detail;
-
-            if (players.length === 1) return;
-
-            this.updateOtherPlayers(players);
-        });
+    handleOtherPlayers(e: any) {
+        console.log('Broadcast function', this.sceneKey);
+        let players: Array<string> = e.detail;
+        if (players.length === 1) return;
+        this.updateOtherPlayers(players);
     }
 
-    removeOtherPlayer() {
-        document.addEventListener('ws-room-left', (e: any) => {
-            console.log(e.detail);
-            if (this.otherPlayers) {
-                this.otherPlayers[e.detail].destroy();
-                delete this.otherPlayers[e.detail];
-            }
-        });
+    // TOOD
+    listenForOtherPlayers() {
+        this.handleOtherPlayersBinded = this.handleOtherPlayers.bind(this);
+        document.addEventListener(
+            'ws-room-broadcasts',
+            this.handleOtherPlayersBinded
+        );
+    }
+
+    handleRoomLeft(e: any) {
+        console.log(e.detail);
+        if (this.otherPlayers) {
+            this.otherPlayers[e.detail].destroy();
+            delete this.otherPlayers[e.detail];
+        }
+    }
+
+    removePlayerOnRoomLeave() {
+        this.handleRoomLeftBinded = this.handleRoomLeft.bind(this);
+        document.addEventListener('ws-room-left', this.handleRoomLeftBinded);
     }
 
     async addNewPlayers(player: any) {
@@ -268,7 +284,7 @@ export class PhaserScene extends Scene {
     }
 
     updateOtherPlayers(players: Array<string>) {
-        // console.log(this.otherPlayers, this.player.id);
+        console.log('Other Players', this.otherPlayers, this.sceneKey);
         for (let s of players) {
             let player = JSON.parse(s);
             // if its me dont update
@@ -303,6 +319,7 @@ export class PhaserScene extends Scene {
                     {}
                 );
                 this.physics.world.enable(tmp, 1);
+                console.log(this.physics.world);
                 this.physics.add.collider(
                     this.player,
                     tmp,
@@ -382,7 +399,7 @@ export class PhaserScene extends Scene {
 
         this.addUserToRoom();
         this.listenForOtherPlayers();
-        this.removeOtherPlayer();
+        this.removePlayerOnRoomLeave();
 
         this.positionInteval = setInterval(
             this.sendPlayerPositionToServer.bind(this),
