@@ -64,6 +64,8 @@ export const GamePage = () => {
                                     spriteFrameRate={
                                         CONSTANTS.SPRITE_ANIMATION_FRAME_RATE
                                     }
+                                    zoom={scene.ZOOM}
+                                    playerDepth={scene.DEPTH}
                                 ></Scene>
                             );
                         })}

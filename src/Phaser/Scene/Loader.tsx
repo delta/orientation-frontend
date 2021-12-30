@@ -117,7 +117,9 @@ export const LoaderScene = ({
             mapName: '',
             tilesetNames: [],
             sceneErrorHandler: () => {},
-            ws: null
+            ws: null,
+            zoom: 1.25,
+            playerDepth: 4
         });
         newScene.preload = () => {
             loadAssets(newScene);
