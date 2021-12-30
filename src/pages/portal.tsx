@@ -3,10 +3,11 @@ import React, { useEffect, useState, Fragment, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 
 import { MiniGame2048 } from '../components/modal/MiniGame2048';
-import { usePortal } from '../contexts/portalContext';
 import { config } from '../config/config';
 import { clsx } from '../utils/clsx';
 import { Modal } from '../components/modal';
+
+type AllowedPortals = 'minigame/2048' | 'hello-world';
 
 interface AsyncFunc {
     (url: string, game_name: string, score: number): Promise<void>;
@@ -17,14 +18,31 @@ type HighscoreWasmType = {
 };
 
 export const Portal = () => {
-    const portalContext = usePortal();
+    const [currentMethod, setCurrentMethod] = useState<AllowedPortals | null>();
+    const [open, setOpen] = useState(false);
+
+    const setCurrentMethodEventHandler = (event: any) => {
+        process.env.NODE_ENV === 'development' && console.log(event.detail);
+        setCurrentMethod(event.detail);
+        setOpen(true);
+    };
+
+    useEffect(() => {
+        document.addEventListener(
+            'portal-listener',
+            setCurrentMethodEventHandler
+        );
+        return () =>
+            document.addEventListener(
+                'portal-listener',
+                setCurrentMethodEventHandler
+            );
+    }, []);
 
     const el = document.getElementById('modal');
     const [send, setSend] = useState<HighscoreWasmType>({ send_score: null });
 
     const getTitle = useMemo(() => {
-        const { currentMethod } = portalContext || {};
-
         if (currentMethod === 'minigame/2048') {
             return '2048';
         }
@@ -33,11 +51,9 @@ export const Portal = () => {
             return 'hello world';
         }
         return '';
-    }, [portalContext]);
+    }, [currentMethod]);
 
     const getPortalData = useMemo(() => {
-        const { currentMethod } = portalContext || {};
-
         if (currentMethod === 'minigame/2048') {
             return <MiniGame2048 />;
         }
@@ -47,7 +63,7 @@ export const Portal = () => {
         }
 
         return null;
-    }, [portalContext]);
+    }, [currentMethod]);
 
     useEffect(() => {
         const init = async () => {
@@ -108,14 +124,14 @@ export const Portal = () => {
     }, [send]);
 
     function closeModal() {
-        portalContext?.setOpen(false);
+        setOpen(false);
     }
 
     if (!el) return null;
 
     return createPortal(
         <>
-            <Transition appear show={!!portalContext?.open} as={Fragment}>
+            <Transition appear show={open} as={Fragment}>
                 <Dialog
                     as="div"
                     className="fixed inset-0 z-10 overflow-y-auto"

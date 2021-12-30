@@ -454,12 +454,14 @@ export class PhaserScene extends Scene {
         let Markiplier = this.input.keyboard.addKey('e');
         Markiplier.on('down', () => {
             if (this.intractableData) {
-                if (this.intractableData.type === 'minigame')
-                    this.openModal(
-                        this.intractableData.data.type +
+                console.log(this.intractableData);
+                if (this.intractableData.type === 'minigame') {
+                    const elm = this.openModal(
+                        this.intractableData.type +
                             '/' +
-                            this.intractableData.data.name
+                            this.intractableData.data
                     );
+                }
             }
         });
     }

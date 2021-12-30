@@ -148,6 +148,7 @@ class Game extends Component<GameProps, GameState> {
             this.state.mountContainer,
             null
         );
+        console.log('comp unmounting');
         this.state.phaserGame?.destroy(true);
     }
 

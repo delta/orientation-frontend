@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { Scene } from '../Phaser/Scene/Scene';
@@ -9,8 +9,6 @@ import { CONSTANTS } from '../config/constants';
 import { LoaderScene } from '../Phaser/Scene/Loader';
 import { MenuScene } from '../components/scenes/Menu';
 import { config } from '../config/config';
-import { usePortal } from '../contexts/portalContext';
-
 const imageAssets = [
     { key: 'bg', url: 'bg.png' },
     { key: 'playButton', url: 'PlayButton.png' },
@@ -27,13 +25,10 @@ export const GamePage = () => {
         }
     }, [history]);
 
-    const portal = usePortal();
-
-    // opens the moda with the given data
-    const openModal = (data: string) => {
-        portal?.setOpen(true);
-        portal?.setCurrentMethod(data as any);
-    };
+    const modalData = useCallback((data: string) => {
+        const event = new CustomEvent('portal-listener', { detail: data });
+        document.dispatchEvent(event);
+    }, []);
 
     return (
         <div>
@@ -75,7 +70,7 @@ export const GamePage = () => {
                                     }
                                     zoom={scene.ZOOM}
                                     playerDepth={scene.DEPTH}
-                                    openModal={openModal}
+                                    openModal={modalData}
                                 ></Scene>
                             );
                         })}
