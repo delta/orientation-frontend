@@ -93,7 +93,8 @@ const Scene = ({
         layers,
         spriteAnims,
         spriteFrameRate,
-        autoStart
+        autoStart,
+        openModal
     ]);
 
     // useEffect(() => {

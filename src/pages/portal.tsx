@@ -1,16 +1,17 @@
 import { Dialog, Transition } from '@headlessui/react';
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState, Fragment, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { MiniGame2048 } from '../components/modal/MiniGame2048';
 
+import { MiniGame2048 } from '../components/modal/MiniGame2048';
 import { usePortal } from '../contexts/portalContext';
+import { config } from '../config/config';
 import { clsx } from '../utils/clsx';
 
 interface AsyncFunc {
     (url: string, game_name: string, score: number): Promise<void>;
 }
 
-type Greet = {
+type HighscoreWasmType = {
     send_score: AsyncFunc | null;
 };
 
@@ -18,11 +19,24 @@ export const Portal = () => {
     const portalContext = usePortal();
 
     const el = document.getElementById('modal');
-    const [send, setSend] = useState<Greet>({ send_score: null });
+    const [send, setSend] = useState<HighscoreWasmType>({ send_score: null });
+
+    const getTitle = useMemo(() => {
+        const { currentMethod } = portalContext || {};
+
+        if (currentMethod === 'minigame/2048') {
+            return '2048';
+        }
+
+        if (currentMethod === 'hello-world') {
+            return 'hello world';
+        }
+        return '';
+    }, [portalContext]);
 
     useEffect(() => {
         const init = async () => {
-            const wasm = await import('testWasm');
+            const wasm = await import('highscore-wasm');
             setSend(wasm);
         };
         init();
@@ -56,7 +70,7 @@ export const Portal = () => {
                     // Send the data to backend
                     // @ts-ignore
                     const res = await send.send_score(
-                        'http://localhost:3001/api/addscore',
+                        config.backendOrigin + '/api/addscore',
                         event.data.name,
                         event.data.value
                     );
@@ -130,7 +144,7 @@ export const Portal = () => {
                             >
                                 <Dialog.Title>
                                     <h3 className="text-lg font-medium leading-6 text-gray-900 inline-block">
-                                        2048
+                                        {getTitle}
                                     </h3>
                                     <span
                                         className="float-right text-base"
