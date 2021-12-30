@@ -1,10 +1,11 @@
-import { ConnectOptions, Participant, Room } from 'livekit-client';
+import { ConnectOptions, Participant, Room, RoomState } from 'livekit-client';
 import React, { useEffect, useState } from 'react';
 import { ControlsProps } from './ControlsView';
 import { ParticipantProps } from './ParticipantView';
 import { StageProps } from './StageProps';
 import { StageView } from './StageView';
 import { useRoom } from './useRoom';
+import { useToast } from '../toast/ToastProvider';
 
 export interface RoomProps {
     url: string;
@@ -27,7 +28,7 @@ export interface RoomProps {
         props: ParticipantProps
     ) => React.ReactElement | null;
     controlRenderer?: (props: ControlsProps) => React.ReactElement | null;
-    queuefunc: (size: number) => void;
+    queuefunc: () => void;
 }
 
 export const LiveKitRoom = ({
@@ -43,6 +44,7 @@ export const LiveKitRoom = ({
     queuefunc,
     adaptiveVideo
 }: RoomProps) => {
+    console.log('LiveKitRoom');
     const roomState = useRoom({ sortParticipants });
     if (!connectOptions) {
         connectOptions = {};
@@ -54,6 +56,8 @@ export const LiveKitRoom = ({
     const forceUpdate = () => {
         setValue((value) => value + 1);
     };
+    const toast = useToast();
+
     useEffect(() => {
         console.log('running connect');
         roomState.connect(url, token, connectOptions).then((room) => {
@@ -62,8 +66,9 @@ export const LiveKitRoom = ({
             }
             if (onConnected) {
                 //User limit
-                if (room.participants.size >= 10) {
-                    queuefunc(room.participants.size);
+                if (room.participants.size >= 1) {
+                    toast?.pushError('Sorry call limit reached');
+                    room.disconnect();
                 }
                 const roomCreateEvent = new CustomEvent<any>(
                     'vc-room-created',
@@ -74,6 +79,7 @@ export const LiveKitRoom = ({
                         }
                     }
                 );
+
                 document.dispatchEvent(roomCreateEvent);
                 onConnected(room);
             }

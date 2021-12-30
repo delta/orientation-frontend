@@ -69,17 +69,6 @@ export const ControlsView = ({
         <div className={styles.controlsWrapper}>
             {muteButton}
             {videoButton}
-
-            {
-                <ControlButton
-                    label="End"
-                    className={styles.dangerButton}
-                    onClick={() => {
-                        room.disconnect();
-                        history.push('/game');
-                    }}
-                />
-            }
         </div>
     );
 };

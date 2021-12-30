@@ -13,15 +13,11 @@ function Main() {
     const history = useHistory();
     const [showVideo, setShowVideo] = useState(true);
 
-    const queueUser = useCallback(
-        (size: number) => {
-            //console.log('People in room',size)
-            //TODO: Queueing system
-            //Currently just redirecting to "/game"
-            history.push('/game');
-        },
-        [history]
-    );
+    const queueUser = useCallback(() => {
+        //console.log('People in room',size)
+        //TODO: Queueing system
+        //Currently just redirecting to "/game"
+    }, []);
     useEffect(() => {
         (async () => {
             const connectVc = async () => {

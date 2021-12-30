@@ -5,12 +5,13 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Property } from 'csstype';
 import { Participant } from 'livekit-client';
-import React, { CSSProperties, ReactElement } from 'react';
+import React, { CSSProperties, ReactElement, useEffect, useState } from 'react';
 import { AspectRatio } from 'react-aspect-ratio';
 import { useParticipant } from './useParticipant';
 import styles from './styles.module.css';
 import { VideoRenderer } from './VideoRenderer';
-
+import { AxiosInstance } from 'axios';
+import { axiosInstance } from '../../utils/axios';
 export interface ParticipantProps {
     participant: Participant;
     displayName?: string;
@@ -50,7 +51,20 @@ export const ParticipantView = ({
     pparticipant
 }: ParticipantProps) => {
     const { cameraPublication, isLocal } = useParticipant(participant);
+    const [dispName, changeName] = useState('');
 
+    useEffect(() => {
+        const setName = async () => {
+            const resp = await axiosInstance.get('api/user/map');
+
+            let user = resp.data.userMap.find(
+                (el: any) => el.userId.toString() == participant.identity
+            );
+            changeName(user.name + ' (You)');
+        };
+        setName();
+    }, []);
+    async function find() {}
     const containerStyles: CSSProperties = {
         width: width,
         height: height
@@ -126,7 +140,7 @@ export const ParticipantView = ({
 
             {showOverlay && (
                 <div className={styles.participantBar}>
-                    <div>{displayName}</div>
+                    <div>{dispName}</div>
                     <div>
                         <FontAwesomeIcon
                             icon={
