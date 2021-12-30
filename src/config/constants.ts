@@ -32,7 +32,8 @@ export const CONSTANTS = {
                 'Base',
                 'Background',
                 'Grass'
-            ]
+            ],
+            DEPTH: 4
         },
         {
             SCENE_KEY: 'Admin',
@@ -51,7 +52,28 @@ export const CONSTANTS = {
                 'Base',
                 'Background',
                 'Grass'
-            ]
+            ],
+            DEPTH: 4
+        },
+        {
+            SCENE_KEY: 'NSO',
+            MAP_NAME: 'NSO',
+            TILESET_NAMES: [
+                'Modern',
+                'Fountain',
+                'Roads',
+                'SereneVillage',
+                'Trees'
+            ],
+            LOAD_TILESET_NAMES: ['FootballGround', 'Lines', 'RunningTrack'],
+            LAYERS: [
+                'BaseOverhead2',
+                'BaseOverhead1',
+                'Base',
+                'Background',
+                'Grass'
+            ],
+            DEPTH: 5
         }
     ],
     PLAYER_SPRITE_NAMES: PLAYERS,

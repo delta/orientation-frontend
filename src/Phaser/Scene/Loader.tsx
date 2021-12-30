@@ -117,7 +117,8 @@ export const LoaderScene = ({
             mapName: '',
             tilesetNames: [],
             sceneErrorHandler: () => {},
-            ws: null
+            ws: null,
+            openModal: () => {}
         });
         newScene.preload = () => {
             loadAssets(newScene);

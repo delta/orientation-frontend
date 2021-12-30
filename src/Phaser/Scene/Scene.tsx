@@ -23,6 +23,8 @@ interface ISceneProps {
         back: { start: number; end: number };
     }>;
     spriteFrameRate?: number;
+    playerDepth: number;
+    openModal: (data: string) => void;
 }
 
 const Scene = ({
@@ -35,7 +37,9 @@ const Scene = ({
     loadTilesetNames,
     layers,
     spriteAnims,
-    spriteFrameRate
+    spriteFrameRate,
+    playerDepth,
+    openModal
 }: ISceneProps) => {
     const game = useContext(GameContext);
     const [sceneInstance, setSceneInstance] = useState<PhaserScene | null>(
@@ -59,7 +63,9 @@ const Scene = ({
             ws,
             layers: layers ? layers : [],
             spriteAnims,
-            spriteFrameRate
+            spriteFrameRate,
+            // playerDepth
+            openModal
         });
 
         game?.scene.add(sceneKey, newScene, !!autoStart);
