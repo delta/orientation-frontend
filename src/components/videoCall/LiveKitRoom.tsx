@@ -43,7 +43,6 @@ export const LiveKitRoom = ({
     queuefunc,
     adaptiveVideo
 }: RoomProps) => {
-    console.log('LiveKitRoom');
     const roomState = useRoom({ sortParticipants });
     if (!connectOptions) {
         connectOptions = {};

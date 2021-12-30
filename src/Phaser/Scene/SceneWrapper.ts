@@ -88,12 +88,10 @@ export class PhaserScene extends Scene {
         this.handleVcToggle();
         this.handleOtherPlayersBinded = null;
         this.handleRoomLeftBinded = null;
-        console.log(this.sceneKey, 'Constructed');
         return;
     }
 
     destructor() {
-        console.log('Destructor Called');
         if (this.positionInteval) clearInterval(this.positionInteval);
         document.removeEventListener(
             'ws-room-broadcasts',
@@ -120,7 +118,6 @@ export class PhaserScene extends Scene {
 
     init(data: any) {
         this.events.on('shutdown', () => {
-            console.log('What');
             this.destructor();
         });
 
@@ -131,7 +128,6 @@ export class PhaserScene extends Scene {
 
     handleVcToggle() {
         document.addEventListener('vc-room-created', (e: any) => {
-            console.log(e.detail, this.sceneKey);
             this.room = e.detail.room;
             this.roomForceUpdate = e.detail.forceUpdate;
             (window as any).room = this.room;
@@ -197,7 +193,6 @@ export class PhaserScene extends Scene {
     }
 
     handleOtherPlayers(e: any) {
-        console.log('Broadcast function', this.sceneKey);
         let players: Array<string> = e.detail;
         if (players.length === 1) return;
         this.updateOtherPlayers(players);
@@ -213,8 +208,8 @@ export class PhaserScene extends Scene {
     }
 
     handleRoomLeft(e: any) {
-        console.log(e.detail);
         if (this.otherPlayers) {
+            this.otherPlayers[e.detail].text.setVisible(false);
             this.otherPlayers[e.detail].destroy();
             delete this.otherPlayers[e.detail];
         }
@@ -226,7 +221,6 @@ export class PhaserScene extends Scene {
     }
 
     async addNewPlayers(player: any) {
-        // console.log(player);
         let playerData = this.userMap[player.Id];
         if (!playerData) {
             // if the user doesn't exist in our map,
@@ -238,7 +232,6 @@ export class PhaserScene extends Scene {
                 );
                 // debugger;
                 if (resp.status === 200) {
-                    // console.log(resp.data.userMap);
                     this.userMap[resp.data.userMap.userId] = resp.data.userMap;
                     localStorage.setItem(
                         'user-map',
@@ -284,7 +277,6 @@ export class PhaserScene extends Scene {
     }
 
     updateOtherPlayers(players: Array<string>) {
-        console.log('Other Players', this.otherPlayers, this.sceneKey);
         for (let s of players) {
             let player = JSON.parse(s);
             // if its me dont update
@@ -319,7 +311,6 @@ export class PhaserScene extends Scene {
                     {}
                 );
                 this.physics.world.enable(tmp, 1);
-                console.log(this.physics.world);
                 this.physics.add.collider(
                     this.player,
                     tmp,
@@ -333,7 +324,6 @@ export class PhaserScene extends Scene {
 
     create(data: any) {
         this.userMap = JSON.parse(localStorage.getItem('user-map') as any);
-        // console.log('creating');
         this.cursors = this.input.keyboard.createCursorKeys();
 
         const userId = localStorage.getItem('userId') || 0;
@@ -358,7 +348,6 @@ export class PhaserScene extends Scene {
             allTileSets.push(tempTileSet);
         }
 
-        // console.log('allTileSets: ', allTileSets);
         let allLayers: any = {};
         for (let i = 0; i < this.layers.length; i++) {
             allLayers[this.layers[i]] = this.map.createLayer(
@@ -408,7 +397,6 @@ export class PhaserScene extends Scene {
 
         let videoInput = this.input.keyboard.addKey('v');
         videoInput.on('down', () => {
-            console.log('Test');
             if (this.isVideoOn) {
                 this.isVideoOn = false;
                 this.room.disconnect();

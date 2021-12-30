@@ -37,7 +37,6 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         // be evaluated on the next call to update
         this.instructions = [];
         // Attach this sprite to the loaded physics engine
-        console.log(scene.physics.world, id);
         scene.physics.world.enable(this, 0);
         // Add this sprite to the scene
         scene.add.existing(this);
@@ -135,7 +134,6 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
 
     MoveAndUpdate(player) {
         // TODO: Can write a better method for moving between coordinates
-        console.log(player);
         this.x = player.Position.X;
         this.y = player.Position.Y;
         this.setTexture(
