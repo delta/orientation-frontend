@@ -34,11 +34,12 @@
 .controlsArea {
     height: 100px;
     display: grid;
-    position: absolute;
+    position: fixed;
     align-items: center;
     justify-items: center;
-    margin-top: 47.2%;
-    margin-left: 43%;
+    left: 50%;
+    bottom: 5%;
+    transform: translate(-50%, 0%);
 }
 .cont {
     text-align: center;
