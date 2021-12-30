@@ -24,7 +24,14 @@ export const DesktopStage = ({
         return <div>connecting</div>;
     }
     if (!room) {
-        return <div>room closed</div>;
+        return (
+            <div className={styles.cont}>
+                <h3 className={styles.animateCharcter}>
+                    {' '}
+                    Press V to join video call
+                </h3>
+            </div>
+        );
     }
 
     if (participants.length === 0) {
