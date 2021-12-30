@@ -22,6 +22,8 @@ interface ConstructorProps {
         back: { start: number; end: number };
     }>;
     spriteFrameRate?: number;
+    zoom: number;
+    playerDepth: number;
 }
 
 // A extension of Phaser scene which includes the preload, init and
@@ -55,6 +57,8 @@ export class PhaserScene extends Scene {
     isVideoOn = true;
     handleOtherPlayersBinded: any;
     handleRoomLeftBinded: any;
+    zoom: number;
+    playerDepth: number;
     constructor({
         config,
         mapName,
@@ -64,7 +68,9 @@ export class PhaserScene extends Scene {
         sceneErrorHandler,
         ws,
         spriteAnims,
-        spriteFrameRate
+        spriteFrameRate,
+        zoom,
+        playerDepth
     }: ConstructorProps) {
         super(config);
         this.sceneKey = '';
@@ -82,6 +88,9 @@ export class PhaserScene extends Scene {
         this.facing = 'back';
         this.spriteAnims = spriteAnims;
         this.spriteFrameRate = spriteFrameRate ? spriteFrameRate : 10;
+        this.zoom = zoom;
+        this.playerDepth = playerDepth;
+
         this.room = null;
         this.roomForceUpdate = null;
         this.isVideoOn = true;
@@ -166,7 +175,7 @@ export class PhaserScene extends Scene {
                         direction: this.spawnPoint.facing
                     }
                 });
-                this.room.disconnect();
+                if (this.room.state === 'connected') this.room.disconnect();
                 this.isVideoOn = false;
             } catch (err) {
                 this.sceneErrorHandler(err);
@@ -268,7 +277,7 @@ export class PhaserScene extends Scene {
 
         //@ts-ignore
         let tempPlayer = this.add.rpgcharacter(p);
-        tempPlayer.setDepth(4);
+        tempPlayer.setDepth(this.playerDepth);
         tempPlayer.setScale(0.5);
 
         if (this.otherPlayers === null) this.otherPlayers = {};
@@ -367,7 +376,7 @@ export class PhaserScene extends Scene {
             );
         }
 
-        this.player.setDepth(4);
+        this.player.setDepth(this.playerDepth);
         this.player.setScale(0.5);
 
         this.setupObjectLayer('Portals', this.UsePortal.bind(this));
@@ -377,7 +386,7 @@ export class PhaserScene extends Scene {
 
         // Set up the main (only?) camera
         const camera = this.cameras.main;
-        let zoomFactor = 1.25;
+        let zoomFactor = this.zoom;
         camera.zoom =
             (zoomFactor * window.innerHeight) / this.map.heightInPixels;
         // camera.centerOn(map.widthInPixels/2, this.map.heightInPixels);

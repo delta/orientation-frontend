@@ -175,6 +175,33 @@
                  "width":44,
                  "x":290,
                  "y":435.000016666667
+                }, 
+                {
+                 "height":41.3333,
+                 "id":17,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"destination",
+                         "type":"string",
+                         "value":"Barn"
+                        }, 
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"admin-right"
+                        }, 
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"portal"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":11.5,
+                 "x":435,
+                 "y":145.83335
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -261,7 +288,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":17,
+ "nextobjectid":18,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",
@@ -3628,7 +3655,6 @@
                  "objectgroup":
                     {
                      "draworder":"index",
-                     "id":2,
                      "name":"",
                      "objects":[
                             {
@@ -3660,7 +3686,6 @@
                  "objectgroup":
                     {
                      "draworder":"index",
-                     "id":2,
                      "name":"",
                      "objects":[
                             {
@@ -3692,7 +3717,6 @@
                  "objectgroup":
                     {
                      "draworder":"index",
-                     "id":2,
                      "name":"",
                      "objects":[
                             {
@@ -4417,7 +4441,6 @@
                  "objectgroup":
                     {
                      "draworder":"index",
-                     "id":2,
                      "name":"",
                      "objects":[
                             {
@@ -4458,7 +4481,6 @@
                  "objectgroup":
                     {
                      "draworder":"index",
-                     "id":2,
                      "name":"",
                      "objects":[
                             {
@@ -5183,7 +5205,6 @@
                  "objectgroup":
                     {
                      "draworder":"index",
-                     "id":2,
                      "name":"",
                      "objects":[
                             {
@@ -5215,7 +5236,6 @@
                  "objectgroup":
                     {
                      "draworder":"index",
-                     "id":2,
                      "name":"",
                      "objects":[
                             {
@@ -5247,7 +5267,6 @@
                  "objectgroup":
                     {
                      "draworder":"index",
-                     "id":2,
                      "name":"",
                      "objects":[
                             {

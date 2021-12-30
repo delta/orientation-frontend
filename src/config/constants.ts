@@ -32,7 +32,9 @@ export const CONSTANTS = {
                 'Base',
                 'Background',
                 'Grass'
-            ]
+            ],
+            ZOOM: 1.25,
+            DEPTH: 4
         },
         {
             SCENE_KEY: 'Admin',
@@ -51,7 +53,129 @@ export const CONSTANTS = {
                 'Base',
                 'Background',
                 'Grass'
-            ]
+            ],
+            ZOOM: 1.25,
+            DEPTH: 4
+        },
+        {
+            SCENE_KEY: 'Library',
+            MAP_NAME: 'Library',
+            TILESET_NAMES: [
+                'Modern',
+                'Fountain',
+                'Roads',
+                'SereneVillage',
+                'Trees'
+            ],
+            LOAD_TILESET_NAMES: ['Library', 'Gate'],
+            LAYERS: [
+                'BaseOverhead2',
+                'BaseOverhead1',
+                'Base',
+                'Background',
+                'Grass'
+            ],
+            ZOOM: 1.25,
+            DEPTH: 4
+        },
+        {
+            SCENE_KEY: 'LHC',
+            MAP_NAME: 'LHC',
+            TILESET_NAMES: [
+                'Modern',
+                'Fountain',
+                'Roads',
+                'SereneVillage',
+                'Trees'
+            ],
+            LOAD_TILESET_NAMES: ['AcadBuildings'],
+            LAYERS: [
+                'BaseOverhead2',
+                'BaseOverhead1',
+                'Base',
+                'Background',
+                'Grass'
+            ],
+            ZOOM: 1,
+            DEPTH: 4
+        },
+        {
+            SCENE_KEY: 'Octa',
+            MAP_NAME: 'Octa',
+            TILESET_NAMES: [
+                'Modern',
+                'Fountain',
+                'Roads',
+                'SereneVillage',
+                'Trees'
+            ],
+            LOAD_TILESET_NAMES: ['AcadBuildings'],
+            LAYERS: [
+                'BaseOverhead2',
+                'BaseOverhead1',
+                'Base',
+                'Background',
+                'Grass'
+            ],
+            ZOOM: 1,
+            DEPTH: 4
+        },
+        {
+            SCENE_KEY: 'Orion',
+            MAP_NAME: 'Orion',
+            TILESET_NAMES: [
+                'Modern',
+                'Fountain',
+                'Roads',
+                'SereneVillage',
+                'Trees'
+            ],
+            LOAD_TILESET_NAMES: ['Barn_Orion'],
+            LAYERS: [
+                'BaseOverhead2',
+                'BaseOverhead1',
+                'Base',
+                'Background',
+                'Grass'
+            ],
+            ZOOM: 1.25,
+            DEPTH: 4
+        },
+        {
+            SCENE_KEY: 'Barn',
+            MAP_NAME: 'Barn',
+            TILESET_NAMES: [
+                'Modern',
+                'Fountain',
+                'Roads',
+                'SereneVillage',
+                'Trees'
+            ],
+            LOAD_TILESET_NAMES: ['Barn_Orion'],
+            LAYERS: [
+                'BaseOverhead2',
+                'BaseOverhead1',
+                'Base',
+                'Background',
+                'Grass'
+            ],
+            ZOOM: 1.25,
+            DEPTH: 4
+        },
+        {
+            SCENE_KEY: 'NSO',
+            MAP_NAME: 'NSO',
+            TILESET_NAMES: [
+                'Modern',
+                'Fountain',
+                'Roads',
+                'SereneVillage',
+                'Trees'
+            ],
+            LOAD_TILESET_NAMES: ['FootballGround', 'Lines', 'RunningTrack'],
+            LAYERS: ['Overlay', 'Football', 'Base3', 'Base2', 'Base'],
+            ZOOM: 1.5,
+            DEPTH: 5
         }
     ],
     PLAYER_SPRITE_NAMES: PLAYERS,
