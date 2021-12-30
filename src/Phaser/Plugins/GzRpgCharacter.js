@@ -21,7 +21,7 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
             displayName = String(displayName).substring(0, 8) + '...';
         }
         this.text = this.scene.add
-            .text(this.x + 2, this.y + 20, displayName, {
+            .text(this.x, this.y + 20, displayName, {
                 fontFamily: 'PixelFont',
                 fontSize: '20px',
                 color: '#e8f22e',
@@ -36,7 +36,7 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         // Character movements are passed as instruction objects to
         // be evaluated on the next call to update
         this.instructions = [];
-        console.log(scene, id);
+        // console.log(scene, id);
         // Attach this sprite to the loaded physics engine
         scene.physics.world.enable(this, 0);
         // Add this sprite to the scene
@@ -58,7 +58,7 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         ) {
             this.anims.stopAfterRepeat(0);
         }
-        this.text.setX(this.x + 2);
+        this.text.setX(this.x);
         this.text.setY(this.y + 20);
     }
 
@@ -135,13 +135,15 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
 
     MoveAndUpdate(player) {
         // TODO: Can write a better method for moving between coordinates
-        console.log('moveUpdate', player);
+        // console.log('moveUpdate', player);
         this.x = player.Position.X;
         this.y = player.Position.Y;
         this.setTexture(
             'player',
             `${'player'}-${this.defaultTiles[player.Position.Direction]}`
         );
+        this.text.setX(this.x);
+        this.text.setY(this.y + 20);
     }
 }
 

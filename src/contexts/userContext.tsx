@@ -9,6 +9,7 @@ export interface IUser {
     description: string;
     gender: string;
     department: string;
+    isNewUser: boolean;
 }
 
 export const UserContext = createContext<UserContextProviderProps | null>(null);
@@ -36,20 +37,27 @@ export const UserContextProvider: React.FC = ({ children }) => {
             try {
                 const resp = await axiosInstance.get('/api/user/me');
                 console.log(resp.data);
-                // setLoading(false);
                 if (resp.data) {
                     // the user has logged in, fetch his profile data
                     // and return
-
-                    setUser(resp.data.user);
+                    console.log(resp.data.user);
+                    setUser({
+                        id: resp.data.user.ID,
+                        department: resp.data.user.Department,
+                        description: resp.data.user.Desription,
+                        email: resp.data.user.Email,
+                        gender: resp.data.user.Gender,
+                        username: resp.data.user.Username,
+                        name: resp.data.user.Name,
+                        isNewUser: resp.data.isNewUser
+                    });
                     localStorage.setItem(
                         'userId',
                         JSON.stringify(resp.data.user.ID)
                     );
                     setIsLoggedIn(true);
-                } else {
-                    setLoading(false);
                 }
+                setLoading(false);
             } catch (err) {
                 setError(err);
                 setLoading(false);

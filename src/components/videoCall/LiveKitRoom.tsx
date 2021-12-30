@@ -67,7 +67,8 @@ export const LiveKitRoom = ({
                 room.disconnect();
             };
         });
-    }, [connectOptions, onConnected, queuefunc, roomState, token, url]);
+        // eslint-disable-next-line
+    }, []);
 
     const selectedStageRenderer = stageRenderer ?? StageView;
 

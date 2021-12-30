@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { UserContext } from '../contexts/userContext';
 
 const HomePage = () => {
-    const isLoggedIn = useContext(UserContext)?.isLoggedIn;
+    const { isLoggedIn, user } = useContext(UserContext) || {};
 
     return (
         <>
@@ -20,7 +20,15 @@ const HomePage = () => {
                     doloremque ut quo fugiat eveniet tempora, atque alias earum
                     ullam inventore itaque sapiente iste?
                 </p>
-                <Link to={isLoggedIn ? '/game' : '/auth/login'}>
+                <Link
+                    to={
+                        isLoggedIn
+                            ? user?.isNewUser
+                                ? '/auth/register'
+                                : '/game'
+                            : '/auth/login'
+                    }
+                >
                     <button className="p-4 bg-green-600 rounded-lg font-bold text-text mt-5 hover:bg-gray-600">
                         Start the journey
                     </button>
