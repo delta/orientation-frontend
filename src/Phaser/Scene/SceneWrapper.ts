@@ -4,6 +4,7 @@ import { config } from '../../config/config';
 import SpawnPoints from '../../utils/spawnPoints';
 import { WebsocketApi } from '../../ws/ws';
 import { phaserLoadingAnimation } from '../../utils/loadingAnimation';
+import { axiosInstance } from '../../utils/axios';
 
 interface ConstructorProps {
     config: string | Types.Scenes.SettingsConfig;
@@ -45,6 +46,10 @@ export class PhaserScene extends Scene {
     facing: string;
     spriteAnims?: any;
     spriteFrameRate = 10;
+    userMap: Record<
+        string,
+        { userId: number; name: string; spriteType: string }
+    > = {};
     constructor({
         config,
         mapName,
@@ -72,6 +77,7 @@ export class PhaserScene extends Scene {
         this.facing = 'back';
         this.spriteAnims = spriteAnims;
         this.spriteFrameRate = spriteFrameRate ? spriteFrameRate : 10;
+
         return;
     }
 
@@ -172,15 +178,51 @@ export class PhaserScene extends Scene {
         });
     }
 
-    addNewPlayers(player: any) {
+    async addNewPlayers(player: any) {
         // console.log(player);
+        let playerData = this.userMap[player.Id];
+        if (!playerData) {
+            // if the user doesn't exist in our map,
+            // we make the user data from backend
+            // and add it to our list
+            try {
+                const resp = await axiosInstance.get(
+                    '/api/user/map/' + player.Id
+                );
+                // debugger;
+                if (resp.status === 200) {
+                    // console.log(resp.data.userMap);
+                    this.userMap[resp.data.userMap.userId] = resp.data.userMap;
+                    localStorage.setItem(
+                        'user-map',
+                        JSON.stringify(this.userMap)
+                    );
+                    playerData = resp.data.userMap;
+                } else {
+                    // setting user data to random stuff so the game doesn't break
+                    playerData = {
+                        name: 'OXOXOXOX',
+                        spriteType: 'player',
+                        userId: 1000
+                    };
+                }
+            } catch (err) {
+                console.error(err);
+                playerData = {
+                    name: 'OXOXOXOX',
+                    spriteType: 'player',
+                    userId: 1000
+                };
+            }
+        }
+
         // @ts-ignore
         let p = {
-            name: `${Date.now()}`,
+            name: playerData.name,
             x: player.Position.X,
             y: player.Position.Y,
-            id: player.Id,
-            type: 'player',
+            id: playerData.userId,
+            type: playerData.spriteType,
             facing: player.Position.Direction
         };
 
@@ -195,12 +237,12 @@ export class PhaserScene extends Scene {
     }
 
     updateOtherPlayers(players: Array<string>) {
-        console.log(this.otherPlayers, this.player.id);
+        // console.log(this.otherPlayers, this.player.id);
         // console.log(players);
 
         for (let s of players) {
             let player = JSON.parse(s);
-            console.log(player);
+            // console.log(player);
             // if its me dont update
             if (Number(player.Id) !== Number(this.player.id)) {
                 if (
@@ -210,11 +252,11 @@ export class PhaserScene extends Scene {
                     console.log('update');
                     this.otherPlayers[player.Id].MoveAndUpdate(player);
                 } else {
-                    console.log('New player');
+                    console.log('New player', player);
                     this.addNewPlayers(player);
                 }
             } else {
-                console.log('hmmmmmm');
+                // console.log('hmmmmmm');
             }
         }
     }
@@ -249,17 +291,19 @@ export class PhaserScene extends Scene {
     }
 
     create(data: any) {
+        this.userMap = JSON.parse(localStorage.getItem('user-map') as any);
         // console.log('creating');
         this.cursors = this.input.keyboard.createCursorKeys();
 
+        const userId = localStorage.getItem('userId') || 0;
         // Set up the player character
         // @ts-ignore
         this.player = this.add.rpgcharacter({
             name: 'player',
             x: this.spawnPoint.x,
             y: this.spawnPoint.y,
-            id: localStorage.getItem('userId') || 0,
-            type: 'player',
+            id: userId,
+            type: this.userMap[userId].spriteType || 'player',
             facing: this.spawnPoint.facing
         });
 
