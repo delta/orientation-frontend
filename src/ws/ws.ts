@@ -22,10 +22,14 @@ interface changeRoom {
     position: position;
 }
 
+interface chatMessage {
+    text: string;
+}
+
 // ws request message type
 interface requestMessageType {
-    messageType: 'change-room' | 'user-move' | 'user-register';
-    data: changeRoom | upsertUser;
+    messageType: 'change-room' | 'user-move' | 'user-register' | 'chat-message';
+    data: changeRoom | upsertUser | chatMessage;
 }
 // ws response message type
 interface responseMessageType {
@@ -33,7 +37,10 @@ interface responseMessageType {
         | 'new-user'
         | 'already-connected'
         | 'room-broadcast'
-        | 'user-left';
+        | 'user-left'
+        | 'users'
+        | 'chat-message'
+        | 'user-action';
     Data: any;
 }
 
@@ -122,6 +129,36 @@ export class WebsocketApi {
                     document.dispatchEvent(roomLeftEvent);
                     break;
 
+                case 'users':
+                    const connectedUsersEvent = new CustomEvent<any>(
+                        'ws-connected-users',
+                        {
+                            detail: responseMessage.Data
+                        }
+                    );
+                    document.dispatchEvent(connectedUsersEvent);
+                    break;
+
+                case 'chat-message':
+                    const chatMessageEvent = new CustomEvent<any>(
+                        'ws-chat-message',
+                        {
+                            detail: responseMessage.Data
+                        }
+                    );
+                    document.dispatchEvent(chatMessageEvent);
+                    break;
+
+                case 'user-action':
+                    const userActionEvent = new CustomEvent<any>(
+                        'ws-user-action',
+                        {
+                            detail: responseMessage.Data
+                        }
+                    );
+                    document.dispatchEvent(userActionEvent);
+                    break;
+
                 default:
                     console.log('other response', responseMessage);
                     break;
@@ -171,6 +208,22 @@ export class WebsocketApi {
             };
 
             console.log('change room');
+            this.socket.send(JSON.stringify(requestMessage));
+
+            return;
+        }
+
+        throw socketNotOpenedError;
+    };
+
+    sendChatMessage = (req: chatMessage) => {
+        if (this.socket.readyState === WebSocket.OPEN) {
+            let requestMessage: requestMessageType = {
+                messageType: 'chat-message',
+                data: req
+            };
+
+            console.log('chat-message');
             this.socket.send(JSON.stringify(requestMessage));
 
             return;
