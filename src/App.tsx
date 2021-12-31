@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { HomePage } from './pages/home';
 import { AuthPage } from './pages/auth';
 import { GamePage } from './pages/Game';
+import { MadeWithLove } from './components/MadeWithLove';
 import Main from './components/videoCall/Main';
 import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
@@ -33,6 +34,7 @@ function App() {
                     </Router>
                     <Portal />
                 </UserContextProvider>
+                <MadeWithLove />
             </ToastProvider>
         </div>
     );

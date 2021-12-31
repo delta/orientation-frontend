@@ -34,8 +34,7 @@ export const GamePage = () => {
         document.dispatchEvent(event);
     }, []);
     const logout = async () => {
-        await axiosInstance.get('api/auth/logout');
-        history.push('/');
+        history.push('/auth/logout');
     };
 
     const clickCounter = () => {
