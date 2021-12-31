@@ -7,6 +7,7 @@ import { GamePage } from './pages/Game';
 import Main from './components/videoCall/Main';
 import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
+import { Portal } from './pages/portal';
 
 function App() {
     return (
@@ -20,7 +21,7 @@ function App() {
                             </Route>
                             <Route path="/game">
                                 <GamePage />
-                                <Main />
+                                <Main></Main>
                             </Route>
                             <Route path="/auth">
                                 <AuthPage />
@@ -30,6 +31,7 @@ function App() {
                             </Route>
                         </Switch>
                     </Router>
+                    <Portal />
                 </UserContextProvider>
             </ToastProvider>
         </div>

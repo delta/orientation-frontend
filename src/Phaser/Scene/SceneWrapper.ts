@@ -24,6 +24,8 @@ interface ConstructorProps {
     spriteFrameRate?: number;
     zoom: number;
     playerDepth: number;
+    // playerDepth: number;
+    openModal: (data: string) => void;
 }
 
 // A extension of Phaser scene which includes the preload, init and
@@ -59,6 +61,18 @@ export class PhaserScene extends Scene {
     handleRoomLeftBinded: any;
     zoom: number;
     playerDepth: number;
+
+    // timeouts to conditionally display stuff on screen
+    currentTimeoutId: null | NodeJS.Timeout = null;
+    callbackData: any = null;
+    timeoutDuration = 100;
+
+    // key-down events
+    intractableData: { type: 'minigame' | 'gmap'; data: any } | null = null;
+
+    // opening modals
+    openModal!: (data: string) => void;
+
     constructor({
         config,
         mapName,
@@ -70,7 +84,8 @@ export class PhaserScene extends Scene {
         spriteAnims,
         spriteFrameRate,
         zoom,
-        playerDepth
+        playerDepth,
+        openModal
     }: ConstructorProps) {
         super(config);
         this.sceneKey = '';
@@ -97,6 +112,7 @@ export class PhaserScene extends Scene {
         this.handleVcToggle();
         this.handleOtherPlayersBinded = null;
         this.handleRoomLeftBinded = null;
+        this.openModal = openModal;
         return;
     }
 
@@ -251,7 +267,7 @@ export class PhaserScene extends Scene {
                     // setting user data to random stuff so the game doesn't break
                     playerData = {
                         name: 'OXOXOXOX',
-                        spriteType: 'player',
+                        spriteType: 'male',
                         userId: 1000
                     };
                 }
@@ -259,7 +275,7 @@ export class PhaserScene extends Scene {
                 console.error(err);
                 playerData = {
                     name: 'OXOXOXOX',
-                    spriteType: 'player',
+                    spriteType: 'male',
                     userId: 1000
                 };
             }
@@ -320,7 +336,7 @@ export class PhaserScene extends Scene {
                     {}
                 );
                 this.physics.world.enable(tmp, 1);
-                this.physics.add.collider(
+                this.physics.add.overlap(
                     this.player,
                     tmp,
                     callBack,
@@ -331,8 +347,28 @@ export class PhaserScene extends Scene {
         }
     }
 
+    addTimeout(callback: () => any, cleanup: (data: any) => void) {
+        if (this.currentTimeoutId === null) {
+            this.callbackData = callback();
+            this.currentTimeoutId = setTimeout(() => {
+                cleanup(this.callbackData);
+                this.currentTimeoutId = null;
+                this.callbackData = null;
+            }, this.timeoutDuration);
+        } else {
+            clearTimeout(this.currentTimeoutId);
+            this.currentTimeoutId = setTimeout(() => {
+                cleanup(this.callbackData);
+                this.currentTimeoutId = null;
+                this.callbackData = null;
+            }, this.timeoutDuration);
+        }
+    }
+
     create(data: any) {
         this.userMap = JSON.parse(localStorage.getItem('user-map') as any);
+        process.env.NODE_ENV === 'development' &&
+            ((window as any).scene = this);
         this.cursors = this.input.keyboard.createCursorKeys();
 
         const userId = localStorage.getItem('userId') || 0;
@@ -343,7 +379,7 @@ export class PhaserScene extends Scene {
             x: this.spawnPoint.x,
             y: this.spawnPoint.y,
             id: userId,
-            type: this.userMap[userId].spriteType || 'player',
+            type: this.userMap[userId].spriteType || 'male',
             facing: this.spawnPoint.facing
         });
 
@@ -414,6 +450,20 @@ export class PhaserScene extends Scene {
                 this.roomForceUpdate();
             }
         });
+        // Listening for key presses
+        let Markiplier = this.input.keyboard.addKey('e');
+        Markiplier.on('down', () => {
+            if (this.intractableData) {
+                console.log(this.intractableData);
+                if (this.intractableData.type === 'minigame') {
+                    const elm = this.openModal(
+                        this.intractableData.type +
+                            '/' +
+                            this.intractableData.data
+                    );
+                }
+            }
+        });
     }
 
     update(time: any, delta: any) {
@@ -453,6 +503,36 @@ export class PhaserScene extends Scene {
 
     StartMinigame(player: any, target: any) {
         // console.log(target.properties.name);
+        const callback = () => {
+            const width = this.cameras.main.width;
+            const height = this.cameras.main.height;
+
+            this.intractableData = {
+                type: 'minigame',
+                data: target.properties.name
+            };
+
+            const text = this.add
+                .text(
+                    width / 2,
+                    (height * 3) / 5,
+                    'Press E to start the game',
+                    {
+                        fontSize: '10px',
+                        backgroundColor: '#000'
+                    }
+                )
+                .setScrollFactor(0)
+                .setDepth(100)
+                .setOrigin(0.5, 0.5);
+            (window as any).text = text;
+            return text;
+        };
+        const cleanup = (data: Phaser.GameObjects.Text) => {
+            data.destroy(true);
+            this.intractableData = null;
+        };
+        this.addTimeout(callback, cleanup);
     }
 
     ShowText(player: any, target: any) {

@@ -25,6 +25,7 @@ interface ISceneProps {
     spriteFrameRate?: number;
     zoom: number;
     playerDepth: number;
+    openModal: (data: string) => void;
 }
 
 const Scene = ({
@@ -39,7 +40,8 @@ const Scene = ({
     spriteAnims,
     spriteFrameRate,
     zoom,
-    playerDepth
+    playerDepth,
+    openModal
 }: ISceneProps) => {
     const game = useContext(GameContext);
     const [sceneInstance, setSceneInstance] = useState<PhaserScene | null>(
@@ -65,7 +67,9 @@ const Scene = ({
             spriteAnims,
             spriteFrameRate,
             zoom,
-            playerDepth
+            playerDepth,
+            // playerDepth
+            openModal
         });
 
         game?.scene.add(sceneKey, newScene, !!autoStart);

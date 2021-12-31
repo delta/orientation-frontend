@@ -1,7 +1,7 @@
 import { config } from './config';
 
 // an array of all player names
-const PLAYERS = ['player', 'player2'];
+const PLAYERS = ['male', 'female'];
 
 const TILESET_ASSETS_NAMES = [
     'Modern',

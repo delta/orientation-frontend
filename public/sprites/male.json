@@ -3,7 +3,7 @@
     "app": "https://www.codeandweb.com/texturepacker",
     "version": "3.0",
     "smartupdate": "$TexturePacker:SmartUpdate:f48024331e668af6c2ebfade91b7b321:8900d37b770d4bcf5a127a0ecc1716c8:86d5339b780aedd87b35e2b7c0a7e11b$",
-    "image": "player.png",
+    "image": "male.png",
     "scale": 0.83333,
     "format": "RGBA8888",
     "size": {
@@ -12,7 +12,7 @@
     }
   },
   "frames": {
-    "player-18": {
+    "male-18": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -32,7 +32,7 @@
         "h": 42
       }
     },
-    "player-19": {
+    "male-19": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -52,7 +52,7 @@
         "h": 42
       }
     },
-    "player-2": {
+    "male-2": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -72,7 +72,7 @@
         "h": 42
       }
     },
-    "player-20": {
+    "male-20": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -92,7 +92,7 @@
         "h": 42
       }
     },
-    "player-22": {
+    "male-22": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -112,7 +112,7 @@
         "h": 42
       }
     },
-    "player-23": {
+    "male-23": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -132,7 +132,7 @@
         "h": 42
       }
     },
-    "player-24": {
+    "male-24": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -152,7 +152,7 @@
         "h": 42
       }
     },
-    "player-26": {
+    "male-26": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -172,7 +172,7 @@
         "h": 42
       }
     },
-    "player-4": {
+    "male-4": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -192,7 +192,7 @@
         "h": 42
       }
     },
-    "player-6": {
+    "male-6": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -212,7 +212,7 @@
         "h": 42
       }
     },
-    "player-8": {
+    "male-8": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -232,7 +232,7 @@
         "h": 42
       }
     },
-    "player-13": {
+    "male-13": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -252,7 +252,7 @@
         "h": 42
       }
     },
-    "player-15": {
+    "male-15": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -272,7 +272,7 @@
         "h": 42
       }
     },
-    "player-31": {
+    "male-31": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -292,7 +292,7 @@
         "h": 42
       }
     },
-    "player-33": {
+    "male-33": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -312,7 +312,7 @@
         "h": 42
       }
     },
-    "player-16": {
+    "male-16": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -332,7 +332,7 @@
         "h": 42
       }
     },
-    "player-34": {
+    "male-34": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -352,7 +352,7 @@
         "h": 42
       }
     },
-    "player-17": {
+    "male-17": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -372,7 +372,7 @@
         "h": 42
       }
     },
-    "player-27": {
+    "male-27": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -392,7 +392,7 @@
         "h": 42
       }
     },
-    "player-35": {
+    "male-35": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -412,7 +412,7 @@
         "h": 42
       }
     },
-    "player-9": {
+    "male-9": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -432,7 +432,7 @@
         "h": 42
       }
     },
-    "player-0": {
+    "male-0": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -452,7 +452,7 @@
         "h": 41
       }
     },
-    "player-1": {
+    "male-1": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -472,7 +472,7 @@
         "h": 41
       }
     },
-    "player-21": {
+    "male-21": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -492,7 +492,7 @@
         "h": 41
       }
     },
-    "player-25": {
+    "male-25": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -512,7 +512,7 @@
         "h": 41
       }
     },
-    "player-3": {
+    "male-3": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -532,7 +532,7 @@
         "h": 41
       }
     },
-    "player-5": {
+    "male-5": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -552,7 +552,7 @@
         "h": 41
       }
     },
-    "player-7": {
+    "male-7": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -572,7 +572,7 @@
         "h": 41
       }
     },
-    "player-14": {
+    "male-14": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -592,7 +592,7 @@
         "h": 41
       }
     },
-    "player-32": {
+    "male-32": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -612,7 +612,7 @@
         "h": 41
       }
     },
-    "player-10": {
+    "male-10": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -632,7 +632,7 @@
         "h": 41
       }
     },
-    "player-28": {
+    "male-28": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -652,7 +652,7 @@
         "h": 41
       }
     },
-    "player-12": {
+    "male-12": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -672,7 +672,7 @@
         "h": 41
       }
     },
-    "player-30": {
+    "male-30": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -692,7 +692,7 @@
         "h": 41
       }
     },
-    "player-11": {
+    "male-11": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -712,7 +712,7 @@
         "h": 41
       }
     },
-    "player-29": {
+    "male-29": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
