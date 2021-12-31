@@ -219,7 +219,6 @@ export class PhaserScene extends Scene {
 
     handleOtherPlayers(e: any) {
         let players: Array<string> = e.detail;
-        if (players.length === 1) return;
         this.updateOtherPlayers(players);
     }
 
@@ -302,6 +301,16 @@ export class PhaserScene extends Scene {
     }
 
     updateOtherPlayers(players: Array<string>) {
+        let playerIds = players.map((player) => {
+            return JSON.parse(player).Id;
+        });
+        for (let i in this.otherPlayers) {
+            if (!playerIds.includes(Number.parseInt(i))) {
+                this.otherPlayers[i].text.setVisible(false);
+                this.otherPlayers[i].destroy();
+                delete this.otherPlayers[i];
+            }
+        }
         for (let s of players) {
             let player = JSON.parse(s);
             // if its me dont update
