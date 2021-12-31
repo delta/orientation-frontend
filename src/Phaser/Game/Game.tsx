@@ -45,8 +45,7 @@ class Game extends Component<GameProps, GameState> {
         if (!this.gameRef.current) return;
         //TODO: Get the Phaser game as properties, and initialize them instead of hard coding
         const canvasWidth = (window.innerWidth * 3) / 5;
-        const canvasHeight = (this.gameRef.current?.parentNode as any)
-            .clientHeight as any;
+        const canvasHeight = (canvasWidth * 3) / 4;
         const game = new PhaserGame({
             height: canvasHeight,
             width: canvasWidth,
