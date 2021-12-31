@@ -6,8 +6,9 @@ import { MiniGame2048 } from '../components/modal/MiniGame2048';
 import { config } from '../config/config';
 import { clsx } from '../utils/clsx';
 import { Modal } from '../components/modal';
+import { DuplicateWSConnectionError } from '../components/modal/DuplicateWs';
 
-type AllowedPortals = 'minigame/2048' | 'hello-world';
+type AllowedPortals = 'minigame/2048' | 'hello-world' | 'ws-already-connected';
 
 interface AsyncFunc {
     (url: string, game_name: string, score: number): Promise<void>;
@@ -27,16 +28,31 @@ export const Portal = () => {
         setOpen(true);
     };
 
+    const alreadyConnectedEventHandler = async (event: any) => {
+        setCurrentMethod('ws-already-connected');
+        setOpen(true);
+    };
+
     useEffect(() => {
         document.addEventListener(
             'portal-listener',
             setCurrentMethodEventHandler
         );
-        return () =>
+
+        document.addEventListener(
+            'ws-already-connected',
+            alreadyConnectedEventHandler
+        );
+        return () => {
             document.addEventListener(
                 'portal-listener',
                 setCurrentMethodEventHandler
             );
+            document.removeEventListener(
+                'ws-already-connected',
+                alreadyConnectedEventHandler
+            );
+        };
     }, []);
 
     const el = document.getElementById('modal');
@@ -50,6 +66,13 @@ export const Portal = () => {
         if (currentMethod === 'hello-world') {
             return 'hello world';
         }
+        if (currentMethod === 'ws-already-connected') {
+            return (
+                <span className={clsx('text-2xl font-medium text-red-600')}>
+                    Duplicate Connection Detected
+                </span>
+            );
+        }
         return '';
     }, [currentMethod]);
 
@@ -60,6 +83,10 @@ export const Portal = () => {
 
         if (currentMethod === 'hello-world') {
             return <Modal />;
+        }
+
+        if (currentMethod === 'ws-already-connected') {
+            return <DuplicateWSConnectionError />;
         }
 
         return null;
@@ -131,11 +158,12 @@ export const Portal = () => {
 
     return createPortal(
         <>
-            <Transition appear show={open} as={Fragment}>
+            <Transition appear show={open} as={Fragment} static={true}>
                 <Dialog
                     as="div"
                     className="fixed inset-0 z-10 overflow-y-auto"
                     onClose={closeModal}
+                    static={true}
                 >
                     <div className="min-h-screen px-4 text-center">
                         <Transition.Child
