@@ -43,6 +43,7 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         // scale the sprite
         this.scale = 0.5;
         this.body.setSize(this.width / 2, this.height / 5);
+        this.type = type;
         this.setTexture(type, `${type}-${this.defaultTiles[facing]}`);
         this.facing = 'back';
     }
@@ -137,8 +138,8 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         this.x = player.Position.X;
         this.y = player.Position.Y;
         this.setTexture(
-            'player',
-            `${'player'}-${this.defaultTiles[player.Position.Direction]}`
+            this.type,
+            `${this.type}-${this.defaultTiles[player.Position.Direction]}`
         );
         this.text.setX(this.x);
         this.text.setY(this.y + 20);

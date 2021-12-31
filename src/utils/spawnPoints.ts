@@ -30,10 +30,10 @@ const SpawnPoints = {
     'octa-left': { x: 200, y: 400, facing: 'back' },
     'octa-lhc': { x: 300, y: 200, facing: 'back' },
     'lhc-octa': { x: 300, y: 50, facing: 'front' },
-    'nso-right': { x: 400, y: 70, facing: 'left' },
-    'nso-left': { x: 350, y: 400, facing: 'left' },
-    'library-right': { x: 50, y: 550, facing: 'right' },
-    entranceRight: { x: 700, y: 550, facing: 'left' }
+    'nso-left': { x: 400, y: 70, facing: 'left' },
+    'nso-right': { x: 350, y: 400, facing: 'left' },
+    'library-right': { x: 650, y: 100, facing: 'left' },
+    entranceRight: { x: 50, y: 100, facing: 'right' }
 };
 
 export default SpawnPoints;

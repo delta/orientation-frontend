@@ -267,7 +267,7 @@ export class PhaserScene extends Scene {
                     // setting user data to random stuff so the game doesn't break
                     playerData = {
                         name: 'OXOXOXOX',
-                        spriteType: 'player',
+                        spriteType: 'male',
                         userId: 1000
                     };
                 }
@@ -275,7 +275,7 @@ export class PhaserScene extends Scene {
                 console.error(err);
                 playerData = {
                     name: 'OXOXOXOX',
-                    spriteType: 'player',
+                    spriteType: 'male',
                     userId: 1000
                 };
             }
@@ -379,7 +379,7 @@ export class PhaserScene extends Scene {
             x: this.spawnPoint.x,
             y: this.spawnPoint.y,
             id: userId,
-            type: this.userMap[userId].spriteType || 'player',
+            type: this.userMap[userId].spriteType || 'male',
             facing: this.spawnPoint.facing
         });
 

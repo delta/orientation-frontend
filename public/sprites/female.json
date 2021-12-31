@@ -3,7 +3,7 @@
     "app": "https://www.codeandweb.com/texturepacker",
     "version": "3.0",
     "smartupdate": "$TexturePacker:SmartUpdate:966573348f26090967973dd6943060e8:379b2168ed04616d6172fd6ccc84b349:7d53e51653a7098021ab2eae67de53d3$",
-    "image": "player2.png",
+    "image": "female.png",
     "scale": 0.83333,
     "format": "RGBA8888",
     "size": {
@@ -12,7 +12,7 @@
     }
   },
   "frames": {
-    "player2-10": {
+    "female-10": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -32,7 +32,7 @@
         "h": 42
       }
     },
-    "player2-11": {
+    "female-11": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -52,7 +52,7 @@
         "h": 42
       }
     },
-    "player2-14": {
+    "female-14": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -72,7 +72,7 @@
         "h": 42
       }
     },
-    "player2-3": {
+    "female-3": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -92,7 +92,7 @@
         "h": 42
       }
     },
-    "player2-15": {
+    "female-15": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -112,7 +112,7 @@
         "h": 42
       }
     },
-    "player2-28": {
+    "female-28": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -132,7 +132,7 @@
         "h": 42
       }
     },
-    "player2-29": {
+    "female-29": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -152,7 +152,7 @@
         "h": 42
       }
     },
-    "player2-7": {
+    "female-7": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -172,7 +172,7 @@
         "h": 42
       }
     },
-    "player2-32": {
+    "female-32": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -192,7 +192,7 @@
         "h": 42
       }
     },
-    "player2-33": {
+    "female-33": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -212,7 +212,7 @@
         "h": 42
       }
     },
-    "player2-0": {
+    "female-0": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -232,7 +232,7 @@
         "h": 43
       }
     },
-    "player2-1": {
+    "female-1": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -252,7 +252,7 @@
         "h": 43
       }
     },
-    "player2-12": {
+    "female-12": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -272,7 +272,7 @@
         "h": 43
       }
     },
-    "player2-13": {
+    "female-13": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -292,7 +292,7 @@
         "h": 43
       }
     },
-    "player2-16": {
+    "female-16": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -312,7 +312,7 @@
         "h": 43
       }
     },
-    "player2-17": {
+    "female-17": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -332,7 +332,7 @@
         "h": 43
       }
     },
-    "player2-2": {
+    "female-2": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -352,7 +352,7 @@
         "h": 43
       }
     },
-    "player2-27": {
+    "female-27": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -372,7 +372,7 @@
         "h": 43
       }
     },
-    "player2-30": {
+    "female-30": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -392,7 +392,7 @@
         "h": 43
       }
     },
-    "player2-31": {
+    "female-31": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -412,7 +412,7 @@
         "h": 43
       }
     },
-    "player2-34": {
+    "female-34": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -432,7 +432,7 @@
         "h": 43
       }
     },
-    "player2-4": {
+    "female-4": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -452,7 +452,7 @@
         "h": 43
       }
     },
-    "player2-35": {
+    "female-35": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -472,7 +472,7 @@
         "h": 43
       }
     },
-    "player2-5": {
+    "female-5": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -492,7 +492,7 @@
         "h": 43
       }
     },
-    "player2-6": {
+    "female-6": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -512,7 +512,7 @@
         "h": 43
       }
     },
-    "player2-8": {
+    "female-8": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -532,7 +532,7 @@
         "h": 43
       }
     },
-    "player2-9": {
+    "female-9": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -552,7 +552,7 @@
         "h": 43
       }
     },
-    "player2-21": {
+    "female-21": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -572,7 +572,7 @@
         "h": 44
       }
     },
-    "player2-25": {
+    "female-25": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -592,7 +592,7 @@
         "h": 44
       }
     },
-    "player2-18": {
+    "female-18": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -612,7 +612,7 @@
         "h": 45
       }
     },
-    "player2-19": {
+    "female-19": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -632,7 +632,7 @@
         "h": 45
       }
     },
-    "player2-20": {
+    "female-20": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -652,7 +652,7 @@
         "h": 45
       }
     },
-    "player2-22": {
+    "female-22": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -672,7 +672,7 @@
         "h": 45
       }
     },
-    "player2-23": {
+    "female-23": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -692,7 +692,7 @@
         "h": 45
       }
     },
-    "player2-24": {
+    "female-24": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {
@@ -712,7 +712,7 @@
         "h": 45
       }
     },
-    "player2-26": {
+    "female-26": {
       "rotated": false,
       "trimmed": true,
       "sourceSize": {

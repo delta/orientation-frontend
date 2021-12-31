@@ -11334,7 +11334,7 @@
                         {
                          "name":"isCollidable",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -11361,7 +11361,7 @@
                         {
                          "name":"isCollidable",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
