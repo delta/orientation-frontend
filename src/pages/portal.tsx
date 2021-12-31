@@ -158,12 +158,11 @@ export const Portal = () => {
 
     return createPortal(
         <>
-            <Transition appear show={open} as={Fragment} static={true}>
+            <Transition appear show={open} as={Fragment}>
                 <Dialog
                     as="div"
                     className="fixed inset-0 z-10 overflow-y-auto"
                     onClose={closeModal}
-                    static={true}
                 >
                     <div className="min-h-screen px-4 text-center">
                         <Transition.Child
