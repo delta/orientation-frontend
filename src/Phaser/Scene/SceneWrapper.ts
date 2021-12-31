@@ -369,8 +369,16 @@ export class PhaserScene extends Scene {
         this.userMap = JSON.parse(localStorage.getItem('user-map') as any);
         process.env.NODE_ENV === 'development' &&
             ((window as any).scene = this);
-        this.cursors = this.input.keyboard.createCursorKeys();
-
+        this.cursors = this.input.keyboard.addKeys({
+            w: Phaser.Input.Keyboard.KeyCodes.W,
+            a: Phaser.Input.Keyboard.KeyCodes.A,
+            s: Phaser.Input.Keyboard.KeyCodes.S,
+            d: Phaser.Input.Keyboard.KeyCodes.D,
+            up: Phaser.Input.Keyboard.KeyCodes.UP,
+            down: Phaser.Input.Keyboard.KeyCodes.DOWN,
+            right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+            left: Phaser.Input.Keyboard.KeyCodes.LEFT
+        });
         const userId = localStorage.getItem('userId') || 0;
         // Set up the player character
         // @ts-ignore
@@ -473,15 +481,14 @@ export class PhaserScene extends Scene {
         if (this.player.y < 0) this.player.y = 0;
         if (this.player.y > this.map.heightInPixels)
             this.player.y = this.map.heightInPixels;
-
-        if (this.cursors.left.isDown)
+        if (this.cursors.left.isDown || this.cursors.a.isDown)
             this.player.SetInstruction({ action: 'walk', option: 'left' });
-        else if (this.cursors.right.isDown)
+        else if (this.cursors.right.isDown || this.cursors.d.isDown)
             this.player.SetInstruction({ action: 'walk', option: 'right' });
 
-        if (this.cursors.up.isDown)
+        if (this.cursors.up.isDown || this.cursors.w.isDown)
             this.player.SetInstruction({ action: 'walk', option: 'back' });
-        else if (this.cursors.down.isDown)
+        else if (this.cursors.down.isDown || this.cursors.s.isDown)
             this.player.SetInstruction({ action: 'walk', option: 'front' });
 
         this.player.update();
