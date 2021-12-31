@@ -21,6 +21,7 @@ function App() {
                             </Route>
                             <Route path="/game">
                                 <GamePage />
+                                <Main></Main>
                             </Route>
                             <Route path="/auth">
                                 <AuthPage />
