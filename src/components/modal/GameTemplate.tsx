@@ -9,6 +9,7 @@ import { CONSTANTS } from '../../config/constants';
 interface GameTemplateProps {
     gameProps: {
         name: string;
+        path: string;
         width: number;
         height: number;
         description: string;
@@ -29,7 +30,7 @@ export const GameTemplate = (props: GameTemplateProps) => {
         }[]
     >([]);
 
-    const { name, width, height, description } = props.gameProps;
+    const { name, path, width, height, description } = props.gameProps;
 
     const getLeaderboard = async (minigame: string) => {
         try {
@@ -114,7 +115,7 @@ export const GameTemplate = (props: GameTemplateProps) => {
                         <iframe
                             width={width}
                             height={height}
-                            src={`minigames/${name}`}
+                            src={`minigames/${path}`}
                             title={`minigames/${name}`}
                         ></iframe>
                         <Disclosure>
