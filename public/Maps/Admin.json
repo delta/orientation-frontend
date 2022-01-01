@@ -75,7 +75,7 @@
                         {
                          "name":"name",
                          "type":"string",
-                         "value":"2048"
+                         "value":"hextris"
                         }, 
                         {
                          "name":"type",

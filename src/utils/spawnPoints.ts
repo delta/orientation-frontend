@@ -20,8 +20,10 @@ const SpawnPoints = {
         facing: 'back'
     },
     menu: { x: 170, y: 380, facing: 'back' },
-    entranceLeft: { x: 70, y: 450, facing: 'back' },
-    'orion-down': { x: 30, y: 90, facing: 'right' },
+    entranceLeft: { x: 250, y: 120, facing: 'left' },
+    'orion-down': { x: 50, y: 50, facing: 'front' },
+    'conn-entrance': { x: 30, y: 90, facing: 'right' },
+    'conn-orion': { x: 70, y: 450, facing: 'back' },
     'admin-right': { x: 30, y: 70, facing: 'right' },
     'barn-left': { x: 400, y: 150, facing: 'left' },
     'barn-right': { x: 50, y: 200, facing: 'right' },

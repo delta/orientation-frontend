@@ -176,6 +176,21 @@ export const CONSTANTS = {
             LAYERS: ['Overlay', 'Football', 'Base3', 'Base2', 'Base'],
             ZOOM: 1.5,
             DEPTH: 5
+        },
+        {
+            SCENE_KEY: 'ConnectionLeft',
+            MAP_NAME: 'ConnectionLeft',
+            TILESET_NAMES: ['Modern', 'Roads', 'SereneVillage', 'Trees'],
+            LOAD_TILESET_NAMES: [],
+            LAYERS: [
+                'BaseOverhead2',
+                'BaseOverhead1',
+                'Base',
+                'Background',
+                'Grass'
+            ],
+            ZOOM: 1.3,
+            DEPTH: 4
         }
     ],
     PLAYER_SPRITE_NAMES: PLAYERS,
@@ -192,5 +207,27 @@ export const CONSTANTS = {
         sprites: PLAYERS.map((p) => {
             return { key: p, atlasURL: p + '.json', textureURL: p + '.png' };
         })
+    },
+    MINIGAMES: {
+        'minigame/2048': {
+            name: '2048',
+            width: 720,
+            height: 450,
+            description:
+                'Use your arrow keys to move the tiles. When two tiles with the same number touch, they merge into one!',
+            madeBy: 'Gabriele Cirulli',
+            liscense: '',
+            repo: 'https://github.com/gabrielecirulli/2048'
+        },
+        'minigame/hextris': {
+            name: 'hextris',
+            width: 720,
+            height: 450,
+            description:
+                'Use your arrow keys to rotate. Try to catch the falling blocks of same color. Join 3 or more blocks to gain points. Game ends, when you go outside the main hex.',
+            madeBy: 'Logan Engstrom',
+            liscense: '',
+            repo: 'https://github.com/Hextris/hextris'
+        }
     }
 };
