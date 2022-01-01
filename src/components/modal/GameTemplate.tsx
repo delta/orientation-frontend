@@ -6,8 +6,19 @@ import { clsx } from '../../utils/clsx';
 import { axiosInstance } from '../../utils/axios';
 import { useEffect, useState } from 'react';
 import { CONSTANTS } from '../../config/constants';
+interface GameTemplateProps {
+    gameProps: {
+        name: string;
+        width: number;
+        height: number;
+        description: string;
+        madeBy: string;
+        liscense: string;
+        repo: string;
+    };
+}
 
-export const GameTemplate = (props: any) => {
+export const GameTemplate = (props: GameTemplateProps) => {
     const [leaderBoardData, setLeaderBoardData] = useState<
         {
             username: string;
@@ -52,18 +63,6 @@ export const GameTemplate = (props: any) => {
 
                 setLeaderBoardData(allLeaderBoardData);
             }
-
-            /**
-             * Resp format
-             * - current page
-             * - total pages
-             * - leaderBoard {
-             *      - username
-             *      - spriteId
-             *      - score
-             *      - dept
-             * }
-             */
         } catch (err) {}
     };
 
@@ -143,6 +142,64 @@ export const GameTemplate = (props: any) => {
                                         style={{ width: '500px' }}
                                     >
                                         {description}
+                                    </Disclosure.Panel>
+                                </>
+                            )}
+                        </Disclosure>
+                        <Disclosure>
+                            {({ open }) => (
+                                <>
+                                    <Disclosure.Button
+                                        className={clsx(
+                                            'flex justify-between w-full px-4 py-2 text-sm mt-2',
+                                            ' font-medium text-left text-black bg-green-100 ',
+                                            'rounded-lg hover:bg-green-200 focus:outline-none focus-visible:ring',
+                                            'focus-visible:ring-purple-500 focus-visible:ring-opacity-75'
+                                        )}
+                                    >
+                                        <span>Credits</span>
+                                        <ChevronUpIcon
+                                            className={`${
+                                                open
+                                                    ? 'transform rotate-180'
+                                                    : ''
+                                            } w-5 h-5 text-black`}
+                                        />
+                                    </Disclosure.Button>
+                                    <Disclosure.Panel
+                                        className="px-4 pt-4 pb-2 text-sm text-gray-500"
+                                        style={{ width: '500px' }}
+                                    >
+                                        <table className=" border-collapse">
+                                            <tr>
+                                                <td className="underline pr-8">
+                                                    {' '}
+                                                    MADE BY
+                                                </td>
+                                                <td className="">
+                                                    : {props.gameProps.madeBy}
+                                                </td>
+                                            </tr>
+                                            <tr className="pt-5">
+                                                <td className="underline pr-8">
+                                                    {' '}
+                                                    CHECK THEM OUT
+                                                </td>
+                                                <td>
+                                                    :{'    '}
+                                                    <a
+                                                        href={
+                                                            props.gameProps.repo
+                                                        }
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-blue-600 underline"
+                                                    >
+                                                        Link
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </Disclosure.Panel>
                                 </>
                             )}
