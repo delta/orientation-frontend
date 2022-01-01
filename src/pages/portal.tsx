@@ -2,14 +2,12 @@ import { Dialog, Transition } from '@headlessui/react';
 import React, { useEffect, useState, Fragment, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 
-import { MiniGame2048 } from '../components/modal/MiniGame2048';
+import { GameTemplate } from '../components/modal/GameTemplate';
 import { config } from '../config/config';
 import { clsx } from '../utils/clsx';
-import { Modal } from '../components/modal';
 import { DuplicateWSConnectionError } from '../components/modal/DuplicateWs';
-
-type AllowedPortals = 'minigame/2048' | 'hello-world' | 'ws-already-connected';
-
+import { CONSTANTS } from '../config/constants';
+type AllowedPortals = 'minigame/2048' | 'ws-already-connected' | 'hello-world';
 interface AsyncFunc {
     (url: string, game_name: string, score: number): Promise<void>;
 }
@@ -77,18 +75,16 @@ export const Portal = () => {
     }, [currentMethod]);
 
     const getPortalData = useMemo(() => {
-        if (currentMethod === 'minigame/2048') {
-            return <MiniGame2048 />;
-        }
-
-        if (currentMethod === 'hello-world') {
-            return <Modal />;
-        }
-
         if (currentMethod === 'ws-already-connected') {
             return <DuplicateWSConnectionError />;
         }
-
+        if (currentMethod) {
+            return (
+                <GameTemplate
+                    gameProps={(CONSTANTS.MINIGAMES as any)[currentMethod]}
+                />
+            );
+        }
         return null;
     }, [currentMethod]);
 

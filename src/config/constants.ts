@@ -207,5 +207,14 @@ export const CONSTANTS = {
         sprites: PLAYERS.map((p) => {
             return { key: p, atlasURL: p + '.json', textureURL: p + '.png' };
         })
+    },
+    MINIGAMES: {
+        'minigame/2048': {
+            name: '2048',
+            width: 720,
+            height: 450,
+            description:
+                'Use your arrow keys to move the tiles. When two tiles with the same number touch, they merge into one!'
+        }
     }
 };

@@ -5,8 +5,9 @@ import { HighScoreTable } from './Highscore';
 import { clsx } from '../../utils/clsx';
 import { axiosInstance } from '../../utils/axios';
 import { useEffect, useState } from 'react';
+import { CONSTANTS } from '../../config/constants';
 
-export const MiniGame2048 = () => {
+export const GameTemplate = (props: any) => {
     const [leaderBoardData, setLeaderBoardData] = useState<
         {
             username: string;
@@ -17,10 +18,12 @@ export const MiniGame2048 = () => {
         }[]
     >([]);
 
-    const getLeaderboard = async () => {
+    const { name, width, height, description } = props.gameProps;
+
+    const getLeaderboard = async (minigame: string) => {
         try {
             const leaderBoardResp = await axiosInstance.get(
-                '/api/leaderboard/2048'
+                `/api/leaderboard/${minigame}`
             );
             // we are fetching user data again, w
             // as the data in localstorage might not be up to date
@@ -65,7 +68,7 @@ export const MiniGame2048 = () => {
     };
 
     useEffect(() => {
-        getLeaderboard();
+        getLeaderboard(name);
     }, []);
 
     return (
@@ -110,10 +113,10 @@ export const MiniGame2048 = () => {
                         )}
                     >
                         <iframe
-                            width={45 * 16}
-                            height={450}
-                            src="minigames/2048"
-                            title="minigames/2048"
+                            width={width}
+                            height={height}
+                            src={`minigames/${name}`}
+                            title={`minigames/${name}`}
                         ></iframe>
                         <Disclosure>
                             {({ open }) => (
@@ -139,10 +142,7 @@ export const MiniGame2048 = () => {
                                         className="px-4 pt-4 pb-2 text-sm text-gray-500"
                                         style={{ width: '500px' }}
                                     >
-                                        Use your <strong>arrow keys</strong> to
-                                        move the tiles. When two tiles with the
-                                        same number touch, they{' '}
-                                        <strong>merge into one!</strong>
+                                        {description}
                                     </Disclosure.Panel>
                                 </>
                             )}
