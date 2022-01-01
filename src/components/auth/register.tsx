@@ -614,8 +614,9 @@ export const Register = () => {
     // Moves to the next element
     const nextElement = () => {
         if (currentActiveElement + 1 === allElements.length) return;
-        console.trace();
-
+        // console.trace();
+        moveToElement(currentActiveElement + 1);
+        return;
         allElements[currentActiveElement].classList.remove('active');
         allElements[currentActiveElement + 1].classList.add('active');
         allElements[currentActiveElement + 1].classList.remove('not-visited');
@@ -625,7 +626,8 @@ export const Register = () => {
     // Moves to previous element
     const prevElement = () => {
         if (currentActiveElement === 0) return;
-
+        moveToElement(currentActiveElement - 1);
+        return;
         allElements[currentActiveElement].classList.remove('active');
         allElements[currentActiveElement].classList.add('not-visited');
         allElements[currentActiveElement - 1].classList.add('active');
@@ -756,7 +758,7 @@ export const Register = () => {
         await postFormDataToServer();
     };
 
-    if (!isLoggedIn) return <Redirect to="/auth/login" />;
+    // if (!isLoggedIn) return <Redirect to="/auth/login" />;
 
     return (
         <div
