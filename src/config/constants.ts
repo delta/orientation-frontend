@@ -1,7 +1,7 @@
 import { config } from './config';
 
 // an array of all player names
-const PLAYERS = ['male', 'female'];
+const PLAYERS = ['male', 'female', 'male2', 'female2'];
 
 const TILESET_ASSETS_NAMES = [
     'Modern',
@@ -16,7 +16,7 @@ const spriteAnimData = {
     left: { start: 9, end: 17 },
     right: { start: 27, end: 35 },
     front: { start: 18, end: 26 },
-    back: { start: 0, end: 26 }
+    back: { start: 1, end: 8 }
 };
 
 export const CONSTANTS = {
@@ -189,7 +189,7 @@ export const CONSTANTS = {
                 'Background',
                 'Grass'
             ],
-            ZOOM: 1.3,
+            ZOOM: 2,
             DEPTH: 4
         }
     ],
