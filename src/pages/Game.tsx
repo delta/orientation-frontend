@@ -36,20 +36,20 @@ export const GamePage = () => {
 
     return (
         <div>
-            <div className="flex flex-row">
+            <div className="h-screen flex flex-row">
                 <div
                     id="phaser-font"
                     style={{
                         fontFamily: 'PixelFont',
                         height: '0px',
                         visibility: 'hidden',
-                        display: 'none'
+                        width: '0px'
                     }}
                 >
                     You are not supposed to see this. But here you go
                     https://www.youtube.com/watch?v=xvFZjo5PgG0
                 </div>
-                <div className="flex-grow relative">
+                <div className="flex-grow relative mr-2">
                     <Game>
                         <LoaderScene nextScene="Menu" {...CONSTANTS.LOADER} />
                         <MenuScene
@@ -90,9 +90,8 @@ export const GamePage = () => {
                     </Game>
                     <Main></Main>
                 </div>
-                <div className=" w-1/4 bg-gray-600">
-                    <Chat ws={ws} />
-                </div>
+
+                <Chat ws={ws} />
             </div>
         </div>
     );
