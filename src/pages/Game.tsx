@@ -40,14 +40,14 @@ export const GamePage = () => {
                     fontFamily: 'PixelFont',
                     height: '0px',
                     visibility: 'hidden',
-                    display: 'none'
+                    width: '0px'
                 }}
             >
                 You are not supposed to see this. But here you go
                 https://www.youtube.com/watch?v=xvFZjo5PgG0
             </div>
-            <div className="w-52 bg-gray-600"></div>
-            <div className="flex-grow relative">
+            {/* <div className="w-52 bg-gray-600"></div> */}
+            {/* <div className="flex-grow relative"> */}
                 <Game>
                     <LoaderScene nextScene="Menu" {...CONSTANTS.LOADER} />
                     <MenuScene
@@ -84,10 +84,10 @@ export const GamePage = () => {
                         </React.Fragment>
                     }
                 </Game>
-            </div>
-            <div className="w-1/4 bg-gray-600">
+            {/* </div> */}
+            {/* <div className="w-1/4 bg-gray-600">
                 <Chat ws={ws} />
-            </div>
+            </div> */}
         </div>
     );
 };
