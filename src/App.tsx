@@ -9,8 +9,14 @@ import Main from './components/videoCall/Main';
 import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
 import { Portal } from './pages/portal';
-
+import styles from './components/videoCall/styles.module.css';
+import { useState } from 'react';
 function App() {
+    const [width, change] = useState('20%');
+
+    function wchange() {
+        change('0%');
+    }
     return (
         <div className="min-h-screen bg-background">
             <ToastProvider variant={'top_right'}>
@@ -21,8 +27,21 @@ function App() {
                                 <HomePage />
                             </Route>
                             <Route path="/game">
-                                <GamePage />
-                                <Main></Main>
+                                <button onClick={wchange}>Click me</button>
+                                <div>
+                                    <div className={styles.gameWrapper}>
+                                        <GamePage />
+                                        <Main></Main>
+                                    </div>
+                                    <div
+                                        style={{
+                                            width: width,
+                                            height: '100vh',
+                                            backgroundColor: 'red',
+                                            position: 'absolute'
+                                        }}
+                                    ></div>
+                                </div>
                             </Route>
                             <Route path="/auth">
                                 <AuthPage />

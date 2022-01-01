@@ -11,6 +11,7 @@ import { MenuScene } from '../components/scenes/Menu';
 import { config } from '../config/config';
 import Chat from '../components/chat/Chat';
 import { UserContextProvider } from '../contexts/userContext';
+import styles from '../components/videoCall/styles.module.css';
 const imageAssets = [
     { key: 'bg', url: 'bg.png' },
     { key: 'playButton', url: 'PlayButton.png' },
