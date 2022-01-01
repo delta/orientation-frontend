@@ -155,14 +155,20 @@ export const HighScoreTable = (props: highScoreProps) => {
                                                                 {
                                                                     singleLeaderBoard.username
                                                                 }
+                                                                <span className="text-gray-500 font-normal text-xs pl-1">
+                                                                    (
+                                                                    {
+                                                                        singleLeaderBoard.name
+                                                                    }
+                                                                    )
+                                                                </span>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="p-2 whitespace-nowrap">
                                                         <div className="text-left">
-                                                            {
-                                                                singleLeaderBoard.dept
-                                                            }
+                                                            {singleLeaderBoard.dept ||
+                                                                '-'}
                                                         </div>
                                                     </td>
                                                     <td className="p-2 whitespace-nowrap">

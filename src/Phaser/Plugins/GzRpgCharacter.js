@@ -46,6 +46,48 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         this.type = type;
         this.setTexture(type, `${type}-${this.defaultTiles[facing]}`);
         this.facing = 'back';
+
+        // speech-box
+        this.shouldDisplaySpeechBox = false;
+        this.speechBoxText = '';
+        this.speechBoxInstance = null;
+
+        this.me = this;
+    }
+
+    displaySpeechBox(text) {
+        this.shouldDisplaySpeechBox = true;
+        this.speechBoxText = text;
+        return true;
+    }
+
+    hideSpeechBox() {
+        this.shouldDisplaySpeechBox = false;
+        this.speechBoxText = '';
+    }
+
+    setSpeechBoxText(text) {
+        this.speechBoxText = text;
+    }
+
+    renderSpeechBox() {
+        if (!this.shouldDisplaySpeechBox) return;
+        if (!this.speechBoxInstance) {
+            this.speechBoxInstance = this.scene.add
+                .text(this.x, this.y - 20, this.speechBoxText, {
+                    fontFamily: 'monospace',
+                    align: 'center',
+                    backgroundColor: '#11111177',
+                    padding: { right: 15, y: 35, left: 25 }
+                })
+                .setDepth(5000)
+                .setFontSize(50)
+                .setScale(0.1)
+                .setOrigin(0.5, 0.5);
+        } else {
+            this.speechBoxInstance.setX(this.x);
+            this.speechBoxInstance.setY(this.y - 20);
+        }
     }
 
     update() {
@@ -60,6 +102,7 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         }
         this.text.setX(this.x);
         this.text.setY(this.y + 20);
+        this.renderSpeechBox();
     }
 
     /**
