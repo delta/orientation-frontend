@@ -10,6 +10,8 @@ import { CONSTANTS } from '../config/constants';
 type AllowedPortals =
     | 'minigame/2048'
     | 'minigame/hextris'
+    | 'minigame/stack'
+    | 'minigame/pacman'
     | 'ws-already-connected'
     | 'hello-world';
 interface AsyncFunc {
