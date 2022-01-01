@@ -11,29 +11,39 @@ const ChatRoom: React.FC<{ user: IChatUser; sendMessage: any }> = ({
     const [users, setUsers] = useState<IChatUser[]>([]);
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [textInput, setTextInput] = useState<string>('');
+    const [connectionStatus, setConnectionStatus] = useState<Boolean>(false);
 
     const setConnectedUsers = (e: any) => {
-        const userList: { id: number; name: string }[] = JSON.parse(e.detail);
-        setUsers(
-            userList.map(({ id, name }) => ({
-                id,
-                name
-            }))
-        );
+        const userList: { id: number; name: string }[] = e.detail;
+        setUsers(userList);
     };
 
     const appendMessage = (e: any) => {
-        setMessages(messages.concat(JSON.parse(e.detail).text));
+        let chatMessage = e.detail;
+
+        let newMessage: IMessage = {
+            id: chatMessage.user.id,
+            from: chatMessage.user,
+            room: 'chat', //may be remove later
+            text: chatMessage.message
+        };
+        setMessages(messages.concat(newMessage));
     };
 
     const handleUserAction = (e: any) => {
-        const userAction = JSON.parse(e.detail);
-        switch (userAction.action) {
-            case 'j':
-                setUsers(users.concat(userAction.userId));
+        const userAction = e.detail;
+
+        if (userAction.user.id === user.id && userAction.status) {
+            setConnectionStatus(true); // setting chat connection status
+            return;
+        }
+
+        switch (userAction.status) {
+            case true:
+                setUsers(users.concat(userAction.user));
                 break;
-            case 'l':
-                setUsers(users.filter((u) => u != userAction.userId));
+            case false:
+                setUsers(users.filter((u) => u.id !== userAction.user.id));
                 break;
         }
     };
@@ -41,7 +51,8 @@ const ChatRoom: React.FC<{ user: IChatUser; sendMessage: any }> = ({
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Enter') {
             if (textInput.trim().length !== 0) {
-                sendMessage({ text: textInput.trim() });
+                sendMessage({ message: textInput.trim() });
+                setTextInput('');
             }
         }
     };
@@ -78,24 +89,36 @@ const ChatRoom: React.FC<{ user: IChatUser; sendMessage: any }> = ({
                 ))}
             </div>
             <div className="col-span-4 flex flex-col">
-                <div className="flex-grow border-b border-black flex flex-col justify-end px-4">
-                    {messages.map((message) => (
-                        <Message key={message.id} message={message} />
-                    ))}
-                </div>
-                <div className="min-h-[2.5rem] px-4 flex items-center">
-                    <div className={`mr-2 font-medium ${getColor(user.id)}`}>
-                        {user.name}:
-                    </div>
-                    <input
-                        onKeyDown={handleKeyDown}
-                        value={textInput}
-                        onChange={(e: any) => setTextInput(e.target.value)}
-                        type="text"
-                        className="flex-grow border border-gray-400 px-2"
-                        placeholder="Press Enter to send"
-                    />
-                </div>
+                {connectionStatus ? (
+                    <>
+                        <div className="flex-grow border-b border-black flex flex-col justify-end px-4">
+                            {messages.map((message) => (
+                                <Message key={message.id} message={message} />
+                            ))}
+                        </div>
+                        <div className="min-h-[2.5rem] px-4 flex items-center">
+                            <div
+                                className={`mr-2 font-medium ${getColor(
+                                    user.id
+                                )}`}
+                            >
+                                {user.name}:
+                            </div>
+                            <input
+                                onKeyDown={handleKeyDown}
+                                value={textInput}
+                                onChange={(e: any) =>
+                                    setTextInput(e.target.value)
+                                }
+                                type="text"
+                                className="flex-grow border border-gray-400 px-2"
+                                placeholder="Press Enter to send"
+                            />
+                        </div>
+                    </>
+                ) : (
+                    <div>press play to connect with chat</div>
+                )}
             </div>
         </div>
     );
