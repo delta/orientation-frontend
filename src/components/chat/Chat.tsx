@@ -11,8 +11,9 @@ const Chat: React.FC<{ ws: WebsocketApi | undefined }> = ({ ws }) => {
     const userContext = useContext(UserContext);
 
     // TODO: Hacky lines
-    if (userContext == null) return <></>;
-    const user = userContext.user || { id: -1, name: 'Who?' };
+    if (userContext == null || userContext.user == null) return <></>;
+
+    const user = userContext.user;
 
     if (typeof ws === 'undefined') return <></>;
 

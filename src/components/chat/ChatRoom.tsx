@@ -3,8 +3,9 @@ import IMessage from './interfaces/IMessage';
 import IChatUser from './interfaces/IChatUser';
 import { getColor } from './utils/colors';
 import Message from './Message';
+import { IUser } from '../../contexts/userContext';
 
-const ChatRoom: React.FC<{ user: IChatUser; sendMessage: any }> = ({
+const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
     user,
     sendMessage
 }) => {
@@ -102,7 +103,7 @@ const ChatRoom: React.FC<{ user: IChatUser; sendMessage: any }> = ({
                                     user.id
                                 )}`}
                             >
-                                {user.name}:
+                                {user.username}:
                             </div>
                             <input
                                 onKeyDown={handleKeyDown}

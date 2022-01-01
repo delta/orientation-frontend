@@ -62,28 +62,22 @@ export class WebsocketApi {
         this.socket = new WebSocket(this.wsUrl);
 
         this.socket.onopen = () => {
-            console.log('socket connection opened!');
             // dispatching 'ws-connected' event after connection is established
+            console.log('socket connection opened!');
             document.dispatchEvent(connectEvent);
         };
 
         this.socket.onclose = () => {
-            console.log('connection closed by server');
-
             document.dispatchEvent(disconnectEvent);
         };
 
         this.socket.onerror = () => {
-            console.log('socket error, reconnect');
-
             document.dispatchEvent(disconnectEvent);
         };
 
         this.socket.addEventListener('message', (event) => {
             let response = event.data;
             let responseMessage: responseMessageType = JSON.parse(response);
-
-            // console.log(responseMessage.MessageType);
 
             switch (responseMessage.MessageType) {
                 // ws connection will be closed by server after this response
@@ -99,8 +93,6 @@ export class WebsocketApi {
                     break;
                 // new user joined the room
                 case 'new-user':
-                    console.log('new-user', responseMessage.Data);
-
                     const newUserEvent = new CustomEvent<WUser>('ws-new-user', {
                         detail: responseMessage.Data as WUser
                     });
@@ -122,7 +114,6 @@ export class WebsocketApi {
                     break;
 
                 case 'user-left':
-                    console.log('user-left', responseMessage.Data);
                     const roomLeftEvent = new CustomEvent<any>('ws-room-left', {
                         detail: JSON.parse(responseMessage.Data)
                     });
@@ -130,8 +121,6 @@ export class WebsocketApi {
                     break;
 
                 case 'users':
-                    console.log('users', responseMessage.Data);
-
                     const connectedUsersEvent = new CustomEvent<any>(
                         'ws-connected-users',
                         {
@@ -142,7 +131,6 @@ export class WebsocketApi {
                     break;
 
                 case 'chat-message':
-                    console.log('chat-message', responseMessage.Data);
                     const chatMessageEvent = new CustomEvent<any>(
                         'ws-chat-message',
                         {
@@ -153,7 +141,6 @@ export class WebsocketApi {
                     break;
 
                 case 'user-action':
-                    console.log('user-action', responseMessage.Data);
                     const userActionEvent = new CustomEvent<any>(
                         'ws-user-action',
                         {
@@ -164,7 +151,6 @@ export class WebsocketApi {
                     break;
 
                 default:
-                    console.log('other response', responseMessage);
                     break;
             }
         });
@@ -178,7 +164,6 @@ export class WebsocketApi {
                 data: req
             };
 
-            console.log('register user');
             this.socket.send(JSON.stringify(requestMessage));
 
             return;
@@ -194,7 +179,6 @@ export class WebsocketApi {
                 data: req
             };
 
-            // console.log('move user');
             this.socket.send(JSON.stringify(requestMessage));
 
             return;
@@ -211,7 +195,6 @@ export class WebsocketApi {
                 data: req
             };
 
-            console.log('change room');
             this.socket.send(JSON.stringify(requestMessage));
 
             return;
@@ -227,7 +210,6 @@ export class WebsocketApi {
                 data: req
             };
 
-            console.log('chat-message');
             this.socket.send(JSON.stringify(requestMessage));
 
             return;
@@ -238,7 +220,6 @@ export class WebsocketApi {
 
     // method to close connection
     close = () => {
-        console.log('close ws connection');
         this.socket.close();
     };
 }
