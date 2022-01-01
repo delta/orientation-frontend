@@ -112,16 +112,28 @@ const formData: {
                 img: '/favicon.ico'
             },
             {
-                name: 'male',
+                name: 'Male',
                 available: true,
                 code: 'male',
-                img: '/favicon.ico'
+                img: '/sprites/preview/male.png'
             },
             {
-                name: 'female',
+                name: 'Male2',
+                available: true,
+                code: 'male2',
+                img: '/sprites/preview/male2.png'
+            },
+            {
+                name: 'Female',
                 available: true,
                 code: 'female',
-                img: '/favicon.ico'
+                img: '/sprites/preview/female.png'
+            },
+            {
+                name: 'Female2',
+                available: true,
+                code: 'female2',
+                img: '/sprites/preview/female2.png'
             }
         ],
         type: 'select'
@@ -336,8 +348,8 @@ const SelectComponent = ({
                             src={selected.img}
                             className="absolute"
                             alt={selected.img}
-                            width={150}
-                            height={150}
+                            width={100}
+                            height={100}
                             style={{ right: '-7.5%', top: '30%' }}
                         />
                     ) : null}
@@ -746,7 +758,7 @@ export const Register = () => {
         await postFormDataToServer();
     };
 
-    if (!isLoggedIn) return <Redirect to="/auth/login" />;
+    // if (!isLoggedIn) return <Redirect to="/auth/login" />;
 
     return (
         <div
