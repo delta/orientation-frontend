@@ -122,6 +122,8 @@ export class WebsocketApi {
                     break;
 
                 case 'users':
+                    console.log('users', responseMessage.Data);
+
                     const connectedUsersEvent = new CustomEvent<any>(
                         'ws-connected-users',
                         {
@@ -132,6 +134,7 @@ export class WebsocketApi {
                     break;
 
                 case 'chat-message':
+                    console.log('chat-message', responseMessage.Data);
                     const chatMessageEvent = new CustomEvent<any>(
                         'ws-chat-message',
                         {
@@ -142,6 +145,7 @@ export class WebsocketApi {
                     break;
 
                 case 'user-action':
+                    console.log('user-action', responseMessage.Data);
                     const userActionEvent = new CustomEvent<any>(
                         'ws-user-action',
                         {
