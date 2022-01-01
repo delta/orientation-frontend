@@ -758,7 +758,7 @@ export const Register = () => {
         await postFormDataToServer();
     };
 
-    // if (!isLoggedIn) return <Redirect to="/auth/login" />;
+    if (!isLoggedIn) return <Redirect to="/auth/login" />;
 
     return (
         <div
