@@ -599,11 +599,16 @@ export class PhaserScene extends Scene {
                     (height * 3) / 5,
                     'Press E to start the game',
                     {
-                        fontSize: '10px',
-                        backgroundColor: '#000'
+                        fontSize: '100px',
+                        backgroundColor: '#1a1a1a99',
+                        padding: {
+                            x: 30,
+                            y: 20
+                        }
                     }
                 )
                 .setScrollFactor(0)
+                .setScale(0.1)
                 .setDepth(100)
                 .setOrigin(0.5, 0.5);
             (window as any).text = text;
