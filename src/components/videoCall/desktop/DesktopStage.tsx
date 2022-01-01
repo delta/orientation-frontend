@@ -24,14 +24,7 @@ export const DesktopStage = ({
         return <div>connecting</div>;
     }
     if (!room) {
-        return (
-            <div className={styles.cont}>
-                <h3 className={styles.animateCharcter}>
-                    {' '}
-                    Press V to join video call
-                </h3>
-            </div>
-        );
+        return <></>;
     }
 
     if (participants.length === 0) {
@@ -80,8 +73,8 @@ export const DesktopStage = ({
         <div className={styles.container}>
             <div className={styles.stage}>
                 <div className={styles.leftSidebar}>
-                    {otherParticipants.length > 1 ? (
-                        otherParticipants.slice(1).map((participant: any) => {
+                    {otherParticipants.length > 5 ? (
+                        otherParticipants.slice(5).map((participant: any) => {
                             return (
                                 <ParticipantRenderer
                                     key={participant.identity}
@@ -101,7 +94,7 @@ export const DesktopStage = ({
                 </div>
 
                 <div className={styles.sidebar}>
-                    {otherParticipants.slice(0, 1).map((participant: any) => {
+                    {otherParticipants.slice(0, 5).map((participant: any) => {
                         return (
                             <ParticipantRenderer
                                 key={participant.identity}

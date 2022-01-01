@@ -13,8 +13,10 @@ function Main() {
     const [vcPanel, changePanel] = useState('');
     const toast = useToast();
     const joinParty = () => {
-        toast?.pushError('Enter valid Meet ID');
-        if (roomName == '') return;
+        if (roomName == '') {
+            toast?.pushError('Enter valid Meet ID');
+            return;
+        }
         connectOldVc(roomName);
     };
     const connectOldVc = async (name: string) => {
