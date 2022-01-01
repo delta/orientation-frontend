@@ -36,11 +36,9 @@ export const UserContextProvider: React.FC = ({ children }) => {
         (async () => {
             try {
                 const resp = await axiosInstance.get('/api/user/me');
-                console.log(resp.data);
                 if (resp.data) {
                     // the user has logged in, fetch his profile data
                     // and return
-                    console.log(resp.data.user);
                     setUser({
                         id: resp.data.user.ID,
                         department: resp.data.user.Department,
@@ -63,7 +61,6 @@ export const UserContextProvider: React.FC = ({ children }) => {
                 setLoading(false);
                 setIsLoggedIn(false);
                 setUser(undefined);
-                console.log(err);
             }
         })();
     }, []);

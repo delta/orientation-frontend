@@ -22,10 +22,14 @@ interface changeRoom {
     position: position;
 }
 
+interface chatMessage {
+    message: string;
+}
+
 // ws request message type
 interface requestMessageType {
-    messageType: 'change-room' | 'user-move' | 'user-register';
-    data: changeRoom | upsertUser;
+    messageType: 'change-room' | 'user-move' | 'user-register' | 'chat-message';
+    data: changeRoom | upsertUser | chatMessage;
 }
 // ws response message type
 interface responseMessageType {
@@ -33,7 +37,10 @@ interface responseMessageType {
         | 'new-user'
         | 'already-connected'
         | 'room-broadcast'
-        | 'user-left';
+        | 'user-left'
+        | 'users'
+        | 'chat-message'
+        | 'user-action';
     Data: any;
 }
 
@@ -55,28 +62,22 @@ export class WebsocketApi {
         this.socket = new WebSocket(this.wsUrl);
 
         this.socket.onopen = () => {
-            console.log('socket connection opened!');
             // dispatching 'ws-connected' event after connection is established
+            console.log('socket connection opened!');
             document.dispatchEvent(connectEvent);
         };
 
         this.socket.onclose = () => {
-            console.log('connection closed by server');
-
             document.dispatchEvent(disconnectEvent);
         };
 
         this.socket.onerror = () => {
-            console.log('socket error, reconnect');
-
             document.dispatchEvent(disconnectEvent);
         };
 
         this.socket.addEventListener('message', (event) => {
             let response = event.data;
             let responseMessage: responseMessageType = JSON.parse(response);
-
-            // console.log(responseMessage.MessageType);
 
             switch (responseMessage.MessageType) {
                 // ws connection will be closed by server after this response
@@ -92,8 +93,6 @@ export class WebsocketApi {
                     break;
                 // new user joined the room
                 case 'new-user':
-                    console.log('new-user', responseMessage.Data);
-
                     const newUserEvent = new CustomEvent<WUser>('ws-new-user', {
                         detail: responseMessage.Data as WUser
                     });
@@ -115,15 +114,43 @@ export class WebsocketApi {
                     break;
 
                 case 'user-left':
-                    console.log('user-left', responseMessage.Data);
                     const roomLeftEvent = new CustomEvent<any>('ws-room-left', {
                         detail: JSON.parse(responseMessage.Data)
                     });
                     document.dispatchEvent(roomLeftEvent);
                     break;
 
+                case 'users':
+                    const connectedUsersEvent = new CustomEvent<any>(
+                        'ws-connected-users',
+                        {
+                            detail: responseMessage.Data
+                        }
+                    );
+                    document.dispatchEvent(connectedUsersEvent);
+                    break;
+
+                case 'chat-message':
+                    const chatMessageEvent = new CustomEvent<any>(
+                        'ws-chat-message',
+                        {
+                            detail: responseMessage.Data
+                        }
+                    );
+                    document.dispatchEvent(chatMessageEvent);
+                    break;
+
+                case 'user-action':
+                    const userActionEvent = new CustomEvent<any>(
+                        'ws-user-action',
+                        {
+                            detail: responseMessage.Data
+                        }
+                    );
+                    document.dispatchEvent(userActionEvent);
+                    break;
+
                 default:
-                    console.log('other response', responseMessage);
                     break;
             }
         });
@@ -137,7 +164,6 @@ export class WebsocketApi {
                 data: req
             };
 
-            console.log('register user');
             this.socket.send(JSON.stringify(requestMessage));
 
             return;
@@ -153,7 +179,6 @@ export class WebsocketApi {
                 data: req
             };
 
-            // console.log('move user');
             this.socket.send(JSON.stringify(requestMessage));
 
             return;
@@ -170,7 +195,21 @@ export class WebsocketApi {
                 data: req
             };
 
-            console.log('change room');
+            this.socket.send(JSON.stringify(requestMessage));
+
+            return;
+        }
+
+        throw socketNotOpenedError;
+    };
+
+    sendChatMessage = (req: chatMessage) => {
+        if (this.socket.readyState === WebSocket.OPEN) {
+            let requestMessage: requestMessageType = {
+                messageType: 'chat-message',
+                data: req
+            };
+
             this.socket.send(JSON.stringify(requestMessage));
 
             return;
@@ -181,7 +220,6 @@ export class WebsocketApi {
 
     // method to close connection
     close = () => {
-        console.log('close ws connection');
         this.socket.close();
     };
 }
