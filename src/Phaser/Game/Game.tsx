@@ -5,6 +5,7 @@ import { isEqual } from 'lodash';
 import { Renderer } from '../../renderer';
 import { GameContext } from './GameContext';
 import { GzRpgCharacterPlugin } from '../Plugins/GzRpgCharacter';
+import styles from '../../components/videoCall/styles.module.css';
 interface GameProps {
     children?: JSX.Element | JSX.Element[];
 }
@@ -164,7 +165,7 @@ class Game extends Component<GameProps, GameState> {
             <div
                 id="phaser-game"
                 ref={this.gameRef}
-                style={{ fontFamily: 'GothGirlFont' }}
+                style={{ fontFamily: 'GothGirlFont', objectFit: 'cover' }}
             ></div>
         );
     }

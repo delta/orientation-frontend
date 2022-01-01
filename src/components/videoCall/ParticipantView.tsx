@@ -60,7 +60,7 @@ export const ParticipantView = ({
             let user = resp.data.userMap.find(
                 (el: any) => el.userId.toString() == participant.identity
             );
-            changeName(user.name + ' (You)');
+            changeName(user.name + (isLocal ? '(You)' : ''));
         };
         setName();
     }, []);

@@ -182,3 +182,10 @@ ul.list li:first-child {
     display: inline-block;
     margin-right: 12px;
 }
+
+.gameWrapper {
+    background-color: turquoise;
+    display: inline-block;
+    height: 100vh;
+    width: 80%;
+}

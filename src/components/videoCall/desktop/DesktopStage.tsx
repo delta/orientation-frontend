@@ -80,8 +80,8 @@ export const DesktopStage = ({
         <div className={styles.container}>
             <div className={styles.stage}>
                 <div className={styles.leftSidebar}>
-                    {otherParticipants.length > 5 ? (
-                        otherParticipants.slice(5).map((participant: any) => {
+                    {otherParticipants.length > 1 ? (
+                        otherParticipants.slice(1).map((participant: any) => {
                             return (
                                 <ParticipantRenderer
                                     key={participant.identity}
@@ -101,7 +101,7 @@ export const DesktopStage = ({
                 </div>
 
                 <div className={styles.sidebar}>
-                    {otherParticipants.slice(0, 5).map((participant: any) => {
+                    {otherParticipants.slice(0, 1).map((participant: any) => {
                         return (
                             <ParticipantRenderer
                                 key={participant.identity}
