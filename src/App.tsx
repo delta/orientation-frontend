@@ -11,6 +11,7 @@ import { UserContextProvider } from './contexts/userContext';
 import { Portal } from './pages/portal';
 import styles from './components/videoCall/styles.module.css';
 import { useState } from 'react';
+import Chat from './components/chat/Chat';
 function App() {
     const [width, change] = useState('20%');
 
@@ -27,21 +28,7 @@ function App() {
                                 <HomePage />
                             </Route>
                             <Route path="/game">
-                                <button onClick={wchange}>Click me</button>
-                                <div>
-                                    <div className={styles.gameWrapper}>
-                                        <GamePage />
-                                        <Main></Main>
-                                    </div>
-                                    <div
-                                        style={{
-                                            width: width,
-                                            height: '100vh',
-                                            backgroundColor: 'red',
-                                            position: 'absolute'
-                                        }}
-                                    ></div>
-                                </div>
+                                <GamePage />
                             </Route>
                             <Route path="/auth">
                                 <AuthPage />

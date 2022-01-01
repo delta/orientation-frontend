@@ -19,12 +19,15 @@
     height: 92.5vh;
 }
 .leftSidebar {
+    position: relative;
+    left: 0;
     grid-column: 1 / 3;
     display: grid;
     gap: 8px;
     grid-auto-rows: min-content;
 }
 .sidebar {
+    right: 50%;
     grid-column: 11 / 13;
     display: grid;
     gap: 8px;
@@ -41,10 +44,7 @@
     bottom: 5%;
     transform: translate(-50%, 0%);
 }
-.cont {
-    text-align: center;
-    margin-top: 15px;
-}
+
 .animateCharcter {
     text-transform: uppercase;
     background-image: linear-gradient(
