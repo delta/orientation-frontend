@@ -7,7 +7,11 @@ import { config } from '../config/config';
 import { clsx } from '../utils/clsx';
 import { DuplicateWSConnectionError } from '../components/modal/DuplicateWs';
 import { CONSTANTS } from '../config/constants';
-type AllowedPortals = 'minigame/2048' | 'ws-already-connected' | 'hello-world';
+type AllowedPortals =
+    | 'minigame/2048'
+    | 'minigame/hextris'
+    | 'ws-already-connected'
+    | 'hello-world';
 interface AsyncFunc {
     (url: string, game_name: string, score: number): Promise<void>;
 }

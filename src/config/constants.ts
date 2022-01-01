@@ -214,7 +214,20 @@ export const CONSTANTS = {
             width: 720,
             height: 450,
             description:
-                'Use your arrow keys to move the tiles. When two tiles with the same number touch, they merge into one!'
+                'Use your arrow keys to move the tiles. When two tiles with the same number touch, they merge into one!',
+            madeBy: '',
+            liscense: '',
+            repo: ''
+        },
+        'minigame/hextris': {
+            name: 'hextris',
+            width: 720,
+            height: 450,
+            description:
+                'Use your arrow keys to rotate. Try to catch the falling blocks of same color. Join 3 or more blocks to gain points. Game ends, when you go outside the main hex.',
+            madeBy: '',
+            liscense: '',
+            repo: ''
         }
     }
 };
