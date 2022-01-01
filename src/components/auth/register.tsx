@@ -213,7 +213,8 @@ const SelectComponent = ({
 
             return setData(selected.code);
         }, 500);
-    }, [selected, setData, toast]);
+        // eslint-disable-next-line
+    }, [selected, setData]);
 
     const listenForEnterKeyPress = useCallback(
         (e: KeyboardEvent) => {
@@ -230,10 +231,10 @@ const SelectComponent = ({
             window.addEventListener('keypress', listenForEnterKeyPress);
             return () => {
                 process.env.NODE_ENV === 'development' &&
-                    console.log('removing event listener');
+                    console.log('removing event listener', data);
                 window.removeEventListener('keypress', listenForEnterKeyPress);
             };
-        }
+        } else window.removeEventListener('keypress', listenForEnterKeyPress);
     }, [isActive, listenForEnterKeyPress]);
 
     return (
@@ -409,12 +410,16 @@ const TextComponent = ({
         // only check in text component is that,
         // it cannot be empty
         // console.log(inputValue);
-
+        // console.log(inputValue);
         setTimeout(() => {
-            console.log('inside timeout');
-            if (!inputValue)
+            // console.log('inside timeout', !!inputValue);
+            // console.log(inputValue);
+            if (!inputValue) {
+                // console.log('inside timeout');
                 return toast?.pushError('Enter a valid response !!');
-
+            } else {
+                // console.log('correct input : ', !inputValue);
+            }
             return setData(inputValue);
         }, 500);
     }, [toast, setData, inputValue]);
@@ -434,10 +439,10 @@ const TextComponent = ({
             window.addEventListener('keypress', listenForEnterKeyPress);
             return () => {
                 process.env.NODE_ENV === 'development' &&
-                    console.log('removing event listener');
+                    console.log('removing event listener for : ', textData);
                 window.removeEventListener('keypress', listenForEnterKeyPress);
             };
-        }
+        } else window.removeEventListener('keypress', listenForEnterKeyPress);
     }, [isActive, listenForEnterKeyPress]);
 
     return (
@@ -541,7 +546,7 @@ const ButtonComponent = ({
                     console.log('removing event listener');
                 window.removeEventListener('keypress', listenForEnterKeyPress);
             };
-        }
+        } else window.removeEventListener('keypress', listenForEnterKeyPress);
     }, [isActive, listenForEnterKeyPress]);
 
     // console.log("Creating button component");
@@ -572,9 +577,9 @@ const ButtonComponent = ({
 
 export const Register = () => {
     const getAllElements = () => {
-        console.log('getting all elements');
+        // console.log('getting all elements');
         const x = window.document.querySelectorAll('.element');
-        console.log(x);
+        // console.log(x);
         return Array.from(x);
     };
 
@@ -621,7 +626,9 @@ export const Register = () => {
     // Moves to the next element
     const nextElement = () => {
         if (currentActiveElement + 1 === allElements.length) return;
-
+        // console.trace();
+        moveToElement(currentActiveElement + 1);
+        return;
         allElements[currentActiveElement].classList.remove('active');
         allElements[currentActiveElement + 1].classList.add('active');
         allElements[currentActiveElement + 1].classList.remove('not-visited');
@@ -631,7 +638,8 @@ export const Register = () => {
     // Moves to previous element
     const prevElement = () => {
         if (currentActiveElement === 0) return;
-
+        moveToElement(currentActiveElement - 1);
+        return;
         allElements[currentActiveElement].classList.remove('active');
         allElements[currentActiveElement].classList.add('not-visited');
         allElements[currentActiveElement - 1].classList.add('active');
@@ -674,7 +682,7 @@ export const Register = () => {
 
     const addDataAndProceed = (key: keyof typeof userData) => {
         return (value: string) => {
-            console.log('the data is : ', value);
+            // console.log('the data is : ', value);
             setUserData((prevData) => {
                 prevData[key] = value;
                 return prevData;
@@ -684,6 +692,10 @@ export const Register = () => {
     };
 
     const startForm = () => {
+        if (currentActiveElement !== 0) {
+            // console.log('this shouldnt happen, ', currentActiveElement);
+            return;
+        }
         nextElement();
     };
 
@@ -772,7 +784,7 @@ export const Register = () => {
                 style={{ minHeight: '75vh', backgroundImage: bgImage }}
                 onSubmit={(e) => {
                     e.preventDefault();
-                    console.log('Hello world');
+                    // console.log('Hello world');
                 }}
             >
                 <div className="relative pt-0">
