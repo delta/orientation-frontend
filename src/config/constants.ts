@@ -33,7 +33,7 @@ export const CONSTANTS = {
                 'Background',
                 'Grass'
             ],
-            ZOOM: 1.25,
+            ZOOM: 1.5,
             DEPTH: 4
         },
         {
@@ -54,7 +54,7 @@ export const CONSTANTS = {
                 'Background',
                 'Grass'
             ],
-            ZOOM: 1.25,
+            ZOOM: 1.5,
             DEPTH: 4
         },
         {
@@ -75,7 +75,7 @@ export const CONSTANTS = {
                 'Background',
                 'Grass'
             ],
-            ZOOM: 1.25,
+            ZOOM: 1.5,
             DEPTH: 4
         },
         {
@@ -96,7 +96,7 @@ export const CONSTANTS = {
                 'Background',
                 'Grass'
             ],
-            ZOOM: 1,
+            ZOOM: 1.25,
             DEPTH: 4
         },
         {
@@ -138,7 +138,7 @@ export const CONSTANTS = {
                 'Background',
                 'Grass'
             ],
-            ZOOM: 1.25,
+            ZOOM: 1.75,
             DEPTH: 4
         },
         {
@@ -159,7 +159,7 @@ export const CONSTANTS = {
                 'Background',
                 'Grass'
             ],
-            ZOOM: 1.25,
+            ZOOM: 1.5,
             DEPTH: 4
         },
         {
@@ -174,7 +174,7 @@ export const CONSTANTS = {
             ],
             LOAD_TILESET_NAMES: ['FootballGround', 'Lines', 'RunningTrack'],
             LAYERS: ['Overlay', 'Football', 'Base3', 'Base2', 'Base'],
-            ZOOM: 1.5,
+            ZOOM: 1.75,
             DEPTH: 5
         },
         {

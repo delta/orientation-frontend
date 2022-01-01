@@ -38,6 +38,7 @@ interface responseMessageType {
 }
 
 const socketNotOpenedError = new Error('websocket connection is not opened');
+const socketDisconnectedEvent = new Event('socket-disconnected');
 
 // websocket wrapper, all the request, response will be handled here
 export class WebsocketApi {
@@ -142,7 +143,7 @@ export class WebsocketApi {
 
             return;
         }
-        throw socketNotOpenedError;
+        document.dispatchEvent(socketDisconnectedEvent);
     };
 
     // method to update user postion in map
@@ -159,7 +160,7 @@ export class WebsocketApi {
             return;
         }
 
-        throw socketNotOpenedError;
+        document.dispatchEvent(socketDisconnectedEvent);
     };
 
     // method to switch map
@@ -176,7 +177,7 @@ export class WebsocketApi {
             return;
         }
 
-        throw socketNotOpenedError;
+        document.dispatchEvent(socketDisconnectedEvent);
     };
 
     // method to close connection

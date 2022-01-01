@@ -52,7 +52,7 @@ export class PhaserScene extends Scene {
     spriteFrameRate = 10;
     userMap: Record<
         string,
-        { userId: number; name: string; spriteType: string }
+        { userId: number; name: string; spriteType: string } | undefined
     > = {};
     room: any;
     roomForceUpdate: any;
@@ -72,7 +72,7 @@ export class PhaserScene extends Scene {
 
     // opening modals
     openModal!: (data: string) => void;
-
+    displaySocketDisconnectedToastBinded: () => void;
     constructor({
         config,
         mapName,
@@ -113,6 +113,8 @@ export class PhaserScene extends Scene {
         this.handleOtherPlayersBinded = null;
         this.handleRoomLeftBinded = null;
         this.openModal = openModal;
+        this.displaySocketDisconnectedToastBinded =
+            this.displaySocketDisconnectedToast.bind(this);
         return;
     }
 
@@ -124,6 +126,10 @@ export class PhaserScene extends Scene {
         );
         document.removeEventListener('ws-room-left', this.handleRoomLeftBinded);
         this.otherPlayers = null;
+        document.removeEventListener(
+            'socket-disconnected',
+            this.displaySocketDisconnectedToastBinded
+        );
     }
 
     preload() {
@@ -282,11 +288,11 @@ export class PhaserScene extends Scene {
 
         // @ts-ignore
         let p = {
-            name: playerData.name,
+            name: playerData?.name,
             x: player.Position.X,
             y: player.Position.Y,
-            id: playerData.userId,
-            type: playerData.spriteType,
+            id: playerData?.userId,
+            type: playerData?.spriteType,
             facing: player.Position.Direction
         };
 
@@ -374,7 +380,51 @@ export class PhaserScene extends Scene {
         }
     }
 
+    // TODO: try to re-connect to web socket
+    displaySocketDisconnectedToast() {
+        console.log('socket has been disconnected', this);
+        const text = 'Lost connection to server,\nreload the page';
+        if (!this?.player?.displaySpeechBox(text)) return;
+        // the event keeps emmiting events, we only need to catch them once.
+        // so we remove them
+        //
+        // if we are reloading the page later, we need to add the event listener again
+        // when we re-connect
+        document.removeEventListener(
+            'socket-disconnected',
+            this.displaySocketDisconnectedToastBinded
+        );
+    }
+
+    // // rendering a toast notifying user that the game has been disconnected
+    // displayToast() {
+    //     let graphics = this.add.graphics();
+    //     (window as any).graphics = graphics;
+    //     graphics.lineStyle(4, 0xff00ff, 1);
+    //     const width = this.map.widthInPixels / this.cameras.main.zoom;
+    //     const height = this.map.heightInPixels / this.cameras.main.zoom;
+    //     const zoom = this.cameras.main.zoom;
+    //     // graphics.
+    //     (window as any).text = this.add
+    //         .text(
+    //             this.player.x - 20 * zoom,
+    //             this.player.y - 20 * zoom,
+    //             'Lost connection to server,\nreload the page ',
+    //             {
+    //                 fontFamily: 'monospace',
+    //                 align: 'right',
+    //                 backgroundColor: '#11111166',
+    //                 padding: { right: 15, y: 35, left: 25 }
+    //             }
+    //         )
+    //         .setDepth(5000)
+    //         .setFontSize(50)
+    //         .setScale(this.cameras.main.zoom * 0.05);
+    //     // .setScrollFactor(0);
+    // }
+
     create(data: any) {
+        (window as any).scene = this;
         this.userMap = JSON.parse(localStorage.getItem('user-map') as any);
         process.env.NODE_ENV === 'development' &&
             ((window as any).scene = this);
@@ -388,7 +438,10 @@ export class PhaserScene extends Scene {
             right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
             left: Phaser.Input.Keyboard.KeyCodes.LEFT
         });
+        // this.cursors = this.input.keyboard.createCursorKeys();
+
         const userId = localStorage.getItem('userId') || 0;
+        console.log(this.userMap[userId]?.spriteType || 'male');
         // Set up the player character
         // @ts-ignore
         this.player = this.add.rpgcharacter({
@@ -396,7 +449,7 @@ export class PhaserScene extends Scene {
             x: this.spawnPoint.x,
             y: this.spawnPoint.y,
             id: userId,
-            type: this.userMap[userId].spriteType || 'male',
+            type: this.userMap[userId]?.spriteType || 'male',
             facing: this.spawnPoint.facing
         });
 
@@ -440,8 +493,9 @@ export class PhaserScene extends Scene {
         // Set up the main (only?) camera
         const camera = this.cameras.main;
         let zoomFactor = this.zoom;
-        camera.zoom =
-            (zoomFactor * window.innerHeight) / this.map.heightInPixels;
+        camera.zoom = Math.round(
+            (zoomFactor * this.cameras.main.height) / this.map.heightInPixels
+        );
         // camera.centerOn(map.widthInPixels/2, this.map.heightInPixels);
         camera.startFollow(this.player);
         camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -481,6 +535,13 @@ export class PhaserScene extends Scene {
                 }
             }
         });
+
+        console.log(this.player);
+        document.addEventListener(
+            'socket-disconnected',
+            this.displaySocketDisconnectedToastBinded
+        );
+        (window as any).scene = this;
     }
 
     update(time: any, delta: any) {
