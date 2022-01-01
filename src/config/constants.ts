@@ -176,6 +176,21 @@ export const CONSTANTS = {
             LAYERS: ['Overlay', 'Football', 'Base3', 'Base2', 'Base'],
             ZOOM: 1.5,
             DEPTH: 5
+        },
+        {
+            SCENE_KEY: 'ConnectionLeft',
+            MAP_NAME: 'ConnectionLeft',
+            TILESET_NAMES: ['Modern', 'Roads', 'SereneVillage', 'Trees'],
+            LOAD_TILESET_NAMES: [],
+            LAYERS: [
+                'BaseOverhead2',
+                'BaseOverhead1',
+                'Base',
+                'Background',
+                'Grass'
+            ],
+            ZOOM: 1.3,
+            DEPTH: 4
         }
     ],
     PLAYER_SPRITE_NAMES: PLAYERS,

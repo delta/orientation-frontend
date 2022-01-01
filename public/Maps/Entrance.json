@@ -129,7 +129,7 @@
                         {
                          "name":"destination",
                          "type":"string",
-                         "value":"Orion"
+                         "value":"ConnectionLeft"
                         }, 
                         {
                          "name":"name",
