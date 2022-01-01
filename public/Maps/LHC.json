@@ -170,9 +170,42 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":7,
+         "name":"Minigames",
+         "objects":[
+                {
+                 "height":15.5,
+                 "id":8,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"pacman"
+                        }, 
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"minigame"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":29.5,
+                 "x":257,
+                 "y":129
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":7,
- "nextobjectid":7,
+ "nextlayerid":8,
+ "nextobjectid":9,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",
