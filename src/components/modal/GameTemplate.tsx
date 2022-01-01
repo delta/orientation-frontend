@@ -38,12 +38,12 @@ export const GameTemplate = (props: GameTemplateProps) => {
             );
             // we are fetching user data again, w
             // as the data in localstorage might not be up to date
-            console.log('got leaderboard data : ', leaderBoardResp);
+            // console.log('got leaderboard data : ', leaderBoardResp);
             const userMapData = await axiosInstance.get('/api/user/map');
-            console.log('usermap data : ', userMapData);
+            // console.log('usermap data : ', userMapData);
 
             if (leaderBoardResp.status === 200 && userMapData.status === 200) {
-                console.log('parsing user data');
+                // console.log('parsing user data');
                 const userMap = {};
                 userMapData.data.userMap.forEach((user: any) => {
                     //@ts-ignore
@@ -54,7 +54,7 @@ export const GameTemplate = (props: GameTemplateProps) => {
                     leaderBoardResp.data.leaderboard.map((l: any) => {
                         return {
                             name: l.name,
-                            username: l.name,
+                            username: l.username,
                             spriteName: (userMap as any)[l.id].spriteType,
                             dept: l.department,
                             score: l.score

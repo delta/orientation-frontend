@@ -52,7 +52,8 @@ export class PhaserScene extends Scene {
     spriteFrameRate = 10;
     userMap: Record<
         string,
-        { userId: number; name: string; spriteType: string } | undefined
+        | { userId: number; name: string; spriteType: string; username: string }
+        | undefined
     > = {};
     room: any;
     roomForceUpdate: any;
@@ -273,7 +274,8 @@ export class PhaserScene extends Scene {
                     playerData = {
                         name: 'OXOXOXOX',
                         spriteType: 'male',
-                        userId: 1000
+                        userId: 1000,
+                        username: 'XOXOXOX'
                     };
                 }
             } catch (err) {
@@ -281,14 +283,15 @@ export class PhaserScene extends Scene {
                 playerData = {
                     name: 'OXOXOXOX',
                     spriteType: 'male',
-                    userId: 1000
+                    userId: 1000,
+                    username: 'XOXOXOX'
                 };
             }
         }
 
         // @ts-ignore
         let p = {
-            name: playerData?.name,
+            name: playerData?.username,
             x: player.Position.X,
             y: player.Position.Y,
             id: playerData?.userId,
@@ -383,7 +386,7 @@ export class PhaserScene extends Scene {
     // TODO: try to re-connect to web socket
     displaySocketDisconnectedToast() {
         console.log('socket has been disconnected', this);
-        const text = 'Lost connection to server,\nreload the page';
+        const text = 'Lost connection to server,\nReload the page';
         if (!this?.player?.displaySpeechBox(text)) return;
         // the event keeps emmiting events, we only need to catch them once.
         // so we remove them
@@ -471,7 +474,8 @@ export class PhaserScene extends Scene {
                 0,
                 0
             );
-            allLayers[this.layers[i]].setDepth(this.layers.length - i);
+            const offset = Number(this.playerDepth <= this.layers.length - i);
+            allLayers[this.layers[i]].setDepth(this.layers.length - i + offset);
             allLayers[this.layers[i]].setCollisionByProperty({
                 isCollidable: true
             });

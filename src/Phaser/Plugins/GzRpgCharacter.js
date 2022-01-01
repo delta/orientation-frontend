@@ -77,7 +77,7 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
                 .text(this.x, this.y - 20, this.speechBoxText, {
                     fontFamily: 'monospace',
                     align: 'center',
-                    backgroundColor: '#11111144',
+                    backgroundColor: '#11111177',
                     padding: { right: 15, y: 35, left: 25 }
                 })
                 .setDepth(5000)
