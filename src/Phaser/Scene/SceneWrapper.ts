@@ -70,7 +70,10 @@ export class PhaserScene extends Scene {
     timeoutDuration = 100;
 
     // key-down events
-    intractableData: { type: 'minigame' | 'gmap' | 'logout'; data: any } | null = null;
+    intractableData: {
+        type: 'minigame' | 'gmap' | 'logout';
+        data: any;
+    } | null = null;
 
     // opening modals
     openModal!: (data: string) => void;
@@ -518,14 +521,12 @@ export class PhaserScene extends Scene {
                             '/' +
                             this.intractableData.data
                     );
-                }
-                else if(this.intractableData.type === 'gmap'){
+                } else if (this.intractableData.type === 'gmap') {
                     // open in a new tab target.properties.link
                     let win = window.open(this.intractableData.data, '_blank');
                     win?.focus();
-                }
-                else if(this.intractableData.type === 'logout'){
-                    window.location.href = "/auth/logout";
+                } else if (this.intractableData.type === 'logout') {
+                    window.location.href = '/auth/logout';
                 }
             }
         });
@@ -572,7 +573,7 @@ export class PhaserScene extends Scene {
         }
     }
 
-    SetupIntractableData(intractableData:any,message: string){
+    SetupIntractableData(intractableData: any, message: string) {
         const callback = () => {
             const width = this.cameras.main.width;
             const height = this.cameras.main.height;
@@ -580,19 +581,14 @@ export class PhaserScene extends Scene {
             this.intractableData = intractableData;
 
             const text = this.add
-                .text(
-                    width / 2,
-                    (height * 3) / 5,
-                    message,
-                    {
-                        fontSize: '100px',
-                        backgroundColor: '#1a1a1a99',
-                        padding: {
-                            x: 30,
-                            y: 20
-                        }
+                .text(width / 2, (height * 3) / 5, message, {
+                    fontSize: '100px',
+                    backgroundColor: '#1a1a1a99',
+                    padding: {
+                        x: 30,
+                        y: 20
                     }
-                )
+                })
                 .setScrollFactor(0)
                 .setScale(0.1)
                 .setDepth(100)
@@ -607,7 +603,7 @@ export class PhaserScene extends Scene {
         this.addTimeout(callback, cleanup);
     }
 
-    Logout(player: any, target: any){
+    Logout(player: any, target: any) {
         let intractableData = {
             type: 'logout',
             data: null
@@ -632,10 +628,7 @@ export class PhaserScene extends Scene {
             type: 'gmap',
             data: target.properties.link
         };
-        this.SetupIntractableData(
-            intractableData,
-            'Press E to see preivew',
-        )
+        this.SetupIntractableData(intractableData, 'Press E to see preivew');
     }
 
     addSpriteAnimations() {

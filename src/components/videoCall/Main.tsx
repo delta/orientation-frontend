@@ -1,11 +1,17 @@
 import { LiveKitRoom } from './LiveKitRoom';
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import 'react-aspect-ratio/aspect-ratio.css';
 import styles from './styles.module.css';
 import { config } from '../../config/config';
 import { axiosInstance } from '../../utils/axios';
 import { useToast } from '../toast/ToastProvider';
+
+const removeInput = new Event('remove-input');
+const addInput = new Event('add-input');
+
 function Main() {
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
     const [, updateToken] = useState(''); //Access token
     const url = config.livekitUrl; //Livekit URL
     const [showVideo, setShowVideo] = useState(false);
@@ -23,11 +29,20 @@ function Main() {
         setShowVideo(false);
         console.log('Called finally');
     };
+
+    useEffect(() => {
+        console.log(inputRef.current);
+        inputRef.current?.addEventListener('focus', () =>
+            document.dispatchEvent(removeInput)
+        );
+        inputRef.current?.addEventListener('blur', () =>
+            document.dispatchEvent(addInput)
+        );
+    }, [inputRef.current]);
+
     const connectOldVc = async (name: string) => {
         try {
-            let resp: any = await axiosInstance.get(
-                `/api/joinvc?room=${name}`
-            );
+            let resp: any = await axiosInstance.get(`/api/joinvc?room=${name}`);
             console.log(resp);
             updateToken(resp.data.token);
             setShowVideo(true);
@@ -107,6 +122,7 @@ function Main() {
                             setRoomName(e.target.value);
                         }}
                         required
+                        ref={inputRef}
                     />
                     <button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-2"

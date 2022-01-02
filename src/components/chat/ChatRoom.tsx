@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useEffect, useState } from 'react';
+import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import IMessage from './interfaces/IMessage';
 import IChatUser from './interfaces/IChatUser';
 import { getColor } from './utils/colors';
@@ -43,6 +43,9 @@ const fakeUsers = [
     { id: 7, name: 'player7' }
 ];
 
+const removeInput = new Event('remove-input');
+const addInput = new Event('add-input');
+
 const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
     user,
     sendMessage
@@ -53,6 +56,8 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
 
     const [connectionStatus, setConnectionStatus] = useState<boolean>(true);
 
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
     useEffect(() => {
         const updateChatStatus = () => setConnectionStatus(true);
 
@@ -62,6 +67,16 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
             document.removeEventListener('user-register', updateChatStatus);
         };
     });
+
+    useEffect(() => {
+        console.log(inputRef.current);
+        inputRef.current?.addEventListener('focus', () =>
+            document.dispatchEvent(removeInput)
+        );
+        inputRef.current?.addEventListener('blur', () =>
+            document.dispatchEvent(addInput)
+        );
+    }, [inputRef.current]);
 
     const setConnectedUsers = (e: any) => {
         const userList: { id: number; name: string }[] = e.detail;
@@ -203,6 +218,7 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
                                 }}
                                 name="data"
                                 disabled={!connectionStatus}
+                                ref={inputRef}
                             />
                             <div
                                 className="h-full"
