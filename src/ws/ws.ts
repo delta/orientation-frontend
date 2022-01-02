@@ -51,6 +51,7 @@ const socketDisconnectedEvent = new Event('socket-disconnected');
 export class WebsocketApi {
     readonly wsUrl = config.websocketUrl;
     socket: WebSocket;
+    interval: any;
 
     //constructor will start the connection
     constructor() {
@@ -70,6 +71,8 @@ export class WebsocketApi {
 
         this.socket.onclose = () => {
             document.dispatchEvent(disconnectEvent);
+            console.log('trying to reconnect');
+            this.interval = setInterval(this.reconnect.bind(this), 3000);
         };
 
         this.socket.onerror = () => {
@@ -221,6 +224,19 @@ export class WebsocketApi {
         }
 
         document.dispatchEvent(socketDisconnectedEvent);
+    };
+
+    reconnect = () => {
+        if (this.socket.readyState === WebSocket.OPEN) {
+            console.log('reconnected');
+            clearInterval(this.interval);
+            return;
+        }
+
+        if (this.socket.readyState === WebSocket.CLOSED) {
+            // trying to make a new connection
+            this.socket = new WebSocket(this.wsUrl);
+        }
     };
 
     // method to close connection
