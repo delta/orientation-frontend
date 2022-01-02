@@ -4,9 +4,12 @@ import { getColor } from './utils/colors';
 
 const Message: React.FC<{ message: IMessage }> = ({ message }) => {
     return (
-        <div>
-            <span className={`${getColor(message.from.id)} mr-2`}>
-                {message.from.name}:
+        <div className="py-2 text-lg">
+            <span className={`${getColor(message.id)} font-semibold pr-2`}>
+                <span className="underline capitalize">
+                    {message.from.name}
+                </span>
+                :
             </span>
             {message.text}
         </div>
