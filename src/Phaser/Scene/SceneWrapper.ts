@@ -293,7 +293,7 @@ export class PhaserScene extends Scene {
         //@ts-ignore
         let tempPlayer = this.add.rpgcharacter(p);
         tempPlayer.setDepth(this.playerDepth);
-        tempPlayer.setScale(0.5);
+        tempPlayer.setScale(this.player.scale);
 
         if (this.otherPlayers === null) this.otherPlayers = {};
 
@@ -478,7 +478,7 @@ export class PhaserScene extends Scene {
         }
 
         this.player.setDepth(this.playerDepth);
-        this.player.setScale(0.5);
+        this.player.setScale(this.player.scale);
 
         this.setupObjectLayer('Portals', this.UsePortal.bind(this));
         this.setupObjectLayer('Minigames', this.StartMinigame.bind(this));
