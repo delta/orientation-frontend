@@ -68,6 +68,19 @@ class Game extends Component<GameProps, GameState> {
             }
         });
 
+        const disableInput = () => {
+            console.log('disabling input');
+            game.input.keyboard.enabled = false;
+        };
+
+        const enableInput = () => {
+            console.log('enabling input');
+            game.input.keyboard.enabled = true;
+        };
+
+        document.addEventListener('remove-input', disableInput);
+        document.addEventListener('add-input', enableInput);
+
         // We create a new container with our custom renderer with the PhaserGameObject
         //
         // createContainer parameters = containerInfo, tag, hydrate, hydrationCallbacks
@@ -149,7 +162,6 @@ class Game extends Component<GameProps, GameState> {
             this.state.mountContainer,
             null
         );
-        console.log('comp unmounting');
         this.state.phaserGame?.destroy(true);
     }
 
