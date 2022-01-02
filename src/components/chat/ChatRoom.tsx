@@ -33,14 +33,24 @@ const fakeMesages = [
     { id: 23, from: 'player23', room: 'chat', text: 'Player 23 message' }
 ];
 
+const fakeUsers = [
+    { id: 1, name: 'player1' },
+    { id: 2, name: 'player2' },
+    { id: 3, name: 'player3' },
+    { id: 4, name: 'player4' },
+    { id: 5, name: 'player5' },
+    { id: 6, name: 'player6' },
+    { id: 7, name: 'player7' }
+];
+
 const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
     user,
     sendMessage
 }) => {
     const [users, setUsers] = useState<IChatUser[]>([]);
-    const [messages, setMessages] = useState<IMessage[]>(fakeMesages);
+    const [messages, setMessages] = useState<IMessage[]>([]);
     const [textInput, setTextInput] = useState<string>('');
-    const [connectionStatus, setConnectionStatus] = useState<Boolean>(true);
+    const [connectionStatus, setConnectionStatus] = useState<boolean>(false);
 
     const setConnectedUsers = (e: any) => {
         const userList: { id: number; name: string }[] = e.detail;
@@ -61,6 +71,7 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
 
     const handleUserAction = (e: any) => {
         const userAction = e.detail;
+        console.log('heyyasd');
 
         if (userAction.user.id === user.id && userAction.status) {
             setConnectionStatus(true); // setting chat connection status
@@ -86,6 +97,15 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
         }
     };
 
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // console.log((e.target as any).elements.data);
+        // console.log(e.target);
+        const data: string = (e.target as any).elements.data;
+        if (!data) return;
+        sendMessage({ message: data });
+    };
+
     useEffect(() => {
         document.addEventListener('ws-connected-users', setConnectedUsers);
         document.addEventListener('ws-chat-message', appendMessage);
@@ -102,7 +122,7 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
     });
 
     return (
-        <div className="h-full border-black relative">
+        <div className="h-full relative" style={{ height: '95%' }}>
             {/* <div className="col-span-1 border-r border-black">
                 <div className="py-1 text-sm text-center border-b border-black">
                     {users.length} Users
@@ -121,16 +141,16 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
                 <Tab.Panel
                     key="chat"
                     className="overflow-y-scroll"
-                    style={{ height: '105%' }}
+                    style={{ height: '100%' }}
                 >
                     {' '}
                     <div
                         className="bg-base mt-3 mb-3 mx-4 relative  py-1 rounded-lg"
                         style={{
-                            height: '70%'
+                            height: '85%'
                         }}
                     >
-                        <h1 className="text-3xl font-medium mt-3 mb-5 px-4 pb-3 border-b-2 border-background rounded-md">
+                        <h1 className="text-3xl font-medium mt-3 mb-5 px-4 pb-3 border-b-2 rounded-md">
                             👾 Live Chat 👾
                         </h1>
                         <div
@@ -141,7 +161,7 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
                         >
                             {connectionStatus ? (
                                 <>
-                                    <div className="border-black px-4">
+                                    <div className="px-4">
                                         {messages.map((message) => (
                                             <Message
                                                 key={message.id}
@@ -149,23 +169,28 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
                                             />
                                         ))}
                                     </div>
-                                    <div className="min-h-[2.5rem] px-4 flex items-center"></div>
                                 </>
                             ) : (
-                                <div className="text-sm">
+                                <div className="">
                                     Press Play to connect with chat
                                 </div>
                             )}
                         </div>
                     </div>
+                    {/* Input Button */}
                     <div className="bg-base  mx-4 border-none">
-                        <form className="flex border-none relative">
+                        <form
+                            className="flex border-none relative"
+                            onSubmit={handleSubmit}
+                        >
                             <input
                                 className="rounded-lg p-4  mr-0  text-text  bg-base border-none text-lg"
                                 placeholder="Start Typing here..."
                                 style={{
                                     width: '70%'
                                 }}
+                                name="data"
+                                disabled={!connectionStatus}
                             />
                             <div
                                 className="h-full"
@@ -220,7 +245,59 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
                         </form>
                     </div>
                 </Tab.Panel>
-                <Tab.Panel>Users</Tab.Panel>
+                <Tab.Panel
+                    className="overflow-y-scroll"
+                    style={{ height: '100%' }}
+                >
+                    <div
+                        className="bg-base mt-3 mb-3 mx-4 relative  py-1 rounded-lg"
+                        style={{
+                            height: '85%'
+                        }}
+                    >
+                        <h1 className="text-xl font-medium mt-3 mb-5 px-4 pb-3 border-b-2 border-background rounded-md">
+                            {connectionStatus
+                                ? `${users.length} Players are using Utopia right now!`
+                                : 'Loading...'}
+                        </h1>
+                        <div
+                            className="px-4 overflow-y-scroll"
+                            style={{
+                                height: '85%'
+                            }}
+                        >
+                            {connectionStatus ? (
+                                <>
+                                    <div className="px-4">
+                                        {users.map((u, i) => {
+                                            return (
+                                                <div className="py-2 text-lg">
+                                                    <span className="pr-2">
+                                                        <span className="underline capitalize pr-1">
+                                                            {i + 1}
+                                                        </span>
+                                                        :
+                                                    </span>
+                                                    <span
+                                                        className={`${getColor(
+                                                            u.id
+                                                        )} font-semibold pr-2 capitalize`}
+                                                    >
+                                                        {u.name}
+                                                    </span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="text-sm">
+                                    Press Play to connect with chat
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </Tab.Panel>
             </Tab.Panels>
         </div>
     );

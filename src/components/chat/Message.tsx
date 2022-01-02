@@ -6,7 +6,10 @@ const Message: React.FC<{ message: IMessage }> = ({ message }) => {
     return (
         <div className="py-2 text-lg">
             <span className={`${getColor(message.id)} font-semibold pr-2`}>
-                <span className="underline capitalize">{message.from}</span>:
+                <span className="underline capitalize">
+                    {message.from.name}:
+                </span>
+                :
             </span>
             {message.text}
         </div>

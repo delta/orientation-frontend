@@ -28,7 +28,7 @@ const RoomList: React.FC<{
                     Users
                 </div>
             ))} */}
-            <Tab.List className="flex space-x-1 bg-blue-900/20 rounded-xl p-4 pr-6">
+            <Tab.List className="flex space-x-1 bg-blue-900/20 rounded-xl pt-4 pr-6 mx-4">
                 <Tab
                     key="chat"
                     className={({ selected }) =>
@@ -40,7 +40,7 @@ const RoomList: React.FC<{
                         )
                     }
                 >
-                    Game
+                    Chat
                 </Tab>
                 <Tab
                     key="users"
@@ -60,7 +60,7 @@ const RoomList: React.FC<{
                 className={'w-10 truncate flex flex-row justify-center items-center p-2 border-b border-black cursor-pointer font-bold text-2xl bg-orange-300'}>
                     +
             </div> */}
-            <FontAwesomeIcon
+            {/* <FontAwesomeIcon
                 onClick={() => toggleVc('close')}
                 style={{
                     cursor: 'pointer',
@@ -70,7 +70,7 @@ const RoomList: React.FC<{
                     marginTop: '5px'
                 }}
                 icon={faTimes}
-            />
+            /> */}
 
             <div className="flex-grow border-b border-black"></div>
             {/* <div className="flex-grow border-b border-black"></div> */}

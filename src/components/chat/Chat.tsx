@@ -27,21 +27,23 @@ const Chat: React.FC<{ ws: WebsocketApi | undefined }> = ({ ws }) => {
     if (typeof ws === 'undefined') return <></>;
 
     return showChat == '' ? (
-        <div className={'w-1/4 bg-gray-500 ' + showChat}>
-            <div className="h-screen flex flex-col">
-                <div className="bg-slate-200 h-10">
-                    <RoomList
-                        chatRooms={chatRooms}
-                        currentRoom={currentRoom}
-                        setCurrentRoom={setCurrentRoom}
-                        toggleVc={toggleVc}
-                    />
+        <div className={'w-1/4 text-text' + showChat}>
+            <Tab.Group>
+                <div className="h-screen flex flex-col">
+                    <div className="" style={{ height: '5%' }}>
+                        <RoomList
+                            chatRooms={chatRooms}
+                            currentRoom={currentRoom}
+                            setCurrentRoom={setCurrentRoom}
+                            toggleVc={toggleVc}
+                        />
+                    </div>
+                    {/* <div className="" style={{ height: '80%' }}> */}
+                    <ChatRoom user={user} sendMessage={ws.sendChatMessage} />
+                    {/* </div> */}
+                    {/* </Tab.Group> */}
                 </div>
-                {/* <div className="" style={{ height: '80%' }}> */}
-                <ChatRoom user={user} sendMessage={ws.sendChatMessage} />
-                {/* </div> */}
-                {/* </Tab.Group> */}
-            </div>
+            </Tab.Group>
         </div>
     ) : (
         <div>
