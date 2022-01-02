@@ -50,15 +50,15 @@ const socketDisconnectedEvent = new Event('socket-disconnected');
 // websocket wrapper, all the request, response will be handled here
 export class WebsocketApi {
     readonly wsUrl = config.websocketUrl;
-    socket: WebSocket;
+    socket: WebSocket | undefined;
     interval: any;
+    isRegistered: Boolean = false; // user registration status, move and change room shoild be done after registration
 
     //constructor will start the connection
-    constructor() {
+    connect() {
         // connections event
         const connectEvent = new Event('ws-connected');
         const disconnectEvent = new Event('ws-disconnected');
-
         // response message custom event
 
         this.socket = new WebSocket(this.wsUrl);
@@ -70,12 +70,16 @@ export class WebsocketApi {
         };
 
         this.socket.onclose = () => {
+            this.isRegistered = false;
+            console.log('disconnected');
             document.dispatchEvent(disconnectEvent);
             console.log('trying to reconnect');
             this.interval = setInterval(this.reconnect.bind(this), 3000);
         };
 
         this.socket.onerror = () => {
+            this.isRegistered = false;
+            console.log('socket error');
             document.dispatchEvent(disconnectEvent);
         };
 
@@ -166,13 +170,15 @@ export class WebsocketApi {
 
     // method to register user (i.e add user to map)
     registerUser = (req: upsertUser) => {
-        if (this.socket.readyState === WebSocket.OPEN) {
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             let requestMessage: requestMessageType = {
                 messageType: 'user-register',
                 data: req
             };
 
             this.socket.send(JSON.stringify(requestMessage));
+
+            this.isRegistered = true;
 
             return;
         }
@@ -181,7 +187,11 @@ export class WebsocketApi {
 
     // method to update user postion in map
     moveUser = (req: upsertUser) => {
-        if (this.socket.readyState === WebSocket.OPEN) {
+        if (
+            this.socket &&
+            this.socket.readyState === WebSocket.OPEN &&
+            this.isRegistered
+        ) {
             let requestMessage: requestMessageType = {
                 messageType: 'user-move',
                 data: req
@@ -197,7 +207,11 @@ export class WebsocketApi {
 
     // method to switch map
     changeRoom = (req: changeRoom) => {
-        if (this.socket.readyState === WebSocket.OPEN) {
+        if (
+            this.socket &&
+            this.socket.readyState === WebSocket.OPEN &&
+            this.isRegistered
+        ) {
             let requestMessage: requestMessageType = {
                 messageType: 'change-room',
                 data: req
@@ -212,7 +226,7 @@ export class WebsocketApi {
     };
 
     sendChatMessage = (req: chatMessage) => {
-        if (this.socket.readyState === WebSocket.OPEN) {
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             let requestMessage: requestMessageType = {
                 messageType: 'chat-message',
                 data: req
@@ -227,20 +241,18 @@ export class WebsocketApi {
     };
 
     reconnect = () => {
-        if (this.socket.readyState === WebSocket.OPEN) {
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             console.log('reconnected');
             clearInterval(this.interval);
-            return;
-        }
-
-        if (this.socket.readyState === WebSocket.CLOSED) {
+        } else if (this.socket && this.socket.readyState === WebSocket.CLOSED) {
             // trying to make a new connection
-            this.socket = new WebSocket(this.wsUrl);
+            console.log('connecting');
+            this.connect();
         }
     };
 
     // method to close connection
     close = () => {
-        this.socket.close();
+        this.socket?.close();
     };
 }

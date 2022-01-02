@@ -23,7 +23,9 @@ export const GamePage = () => {
     const history = useHistory();
     const ws = useMemo(() => {
         try {
-            return new WebsocketApi();
+            const ws = new WebsocketApi();
+            ws.connect();
+            return ws;
         } catch (err) {
             history.push('/auth/login');
         }
