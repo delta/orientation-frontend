@@ -211,6 +211,7 @@ export const CONSTANTS = {
     MINIGAMES: {
         'minigame/2048': {
             name: '2048',
+            path: '2048.html',
             width: 720,
             height: 450,
             description:
@@ -221,6 +222,7 @@ export const CONSTANTS = {
         },
         'minigame/hextris': {
             name: 'hextris',
+            path: 'hextris.html',
             width: 720,
             height: 450,
             description:
