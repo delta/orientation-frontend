@@ -171,6 +171,9 @@ export class WebsocketApi {
 
             this.socket.send(JSON.stringify(requestMessage));
 
+            const userRegisterEvent = new Event('user-register');
+            document.dispatchEvent(userRegisterEvent);
+
             return;
         }
         document.dispatchEvent(socketDisconnectedEvent);
