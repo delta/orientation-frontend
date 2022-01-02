@@ -111,7 +111,6 @@ export class PhaserScene extends Scene {
         this.room = null;
         this.roomForceUpdate = null;
         this.isVideoOn = true;
-        this.handleVcToggle();
         this.handleOtherPlayersBinded = null;
         this.handleRoomLeftBinded = null;
         this.openModal = openModal;
@@ -157,15 +156,6 @@ export class PhaserScene extends Scene {
         if (data.origin) {
             this.spawnPoint = (SpawnPoints as any)[data.origin];
         }
-    }
-
-    handleVcToggle() {
-        document.addEventListener('vc-room-created', (e: any) => {
-            this.room = e.detail.room;
-            this.roomForceUpdate = e.detail.forceUpdate;
-            (window as any).room = this.room;
-            (window as any).roomForceUpdate = this.roomForceUpdate;
-        });
     }
 
     // TODO
@@ -517,16 +507,6 @@ export class PhaserScene extends Scene {
             1000 / config.tickRate
         );
 
-        let videoInput = this.input.keyboard.addKey('v');
-        videoInput.on('down', () => {
-            if (this.isVideoOn) {
-                this.isVideoOn = false;
-                this.room.disconnect();
-            } else {
-                this.isVideoOn = true;
-                this.roomForceUpdate();
-            }
-        });
         // Listening for key presses
         let Markiplier = this.input.keyboard.addKey('e');
         Markiplier.on('down', () => {

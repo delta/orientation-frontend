@@ -70,17 +70,7 @@ export const LiveKitRoom = ({
                     toast?.pushError('Sorry call limit reached');
                     room.disconnect();
                 }
-                const roomCreateEvent = new CustomEvent<any>(
-                    'vc-room-created',
-                    {
-                        detail: {
-                            room: room,
-                            forceUpdate: forceUpdate
-                        }
-                    }
-                );
 
-                document.dispatchEvent(roomCreateEvent);
                 onConnected(room);
             }
             return () => {
