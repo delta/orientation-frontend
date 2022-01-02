@@ -50,7 +50,18 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
     const [users, setUsers] = useState<IChatUser[]>([]);
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [textInput, setTextInput] = useState<string>('');
-    const [connectionStatus, setConnectionStatus] = useState<boolean>(false);
+
+    const [connectionStatus, setConnectionStatus] = useState<boolean>(true);
+
+    useEffect(() => {
+        const updateChatStatus = () => setConnectionStatus(true);
+
+        document.addEventListener('user-register', updateChatStatus);
+
+        return () => {
+            document.removeEventListener('user-register', updateChatStatus);
+        };
+    });
 
     const setConnectedUsers = (e: any) => {
         const userList: { id: number; name: string }[] = e.detail;
@@ -104,6 +115,7 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
         const data: string = (e.target as any).elements.data.value;
         if (!data) return;
         sendMessage({ message: data });
+        (e.target as any).elements.data.value = '';
     };
 
     useEffect(() => {
