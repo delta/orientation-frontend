@@ -4,15 +4,43 @@ import IChatUser from './interfaces/IChatUser';
 import { getColor } from './utils/colors';
 import Message from './Message';
 import { IUser } from '../../contexts/userContext';
+import { clsx } from '../../utils/clsx';
+import { Tab } from '@headlessui/react';
+
+const fakeMesages = [
+    { id: 1, from: 'player1', room: 'chat', text: 'Player 1 message' },
+    { id: 2, from: 'player2', room: 'chat', text: 'Player 2 message' },
+    { id: 3, from: 'player3', room: 'chat', text: 'Player 3 message' },
+    { id: 4, from: 'player4', room: 'chat', text: 'Player 4 message' },
+    { id: 5, from: 'player5', room: 'chat', text: 'Player 5 message' },
+    { id: 6, from: 'player6', room: 'chat', text: 'Player 6 message' },
+    { id: 7, from: 'player7', room: 'chat', text: 'Player 7 message' },
+    { id: 8, from: 'player8', room: 'chat', text: 'Player 8 message' },
+    { id: 9, from: 'player9', room: 'chat', text: 'Player 9 message' },
+    { id: 10, from: 'player10', room: 'chat', text: 'Player 10 message' },
+    { id: 11, from: 'player11', room: 'chat', text: 'Player 11 message' },
+    { id: 12, from: 'player12', room: 'chat', text: 'Player 12 message' },
+    { id: 13, from: 'player31', room: 'chat', text: 'Player 13 message' },
+    { id: 14, from: 'player14', room: 'chat', text: 'Player 14 message' },
+    { id: 15, from: 'player15', room: 'chat', text: 'Player 15 message' },
+    { id: 16, from: 'player16', room: 'chat', text: 'Player 16 message' },
+    { id: 17, from: 'player17', room: 'chat', text: 'Player 17 message' },
+    { id: 18, from: 'player18', room: 'chat', text: 'Player 18 message' },
+    { id: 19, from: 'player19', room: 'chat', text: 'Player 19 message' },
+    { id: 20, from: 'player20', room: 'chat', text: 'Player 20 message' },
+    { id: 21, from: 'player21', room: 'chat', text: 'Player 21 message' },
+    { id: 22, from: 'player22', room: 'chat', text: 'Player 22 message' },
+    { id: 23, from: 'player23', room: 'chat', text: 'Player 23 message' }
+];
 
 const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
     user,
     sendMessage
 }) => {
     const [users, setUsers] = useState<IChatUser[]>([]);
-    const [messages, setMessages] = useState<IMessage[]>([]);
+    const [messages, setMessages] = useState<IMessage[]>(fakeMesages);
     const [textInput, setTextInput] = useState<string>('');
-    const [connectionStatus, setConnectionStatus] = useState<Boolean>(false);
+    const [connectionStatus, setConnectionStatus] = useState<Boolean>(true);
 
     const setConnectedUsers = (e: any) => {
         const userList: { id: number; name: string }[] = e.detail;
@@ -74,8 +102,8 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
     });
 
     return (
-        <div className="grid grid-cols-5 h-full border-t border-black">
-            <div className="col-span-1 border-r border-black">
+        <div className="h-full border-black relative">
+            {/* <div className="col-span-1 border-r border-black">
                 <div className="py-1 text-sm text-center border-b border-black">
                     {users.length} Users
                 </div>
@@ -88,39 +116,112 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
                         {user.name}
                     </div>
                 ))}
-            </div>
-            <div className="col-span-4 flex flex-col">
-                {connectionStatus ? (
-                    <>
-                        <div className="flex-grow border-b border-black flex flex-col justify-end px-4">
-                            {messages.map((message) => (
-                                <Message key={message.id} message={message} />
-                            ))}
+            </div> */}
+            <Tab.Panels className="h-full relative">
+                <Tab.Panel
+                    key="chat"
+                    className="overflow-y-scroll"
+                    style={{ height: '105%' }}
+                >
+                    {' '}
+                    <div
+                        className="bg-base mt-3 mb-3 mx-4 relative  py-1 rounded-lg"
+                        style={{
+                            height: '70%'
+                        }}
+                    >
+                        <h1 className="text-3xl font-medium mt-3 mb-5 px-4 pb-3 border-b-2 border-background rounded-md">
+                            👾 Live Chat 👾
+                        </h1>
+                        <div
+                            className="px-4 overflow-y-scroll"
+                            style={{
+                                height: '85%'
+                            }}
+                        >
+                            {connectionStatus ? (
+                                <>
+                                    <div className="border-black px-4">
+                                        {messages.map((message) => (
+                                            <Message
+                                                key={message.id}
+                                                message={message}
+                                            />
+                                        ))}
+                                    </div>
+                                    <div className="min-h-[2.5rem] px-4 flex items-center"></div>
+                                </>
+                            ) : (
+                                <div className="text-sm">
+                                    Press Play to connect with chat
+                                </div>
+                            )}
                         </div>
-                        <div className="min-h-[2.5rem] px-4 flex items-center">
-                            <div
-                                className={`mr-2 font-medium ${getColor(
-                                    user.id
-                                )}`}
-                            >
-                                {user.username}:
-                            </div>
+                    </div>
+                    <div className="bg-base  mx-4 border-none">
+                        <form className="flex border-none relative">
                             <input
-                                onKeyDown={handleKeyDown}
-                                value={textInput}
-                                onChange={(e: any) =>
-                                    setTextInput(e.target.value)
-                                }
-                                type="text"
-                                className="flex-grow border border-gray-400 px-2"
-                                placeholder="Press Enter to send"
+                                className="rounded-lg p-4  mr-0  text-text  bg-base border-none text-lg"
+                                placeholder="Start Typing here..."
+                                style={{
+                                    width: '70%'
+                                }}
                             />
-                        </div>
-                    </>
-                ) : (
-                    <div>press play to connect with chat</div>
-                )}
-            </div>
+                            <div
+                                className="h-full"
+                                style={{
+                                    width: '15%'
+                                }}
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6 cursor-pointer"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    color="#f4efe2"
+                                    style={{
+                                        transform: 'translate(+80%, 60%)'
+                                    }}
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.415-1.414 3 3 0 01-4.242 0 1 1 0 00-1.415 1.414 5 5 0 007.072 0z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                            </div>
+                            <button
+                                className={clsx(
+                                    'px-8 rounded-r-lg bg-accent1  text-gray-800',
+                                    'font-bold p-4 uppercase',
+                                    'border-t border-b border-r'
+                                )}
+                                style={{
+                                    width: '15%'
+                                }}
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    color="#f4efe2"
+                                    style={{ transform: 'translate(-45%, 0%)' }}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                                    />
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </Tab.Panel>
+                <Tab.Panel>Users</Tab.Panel>
+            </Tab.Panels>
         </div>
     );
 };

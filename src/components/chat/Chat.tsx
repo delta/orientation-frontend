@@ -5,6 +5,8 @@ import { UserContext } from '../../contexts/userContext';
 import { WebsocketApi } from '../../ws/ws';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Tab } from '@headlessui/react';
+
 const Chat: React.FC<{ ws: WebsocketApi | undefined }> = ({ ws }) => {
     const [chatRooms, setChatRooms] = useState(['Chat']);
     const [currentRoom, setCurrentRoom] = useState('Chat');
@@ -35,9 +37,10 @@ const Chat: React.FC<{ ws: WebsocketApi | undefined }> = ({ ws }) => {
                         toggleVc={toggleVc}
                     />
                 </div>
-                <div className="bg-slate-200 flex-grow">
-                    <ChatRoom user={user} sendMessage={ws.sendChatMessage} />
-                </div>
+                {/* <div className="" style={{ height: '80%' }}> */}
+                <ChatRoom user={user} sendMessage={ws.sendChatMessage} />
+                {/* </div> */}
+                {/* </Tab.Group> */}
             </div>
         </div>
     ) : (

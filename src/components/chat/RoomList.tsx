@@ -2,6 +2,8 @@ import React from 'react';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIcons } from '@fortawesome/free-solid-svg-icons';
+import { clsx } from '../../utils/clsx';
+import { Tab } from '@headlessui/react';
 
 const RoomList: React.FC<{
     chatRooms: string[];
@@ -10,21 +12,50 @@ const RoomList: React.FC<{
     toggleVc: (option: string) => void;
 }> = ({ chatRooms, currentRoom, setCurrentRoom, toggleVc }) => {
     return (
-        <div className="flex flex-row h-full border-b-4 border-red-400">
-            {chatRooms.map((roomName, index) => (
+        <div className="">
+            {/* {chatRooms.map((roomName, index) => (
                 <div
                     key={roomName + index}
-                    className={
-                        'w-20 truncate flex flex-row items-center p-2 border-r-2 border-black cursor-pointer ' +
-                        (roomName === currentRoom
-                            ? 'font-medium bg-red-400'
-                            : 'border-b bg-orange-300')
-                    }
+                    className={clsx(
+                        'w-20 truncate flex flex-row items-center p-2 border-r-2',
+                        'cursor-pointer text-lg',
+                        roomName === currentRoom
+                            ? 'font-medium bg-accent1'
+                            : 'border-b bg-orange-300'
+                    )}
                     onClick={() => setCurrentRoom(roomName)}
                 >
-                    {roomName}
+                    Users
                 </div>
-            ))}
+            ))} */}
+            <Tab.List className="flex space-x-1 bg-blue-900/20 rounded-xl p-4 pr-6">
+                <Tab
+                    key="chat"
+                    className={({ selected }) =>
+                        clsx(
+                            'w-full py-2.5 leading-5 font-medium rounded-t-xl rounded-b-sm text-lg',
+                            selected
+                                ? 'bg-base shadow  text-text'
+                                : ' text-text hover:text-text bg-background hover:bg-accent2'
+                        )
+                    }
+                >
+                    Game
+                </Tab>
+                <Tab
+                    key="users"
+                    className={({ selected }) =>
+                        clsx(
+                            'w-full py-2.5 leading-5 font-medium rounded-t-xl rounded-b-sm text-lg',
+                            selected
+                                ? 'bg-base shadow  text-text'
+                                : ' text-text hover:text-text bg-background hover:bg-accent2'
+                        )
+                    }
+                >
+                    Users
+                </Tab>
+            </Tab.List>
             {/* <div
                 className={'w-10 truncate flex flex-row justify-center items-center p-2 border-b border-black cursor-pointer font-bold text-2xl bg-orange-300'}>
                     +
@@ -42,6 +73,7 @@ const RoomList: React.FC<{
             />
 
             <div className="flex-grow border-b border-black"></div>
+            {/* <div className="flex-grow border-b border-black"></div> */}
         </div>
     );
 };
