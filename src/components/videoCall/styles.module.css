@@ -189,3 +189,35 @@ ul.list li:first-child {
     height: 100vh;
     width: 80%;
 }
+.animateCharcter {
+    background-image: linear-gradient(
+        -225deg,
+        orange 0%,
+        #44107a 29%,
+        #ff1361 67%,
+        #fff800 100%
+    );
+    width: 100%;
+    text-align: center;
+    background-size: auto auto;
+    background-clip: border-box;
+    background-size: 200% auto;
+    color: #fff;
+    background-clip: text;
+    text-fill-color: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textclip 3s linear infinite;
+    font-size: 17px;
+
+    width: 53%;
+    margin: 0 auto;
+    padding: 4px;
+    margin-top: 1px;
+}
+
+@keyframes textclip {
+    to {
+        background-position: 200% center;
+    }
+}

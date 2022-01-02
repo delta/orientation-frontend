@@ -89,10 +89,16 @@ function Main() {
 
         let comp = (
             <>
-                <h1 className="text-white text-center">
+                {/* <h1 className="text-white text-center">
                     Your room is {resp.data.roomName}. Share it with your
                     friends to join
-                </h1>
+                </h1> */}
+                <div className={styles.candycaneBorder}>
+                    <h3 className={styles.animateCharcter}>
+                        Your room is {resp.data.roomName}. Share it with your
+                        friends to join
+                    </h3>
+                </div>
                 <div className="roomContainer">
                     <div className={styles.cont}>
                         <LiveKitRoom
