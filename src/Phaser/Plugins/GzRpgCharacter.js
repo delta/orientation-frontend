@@ -41,7 +41,7 @@ export class RpgCharacter extends Phaser.GameObjects.Sprite {
         // Add this sprite to the scene
         scene.add.existing(this);
         // scale the sprite
-        this.scale = 0.5;
+        this.scale = 0.45;
         this.body.setSize(this.width / 2, this.height / 5);
         this.type = type;
         this.setTexture(type, `${type}-${this.defaultTiles[facing]}`);
