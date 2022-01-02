@@ -25,9 +25,7 @@ function Main() {
     };
     const connectOldVc = async (name: string) => {
         try {
-            let resp: any = await axiosInstance.get(
-                `/api/joinvc?room=${name}`
-            );
+            let resp: any = await axiosInstance.get(`/api/joinvc?room=${name}`);
             console.log(resp);
             updateToken(resp.data.token);
             setShowVideo(true);
@@ -74,10 +72,16 @@ function Main() {
 
         let comp = (
             <>
-                <h1 className="text-white text-center">
+                {/* <h1 className="text-white text-center">
                     Your room is {resp.data.roomName}. Share it with your
                     friends to join
-                </h1>
+                </h1> */}
+                <div className={styles.candycaneBorder}>
+                    <h3 className={styles.animateCharcter}>
+                        Your room is {resp.data.roomName}. Share it with your
+                        friends to join
+                    </h3>
+                </div>
                 <div className="roomContainer">
                     <div className={styles.cont}>
                         <LiveKitRoom
