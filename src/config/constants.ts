@@ -233,6 +233,7 @@ export const CONSTANTS = {
         },
         'minigame/stack': {
             name: 'stack',
+            path: '/stack/index.html',
             width: 720,
             height: 450,
             description:
@@ -243,6 +244,7 @@ export const CONSTANTS = {
         },
         'minigame/pacman': {
             name: 'pacman',
+            path: '/pacman/index.html',
             width: 720,
             height: 450,
             description:
