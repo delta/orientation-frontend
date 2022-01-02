@@ -537,6 +537,11 @@ export class PhaserScene extends Scene {
                             this.intractableData.data
                     );
                 }
+                else if(this.intractableData.type === 'gmap'){
+                    // open in a new tab target.properties.link
+                    let win = window.open(this.intractableData.data, '_blank');
+                    win?.focus();
+                }
             }
         });
 
@@ -626,9 +631,41 @@ export class PhaserScene extends Scene {
     }
 
     ShowPreview(player: any, target: any) {
-        // open in a new tab target.properties.link
-        // let win = window.open(target.properties.link, '_blank');
-        // win?.focus();
+        const callback = () => {
+            const width = this.cameras.main.width;
+            const height = this.cameras.main.height;
+
+            this.intractableData = {
+                type: 'gmap',
+                data: target.properties.link
+            };
+
+            const text = this.add
+                .text(
+                    width / 2,
+                    (height * 3) / 5,
+                    'Press E to see preivew',
+                    {
+                        fontSize: '100px',
+                        backgroundColor: '#1a1a1a99',
+                        padding: {
+                            x: 30,
+                            y: 20
+                        }
+                    }
+                )
+                .setScrollFactor(0)
+                .setScale(0.1)
+                .setDepth(100)
+                .setOrigin(0.5, 0.5);
+            (window as any).text = text;
+            return text;
+        };
+        const cleanup = (data: Phaser.GameObjects.Text) => {
+            data.destroy(true);
+            this.intractableData = null;
+        };
+        this.addTimeout(callback, cleanup);
     }
 
     addSpriteAnimations() {
