@@ -101,7 +101,7 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
         e.preventDefault();
         // console.log((e.target as any).elements.data);
         // console.log(e.target);
-        const data: string = (e.target as any).elements.data;
+        const data: string = (e.target as any).elements.data.value;
         if (!data) return;
         sendMessage({ message: data });
     };
