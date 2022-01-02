@@ -189,7 +189,7 @@ export const CONSTANTS = {
                 'Background',
                 'Grass'
             ],
-            ZOOM: 2,
+            ZOOM: 1.3,
             DEPTH: 4
         }
     ],
@@ -211,7 +211,7 @@ export const CONSTANTS = {
     MINIGAMES: {
         'minigame/2048': {
             name: '2048',
-            path: '2048.html',
+            path: '/2048/index.html',
             width: 720,
             height: 450,
             description:
@@ -222,7 +222,7 @@ export const CONSTANTS = {
         },
         'minigame/hextris': {
             name: 'hextris',
-            path: 'hextris.html',
+            path: '/hextris/index.html',
             width: 720,
             height: 450,
             description:
@@ -230,6 +230,28 @@ export const CONSTANTS = {
             madeBy: 'Logan Engstrom',
             liscense: '',
             repo: 'https://github.com/Hextris/hextris'
+        },
+        'minigame/stack': {
+            name: 'stack',
+            path: '/stack/index.html',
+            width: 720,
+            height: 450,
+            description:
+                'Use spacebar or click to place a block. Align the block perfectly on top of the tower. Each misalignment costs you a piece. Game ends, when the block is finished.',
+            madeBy: 'Mehmood Deshmukh',
+            liscense: '',
+            repo: 'https://github.com/meshde/tower-stack-game'
+        },
+        'minigame/pacman': {
+            name: 'pacman',
+            path: '/pacman/index.html',
+            width: 720,
+            height: 450,
+            description:
+                'Move around using wasd keys, and try to eat all the dots. Avoid ghosts. You have three lives. Game ends, when you run out of lives. Collect Powerups to kill ghosts.',
+            madeBy: 'bward2',
+            liscense: '',
+            repo: 'https://github.com/bward2/pacman-js'
         }
     }
 };

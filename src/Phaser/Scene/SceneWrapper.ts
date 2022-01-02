@@ -5,6 +5,7 @@ import SpawnPoints from '../../utils/spawnPoints';
 import { WebsocketApi } from '../../ws/ws';
 import { phaserLoadingAnimation } from '../../utils/loadingAnimation';
 import { axiosInstance } from '../../utils/axios';
+import { textChangeRangeIsUnchanged } from 'typescript';
 
 interface ConstructorProps {
     config: string | Types.Scenes.SettingsConfig;
@@ -69,7 +70,7 @@ export class PhaserScene extends Scene {
     timeoutDuration = 100;
 
     // key-down events
-    intractableData: { type: 'minigame' | 'gmap'; data: any } | null = null;
+    intractableData: { type: 'minigame' | 'gmap' | 'logout'; data: any } | null = null;
 
     // opening modals
     openModal!: (data: string) => void;
@@ -493,6 +494,7 @@ export class PhaserScene extends Scene {
         this.setupObjectLayer('Minigames', this.StartMinigame.bind(this));
         this.setupObjectLayer('Text', this.ShowText.bind(this));
         this.setupObjectLayer('Preview', this.ShowPreview.bind(this));
+        this.setupObjectLayer('Logout', this.Logout.bind(this));
 
         // Set up the main (only?) camera
         const camera = this.cameras.main;
@@ -536,6 +538,14 @@ export class PhaserScene extends Scene {
                             '/' +
                             this.intractableData.data
                     );
+                }
+                else if(this.intractableData.type === 'gmap'){
+                    // open in a new tab target.properties.link
+                    let win = window.open(this.intractableData.data, '_blank');
+                    win?.focus();
+                }
+                else if(this.intractableData.type === 'logout'){
+                    window.location.href = "/auth/logout";
                 }
             }
         });
@@ -582,22 +592,18 @@ export class PhaserScene extends Scene {
         }
     }
 
-    StartMinigame(player: any, target: any) {
-        // console.log(target.properties.name);
+    SetupIntractableData(intractableData:any,message: string){
         const callback = () => {
             const width = this.cameras.main.width;
             const height = this.cameras.main.height;
 
-            this.intractableData = {
-                type: 'minigame',
-                data: target.properties.name
-            };
+            this.intractableData = intractableData;
 
             const text = this.add
                 .text(
                     width / 2,
                     (height * 3) / 5,
-                    'Press E to start the game',
+                    message,
                     {
                         fontSize: '100px',
                         backgroundColor: '#1a1a1a99',
@@ -621,14 +627,35 @@ export class PhaserScene extends Scene {
         this.addTimeout(callback, cleanup);
     }
 
+    Logout(player: any, target: any){
+        let intractableData = {
+            type: 'logout',
+            data: null
+        };
+        this.SetupIntractableData(intractableData, 'Press E to Logout');
+    }
+
+    StartMinigame(player: any, target: any) {
+        let intractableData = {
+            type: 'minigame',
+            data: target.properties.name
+        };
+        this.SetupIntractableData(intractableData, 'Press E to start the game');
+    }
+
     ShowText(player: any, target: any) {
         // console.log(target.properties);
     }
 
     ShowPreview(player: any, target: any) {
-        // open in a new tab target.properties.link
-        // let win = window.open(target.properties.link, '_blank');
-        // win?.focus();
+        let intractableData = {
+            type: 'gmap',
+            data: target.properties.link
+        };
+        this.SetupIntractableData(
+            intractableData,
+            'Press E to see preivew',
+        )
     }
 
     addSpriteAnimations() {

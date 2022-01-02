@@ -22,7 +22,7 @@ function Main() {
     const connectOldVc = async (name: string) => {
         try {
             let resp: any = await axiosInstance.get(
-                `/api/joinvc?room=${name}&status=old`
+                `/api/joinvc?room=${name}`
             );
             console.log(resp);
             updateToken(resp.data.token);
@@ -61,7 +61,7 @@ function Main() {
     }, []);
     const connectVc = async () => {
         //Requesting server for an access token. Server SDK generates 1 and this is passed to the livekit server
-        let resp: any = await axiosInstance.get('/api/joinvc?room=&status=new');
+        let resp: any = await axiosInstance.get('/api/joinvc');
         console.log(resp.data);
         updateToken(resp.data.token);
         setShowVideo(true);
@@ -91,7 +91,7 @@ function Main() {
     } else
         return (
             <>
-                <div className="w-7/12 m-0 m-auto pl-32 pt-4">
+                <div className="w-12/12 m-auto video-code">
                     <input
                         className="px-2 py-1 placeholder-blueGray-300 text-blueGray-600 relative  bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring focus:bg-white w-4/12 pr-10"
                         placeholder="Enter Room Id"

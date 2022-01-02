@@ -93,21 +93,56 @@ export const MenuScene = (props: MenuSceneProps) => {
                     fontSize: '90px',
                     stroke: '#232121',
                     strokeThickness: 5,
-                    align: 'left'
+                    align: 'left',
+                    color: '#B2C84E',
+                    shadow: {
+                        offsetX: 2,
+                        offsetY: 2,
+                        color: '#000000',
+                        blur: 2,
+                        fill: true,
+                        stroke: true,
+                    }
                 });
-                const playButton = scene.add.image(
-                    width,
-                    height + 125,
-                    'playButton'
-                );
-                playButton.setOrigin(0, 0);
-                playButton.setScale(1.5);
 
-                playButton.setInteractive();
-
-                playButton.on('pointerup', () => {
+                // add text saying "Press E to start"
+                scene.add.text(width, height + 100, 'PRESS   E    TO    START', {
+                    fontFamily: 'PixelFont',
+                    fontSize: '40px',
+                    stroke: '#232121',
+                    strokeThickness: 5,
+                    align: 'left',
+                    color: '#ffffff',
+                    shadow: {
+                        offsetX: 2,
+                        offsetY: 2,
+                        color: '#000000',
+                        blur: 2,
+                        fill: true,
+                        stroke: true,
+                    }
+                });
+                
+                // add input and detect 'E' key
+                let Markiplier = scene.input.keyboard.addKey('e');
+                Markiplier.on('down', () => {
+                    console.log('E pressed');
                     scene.scene.start(props.nextScene, { origin: 'menu' });
                 });
+                
+                // const playButton = scene.add.image(
+                //     width,
+                //     height + 125,
+                //     'playButton'
+                // );
+                // playButton.setOrigin(0, 0);
+                // playButton.setScale(1.5);
+
+                // playButton.setInteractive();
+
+                // playButton.on('pointerup', () => {
+                //     scene.scene.start(props.nextScene, { origin: 'menu' });
+                // });
             };
             createFunction(newScene);
         };

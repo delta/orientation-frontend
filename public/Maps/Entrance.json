@@ -183,6 +183,34 @@
         }, 
         {
          "draworder":"topdown",
+         "id":8,
+         "name":"Logout",
+         "objects":[
+                {
+                 "height":12.3636,
+                 "id":15,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"logout"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":46.1818,
+                 "x":250.000009090909,
+                 "y":432.181836363636
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":7,
          "name":"Text",
          "objects":[],
@@ -192,8 +220,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":8,
- "nextobjectid":13,
+ "nextlayerid":9,
+ "nextobjectid":16,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",
