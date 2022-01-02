@@ -29,6 +29,7 @@ export interface RoomProps {
     ) => React.ReactElement | null;
     controlRenderer?: (props: ControlsProps) => React.ReactElement | null;
     queuefunc: () => void;
+    reRender: () => void;
 }
 
 export const LiveKitRoom = ({
@@ -42,7 +43,8 @@ export const LiveKitRoom = ({
     onConnected,
     onLeave,
     queuefunc,
-    adaptiveVideo
+    adaptiveVideo,
+    reRender
 }: RoomProps) => {
     console.log('LiveKitRoom');
     const roomState = useRoom({ sortParticipants });
@@ -85,6 +87,7 @@ export const LiveKitRoom = ({
         roomState,
         participantRenderer,
         controlRenderer,
-        onLeave
+        onLeave,
+        reRender
     });
 };

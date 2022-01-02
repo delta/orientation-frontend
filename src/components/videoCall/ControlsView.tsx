@@ -13,6 +13,7 @@ export interface ControlsProps {
     enableAudio?: boolean;
     enableVideo?: boolean;
     onLeave?: (room: Room) => void;
+    reRender: () => void;
 }
 
 export const ControlsView = ({
@@ -20,7 +21,8 @@ export const ControlsView = ({
     enableScreenShare,
     enableAudio,
     enableVideo,
-    onLeave
+    onLeave,
+    reRender
 }: ControlsProps) => {
     // const { unpublishTrack } = useParticipant(room.localParticipant);
 
@@ -69,6 +71,14 @@ export const ControlsView = ({
         <div className={styles.controlsWrapper}>
             {muteButton}
             {videoButton}
+            <ControlButton
+                label="End"
+                className={styles.dangerButton}
+                onClick={() => {
+                    room.disconnect();
+                    reRender();
+                }}
+            />
         </div>
     );
 };
