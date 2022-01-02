@@ -71,3 +71,12 @@
     z-index: 101;
     width: 100%;
 }
+
+.video-code{
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    width: fit-content;
+    transform: translate(-50%, 0%);
+    z-index: 100;
+}
