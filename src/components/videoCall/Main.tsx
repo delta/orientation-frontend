@@ -19,6 +19,10 @@ function Main() {
         }
         connectOldVc(roomName);
     };
+    const reRender = () => {
+        setShowVideo(false);
+        console.log('Called finally');
+    };
     const connectOldVc = async (name: string) => {
         try {
             let resp: any = await axiosInstance.get(
@@ -41,11 +45,13 @@ function Main() {
                                 token={resp.data.token}
                                 queuefunc={queueUser}
                                 onConnected={(room) => onConnected(room)}
+                                reRender={reRender}
                             ></LiveKitRoom>
                         </div>
                     </div>
                 </>
             );
+
             updateVc(comp);
         } catch (e) {
             console.log(e);
@@ -79,6 +85,7 @@ function Main() {
                             token={resp.data.token}
                             queuefunc={queueUser}
                             onConnected={(room) => onConnected(room)}
+                            reRender={reRender}
                         ></LiveKitRoom>
                     </div>
                 </div>

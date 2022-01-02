@@ -10,4 +10,6 @@ export interface StageProps {
     ) => React.ReactElement | null;
     controlRenderer?: (props: ControlsProps) => React.ReactElement | null;
     onLeave?: (room: Room) => void;
+
+    reRender: () => void;
 }

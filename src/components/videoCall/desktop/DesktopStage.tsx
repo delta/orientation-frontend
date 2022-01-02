@@ -10,7 +10,8 @@ export const DesktopStage = ({
     roomState,
     participantRenderer,
     controlRenderer,
-    onLeave
+    onLeave,
+    reRender
 }: StageProps) => {
     const { isConnecting, error, participants, room } = roomState;
     const [showOverlay, setShowOverlay] = useState(false);
@@ -111,7 +112,11 @@ export const DesktopStage = ({
                 </div>
             </div>
             <div className={styles.controlsArea}>
-                <ControlRenderer room={room} onLeave={onLeave} />
+                <ControlRenderer
+                    room={room}
+                    reRender={reRender}
+                    onLeave={onLeave}
+                />
             </div>
         </div>
     );
