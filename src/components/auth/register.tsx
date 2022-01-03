@@ -108,8 +108,7 @@ const formData: {
             {
                 name: 'Select how you want to look like',
                 available: false,
-                code: 'nth',
-                img: '/favicon.ico'
+                code: 'nth'
             },
             {
                 name: 'Male',
