@@ -40,6 +40,29 @@ function Main() {
         );
     }, [inputRef.current]);
 
+    const showRoomCode = (code: any) => {
+        return (
+            <h3 className="room-code-box">
+                Your room is{' '}
+                <strong
+                    className='room-code'
+                    onClick={(e) => {
+                        var textField = document.createElement('textarea');
+                        textField.innerText = `${code}`;
+                        document.body.appendChild(textField);
+                        textField.select();
+                        document.execCommand('copy');
+                        textField.remove();
+                        toast?.pushSuccess('Copied to clipboard');
+                    }}
+                >
+                    {code}.
+                </strong>{' '}
+                Share it with your friends to join
+            </h3>
+        );
+    };
+
     const connectOldVc = async (name: string) => {
         try {
             let resp: any = await axiosInstance.get(`/api/joinvc?room=${name}`);
@@ -49,10 +72,7 @@ function Main() {
 
             let comp = (
                 <>
-                    <h1 className="text-white text-center">
-                        Your room is {resp.data.roomName}. Share it with your
-                        friends to join
-                    </h1>
+                    {showRoomCode(resp.data.roomName)}
                     <div className="roomContainer">
                         <div className={styles.cont}>
                             <LiveKitRoom
@@ -93,12 +113,7 @@ function Main() {
                     Your room is {resp.data.roomName}. Share it with your
                     friends to join
                 </h1> */}
-                <div className={styles.candycaneBorder}>
-                    <h3 className={styles.animateCharcter}>
-                        Your room is {resp.data.roomName}. Share it with your
-                        friends to join
-                    </h3>
-                </div>
+                {showRoomCode(resp.data.roomName)}
                 <div className="roomContainer">
                     <div className={styles.cont}>
                         <LiveKitRoom

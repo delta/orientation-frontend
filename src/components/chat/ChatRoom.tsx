@@ -92,6 +92,9 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
             room: 'chat', //may be remove later
             text: chatMessage.message
         };
+        let objDiv = document.getElementById('chat-messages');
+        if(objDiv)
+            objDiv.scrollTop = objDiv.scrollHeight;
         setMessages(messages.concat(newMessage));
     };
 
@@ -182,6 +185,7 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
                         </h1>
                         <div
                             className="px-4 overflow-y-scroll"
+                            id="chat-messages"
                             style={{
                                 height: '85%'
                             }}
