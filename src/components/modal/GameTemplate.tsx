@@ -100,6 +100,7 @@ export const GameTemplate = (props: GameTemplateProps) => {
                                     : ' text-black hover:text-white bg-gray-300 hover:bg-accent2'
                             )
                         }
+                        onClick={() => getLeaderboard(name)}
                     >
                         HighScore
                     </Tab>
