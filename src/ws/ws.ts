@@ -169,13 +169,14 @@ export class WebsocketApi {
 
                 // acknowledgement sent by server for updating user message
                 case 'move-response':
+                    // console.log('completed request');
+                    setTimeout(
+                        this.sendNewUserPositionToServerQueuer.bind(this),
+                        1000 / config.tickRate
+                    );
                     if (response.status) {
                         // successful
                         // BUG: breaks in change room
-                        setTimeout(
-                            this.sendNewUserPositionToServerQueuer.bind(this),
-                            1000 / config.tickRate
-                        );
                     }
                     // if the queue is not empty, we send next position to user
                     break;
@@ -193,7 +194,7 @@ export class WebsocketApi {
                 messageType: 'user-register',
                 data: req
             };
-            this.isSendingMovementRequest = true;
+            this.isSendingMovementRequest = false;
 
             this.room = req.room;
             this.socket.send(JSON.stringify(requestMessage));
@@ -223,7 +224,8 @@ export class WebsocketApi {
 
     // method to update push movement pos to queue
     moveUser = (req: upsertUser) => {
-        if (!isEqual(this.movementQueue.tail, req)) {
+        if (!isEqual(this.movementQueue.tail?.value, req)) {
+            // console.log('diff values : ', this.movementQueue.tail?.value, req);
             this.movementQueue.push(req);
         }
         if (!this.isSendingMovementRequest) {
