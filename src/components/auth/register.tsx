@@ -35,7 +35,6 @@ interface InputComponentProps {
 const departments = [
     { name: 'Select your department', available: false, code: '' },
     { code: 'AR', name: 'Architecture', available: true },
-    { code: 'CA', name: 'Computer Applications', available: true },
     { code: 'CE', name: 'Chemical Engineering', available: true },
     { code: 'CL', name: 'Civil Engineering', available: true },
     { code: 'CSE', name: 'Computer Science & Engineering', available: true },
@@ -70,8 +69,8 @@ const formData: {
         | 'username'
         | 'department'
         | 'spriteType'
-        | 'description'
-        | 'gender'
+        // | 'description'
+        // | 'gender'
         | 'submit';
     label: string;
     placeholder?: string;
@@ -96,14 +95,14 @@ const formData: {
         question: "What's your name",
         userData: 'username',
         textInputType: 'input',
-        label: 'What do you wanna be known as in Utopia',
+        label: 'You can be anyone in Utopia. What do you want to be known as ?',
         placeholder: 'Enter your name here...',
         type: 'text'
     },
     {
-        question: 'How do u want to look like in Utopia ?',
+        question: 'How do you want to look like in Utopia ?',
         userData: 'spriteType',
-        label: 'How do u wanna look in UTOPIA',
+        label: 'You pick how you look in Utopia. Once picked you cannot change it. Choose wisely !',
         options: [
             {
                 name: 'Select how you want to look like',
@@ -111,25 +110,25 @@ const formData: {
                 code: 'nth'
             },
             {
-                name: 'Male',
+                name: 'BLINDLY BELIEVE',
                 available: true,
                 code: 'male',
                 img: '/sprites/preview/male.png'
             },
             {
-                name: 'Male2',
+                name: 'BEJUS',
                 available: true,
                 code: 'male2',
                 img: '/sprites/preview/male2.png'
             },
             {
-                name: 'Female',
+                name: 'DARK SABER',
                 available: true,
                 code: 'female',
                 img: '/sprites/preview/female.png'
             },
             {
-                name: 'Female2',
+                name: 'KELPIKZ',
                 available: true,
                 code: 'female2',
                 img: '/sprites/preview/female2.png'
@@ -145,41 +144,10 @@ const formData: {
         type: 'select'
     },
     {
-        question: 'Tell us something about yourself',
-        userData: 'description',
-        label: 'Dont tell me your fav color',
-        placeholder: 'Tell me something you want everyone to know about you',
-        textInputType: 'textArea',
-        type: 'text'
-    },
-    {
-        question: 'What is your gender',
-        userData: 'gender',
-        label: 'Tell us your gender ',
-        options: [
-            {
-                name: 'Gender plis',
-                available: false,
-                code: 'nth'
-            },
-            {
-                name: 'male',
-                available: true,
-                code: 'male'
-            },
-            {
-                name: 'female',
-                available: true,
-                code: 'female'
-            }
-        ],
-        type: 'select'
-    },
-    {
         question: 'Everything is done. Ready to enter Utopia ? ',
         userData: 'submit',
-        label: 'Please read our terms and conditions before entering the site.',
-        buttonText: 'LESGOO!!!',
+        label: 'Buckle up to enter the Utopia.',
+        buttonText: 'Enter',
         type: 'button'
     }
 ];
@@ -670,13 +638,11 @@ export const Register = () => {
     const [userData, setUserData] = useState<{
         username: string;
         department: string;
-        description: string;
-        gender: string;
+        spriteType: string;
     }>({
         username: '',
         department: '',
-        description: '',
-        gender: ''
+        spriteType: ''
     });
 
     const addDataAndProceed = (key: keyof typeof userData) => {
