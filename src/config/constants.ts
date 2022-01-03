@@ -211,7 +211,7 @@ export const CONSTANTS = {
     MINIGAMES: {
         'minigame/2048': {
             name: '2048',
-            path: '/2048/index.html',
+            path: config.minigamesUrl + '/minigames/2048/index.html',
             width: 720,
             height: 450,
             description:
@@ -222,7 +222,7 @@ export const CONSTANTS = {
         },
         'minigame/hextris': {
             name: 'hextris',
-            path: '/hextris/index.html',
+            path: config.minigamesUrl + '/minigames/hextris/index.html',
             width: 720,
             height: 450,
             description:
@@ -233,7 +233,7 @@ export const CONSTANTS = {
         },
         'minigame/stack': {
             name: 'stack',
-            path: '/stack/index.html',
+            path: config.minigamesUrl + '/minigames/stack/index.html',
             width: 720,
             height: 450,
             description:
@@ -244,7 +244,7 @@ export const CONSTANTS = {
         },
         'minigame/pacman': {
             name: 'pacman',
-            path: '/pacman/index.html',
+            path: config.minigamesUrl + '/minigames/pacman/index.html',
             width: 720,
             height: 450,
             description:

@@ -115,7 +115,7 @@ export const GameTemplate = (props: GameTemplateProps) => {
                         <iframe
                             width={width}
                             height={height}
-                            src={`minigames/${path}`}
+                            src={`${path}`}
                             title={`minigames/${name}`}
                         ></iframe>
                         <Disclosure>
