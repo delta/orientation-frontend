@@ -15,7 +15,7 @@ interface highScoreProps {
 
 const spriteIdMap: Record<string, string> = {
     player: '/favicon.ico',
-    male1: '/sprites/preview/male.png',
+    male: '/sprites/preview/male.png',
     male2: '/sprites/preview/male2.png',
     female: '/sprites/preview/female.png',
     female2: '/sprites/preview/female2.png'
