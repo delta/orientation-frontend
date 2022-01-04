@@ -266,21 +266,27 @@ export class PhaserScene extends Scene {
                 } else {
                     // setting user data to random stuff so the game doesn't break
                     playerData = {
-                        name: 'OXOXOXOX',
+                        name: 'Player',
                         spriteType: 'male',
                         userId: 1000,
-                        username: 'XOXOXOX'
+                        username: 'Player'
                     };
                 }
             } catch (err) {
                 console.error(err);
                 playerData = {
-                    name: 'OXOXOXOX',
+                    name: 'Player',
                     spriteType: 'male',
                     userId: 1000,
-                    username: 'XOXOXOX'
+                    username: 'Player'
                 };
             }
+        }
+
+        if(playerData?.spriteType === null || playerData?.spriteType === undefined || playerData.spriteType === '')
+        {
+            if(playerData)
+                playerData.spriteType = "male";
         }
 
         // @ts-ignore
