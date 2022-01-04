@@ -550,7 +550,7 @@ export const Register = () => {
         return Array.from(x);
     };
 
-    const { isLoggedIn, saveUser } = useContext(UserContext) || {};
+    const { isLoggedIn, user, saveUser } = useContext(UserContext) || {};
 
     const history = useHistory();
 
@@ -736,6 +736,7 @@ export const Register = () => {
     };
 
     if (!isLoggedIn) return <Redirect to="/auth/login" />;
+    if (!user?.isNewUser) return <Redirect to="/game" />;
 
     return (
         <div
