@@ -165,14 +165,6 @@ export class PhaserScene extends Scene {
     addUserToRoom() {
         if (this.ws) {
             try {
-                this.ws.registerUser({
-                    room: this.sceneKey,
-                    position: {
-                        x: this.spawnPoint.x,
-                        y: this.spawnPoint.y,
-                        direction: this.spawnPoint.facing
-                    }
-                });
             } catch (err) {
                 this.sceneErrorHandler(err);
             }
@@ -283,10 +275,12 @@ export class PhaserScene extends Scene {
             }
         }
 
-        if(playerData?.spriteType === null || playerData?.spriteType === undefined || playerData.spriteType === '')
-        {
-            if(playerData)
-                playerData.spriteType = "male";
+        if (
+            playerData?.spriteType === null ||
+            playerData?.spriteType === undefined ||
+            playerData.spriteType === ''
+        ) {
+            if (playerData) playerData.spriteType = 'male';
         }
 
         // @ts-ignore
