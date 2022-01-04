@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import clockTower from '../../assets/images/AdminBlock_no_bg.png';
 import deltaLogo from '../../assets/images/deltaLogoWhite.png';
 import styles from './login.module.css';
 import { config } from '../../config/config';
+import { UserContext } from '../../contexts/userContext';
+import { Redirect } from 'react-router-dom';
 
 const DAuthLogin = () => {
     const [rollNo, setRollNo] = useState('');
+    const { loading, isLoggedIn } = useContext(UserContext) || {};
     const dummyLogin = async (r: string) => {
         console.log(r);
         const res = await fetch(`${config.backendOrigin}/api/auth/dummyLogin`, {
@@ -20,6 +23,11 @@ const DAuthLogin = () => {
         const json = await res.json();
         console.log(json);
     };
+
+    if (loading) return <></>;
+
+    if (isLoggedIn) return <Redirect to="/game" />;
+
     return (
         <div className="min-w-screen min-h-screen flex items-center justify-center px-5 py-5">
             <div className="bg-base text-gray-500 rounded shadow-2xl py-5 px-5 w-3/4 h-3/4">

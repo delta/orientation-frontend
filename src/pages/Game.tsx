@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 
 import { Scene } from '../Phaser/Scene/Scene';
 import { Game } from '../Phaser/Game/Game';
@@ -10,7 +10,7 @@ import { LoaderScene } from '../Phaser/Scene/Loader';
 import { MenuScene } from '../components/scenes/Menu';
 import { config } from '../config/config';
 import Chat from '../components/chat/Chat';
-import { UserContextProvider } from '../contexts/userContext';
+import { UserContext, UserContextProvider } from '../contexts/userContext';
 import styles from '../components/videoCall/styles.module.css';
 import Main from '../components/videoCall/Main';
 const imageAssets = [
@@ -21,6 +21,8 @@ const imageAssets = [
 
 export const GamePage = () => {
     const history = useHistory();
+    const { loading, isLoggedIn } = useContext(UserContext) || {};
+
     const ws = useMemo(() => {
         try {
             return new WebsocketApi();
@@ -33,6 +35,10 @@ export const GamePage = () => {
         const event = new CustomEvent('portal-listener', { detail: data });
         document.dispatchEvent(event);
     }, []);
+
+    if (loading) return <></>;
+
+    if (!isLoggedIn) return <Redirect to="/auth/login" />;
 
     return (
         <div>
