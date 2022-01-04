@@ -134,7 +134,7 @@ function Main() {
     } else
         return (
             <>
-                <div className="w-12/12 m-auto video-code">
+                {/* <div className="w-12/12 m-auto video-code">
                     <input
                         className="px-2 py-1 placeholder-blueGray-300 text-blueGray-600 relative  bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring focus:bg-white w-4/12 pr-10"
                         placeholder="Enter Room Id"
@@ -158,6 +158,10 @@ function Main() {
                     >
                         Click to create a new room
                     </button>
+                </div> */}
+                <div className="w-12/12 m-auto video-code coming-soon">
+                    {/* put a Video Calling Coming Soon ! Stay Tuned */}
+                    Multiplayer mode with Video Call and Chat Coming Soon ! Stay Tuned.
                 </div>
             </>
         );
