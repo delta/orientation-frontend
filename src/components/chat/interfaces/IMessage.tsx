@@ -1,8 +1,7 @@
 import IChatUser from './IChatUser';
 
 export default interface IMessage {
+    message: string;
+    name: string;
     id: number;
-    from: IChatUser;
-    room: string;
-    text: string;
 }

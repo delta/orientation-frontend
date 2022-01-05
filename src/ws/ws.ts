@@ -39,8 +39,7 @@ interface responseMessageType {
         | 'room-broadcast'
         | 'user-left'
         | 'users'
-        | 'chat-message'
-        | 'user-action';
+        | 'chat-message';
     Data: any;
 }
 
@@ -69,10 +68,12 @@ export class WebsocketApi {
         };
 
         this.socket.onclose = () => {
+            console.log('socket closed!');
             document.dispatchEvent(disconnectEvent);
         };
 
         this.socket.onerror = () => {
+            console.log('socket error');
             document.dispatchEvent(disconnectEvent);
         };
 
@@ -90,15 +91,9 @@ export class WebsocketApi {
                         }
                     );
 
-                    document.dispatchEvent(alreadyConnectedEvent);
-                    break;
-                // new user joined the room
-                case 'new-user':
-                    const newUserEvent = new CustomEvent<WUser>('ws-new-user', {
-                        detail: responseMessage.Data as WUser
-                    });
+                    this.close();
 
-                    document.dispatchEvent(newUserEvent);
+                    document.dispatchEvent(alreadyConnectedEvent);
                     break;
 
                 // all user postion in rendered map/room
@@ -121,18 +116,6 @@ export class WebsocketApi {
                     document.dispatchEvent(roomLeftEvent);
                     break;
 
-                case 'users':
-                    console.log('users', responseMessage.Data);
-
-                    const connectedUsersEvent = new CustomEvent<any>(
-                        'ws-connected-users',
-                        {
-                            detail: responseMessage.Data
-                        }
-                    );
-                    document.dispatchEvent(connectedUsersEvent);
-                    break;
-
                 case 'chat-message':
                     console.log('chat-message', responseMessage.Data);
                     const chatMessageEvent = new CustomEvent<any>(
@@ -142,17 +125,6 @@ export class WebsocketApi {
                         }
                     );
                     document.dispatchEvent(chatMessageEvent);
-                    break;
-
-                case 'user-action':
-                    console.log('user-action', responseMessage.Data);
-                    const userActionEvent = new CustomEvent<any>(
-                        'ws-user-action',
-                        {
-                            detail: responseMessage.Data
-                        }
-                    );
-                    document.dispatchEvent(userActionEvent);
                     break;
 
                 default:

@@ -97,7 +97,7 @@ export const GamePage = () => {
                     <Main></Main>
                 </div>
 
-                {/* <Chat ws={ws} /> */}
+                <Chat ws={ws} />
             </div>
         </div>
     );
