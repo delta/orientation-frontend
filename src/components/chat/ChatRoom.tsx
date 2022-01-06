@@ -1,47 +1,9 @@
 import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import IMessage from './interfaces/IMessage';
-import IChatUser from './interfaces/IChatUser';
-import { getColor } from './utils/colors';
 import Message from './Message';
 import { IUser } from '../../contexts/userContext';
 import { clsx } from '../../utils/clsx';
 import { Tab } from '@headlessui/react';
-
-const fakeMesages = [
-    { id: 1, from: 'player1', room: 'chat', text: 'Player 1 message' },
-    { id: 2, from: 'player2', room: 'chat', text: 'Player 2 message' },
-    { id: 3, from: 'player3', room: 'chat', text: 'Player 3 message' },
-    { id: 4, from: 'player4', room: 'chat', text: 'Player 4 message' },
-    { id: 5, from: 'player5', room: 'chat', text: 'Player 5 message' },
-    { id: 6, from: 'player6', room: 'chat', text: 'Player 6 message' },
-    { id: 7, from: 'player7', room: 'chat', text: 'Player 7 message' },
-    { id: 8, from: 'player8', room: 'chat', text: 'Player 8 message' },
-    { id: 9, from: 'player9', room: 'chat', text: 'Player 9 message' },
-    { id: 10, from: 'player10', room: 'chat', text: 'Player 10 message' },
-    { id: 11, from: 'player11', room: 'chat', text: 'Player 11 message' },
-    { id: 12, from: 'player12', room: 'chat', text: 'Player 12 message' },
-    { id: 13, from: 'player31', room: 'chat', text: 'Player 13 message' },
-    { id: 14, from: 'player14', room: 'chat', text: 'Player 14 message' },
-    { id: 15, from: 'player15', room: 'chat', text: 'Player 15 message' },
-    { id: 16, from: 'player16', room: 'chat', text: 'Player 16 message' },
-    { id: 17, from: 'player17', room: 'chat', text: 'Player 17 message' },
-    { id: 18, from: 'player18', room: 'chat', text: 'Player 18 message' },
-    { id: 19, from: 'player19', room: 'chat', text: 'Player 19 message' },
-    { id: 20, from: 'player20', room: 'chat', text: 'Player 20 message' },
-    { id: 21, from: 'player21', room: 'chat', text: 'Player 21 message' },
-    { id: 22, from: 'player22', room: 'chat', text: 'Player 22 message' },
-    { id: 23, from: 'player23', room: 'chat', text: 'Player 23 message' }
-];
-
-const fakeUsers = [
-    { id: 1, name: 'player1' },
-    { id: 2, name: 'player2' },
-    { id: 3, name: 'player3' },
-    { id: 4, name: 'player4' },
-    { id: 5, name: 'player5' },
-    { id: 6, name: 'player6' },
-    { id: 7, name: 'player7' }
-];
 
 const removeInput = new Event('remove-input');
 const addInput = new Event('add-input');
@@ -50,23 +12,11 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
     user,
     sendMessage
 }) => {
-    const [users, setUsers] = useState<IChatUser[]>([]);
     const [messages, setMessages] = useState<IMessage[]>([]);
-    const [textInput, setTextInput] = useState<string>('');
 
-    const [connectionStatus, setConnectionStatus] = useState<boolean>(true);
+    const [connectionStatus, setConnectionStatus] = useState<boolean>(false);
 
     const inputRef = useRef<HTMLInputElement | null>(null);
-
-    useEffect(() => {
-        const updateChatStatus = () => setConnectionStatus(true);
-
-        document.addEventListener('user-register', updateChatStatus);
-
-        return () => {
-            document.removeEventListener('user-register', updateChatStatus);
-        };
-    });
 
     useEffect(() => {
         console.log(inputRef.current);
@@ -78,52 +28,23 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
         );
     }, [inputRef.current]);
 
-    const setConnectedUsers = (e: any) => {
-        const userList: { id: number; name: string }[] = e.detail;
-        setUsers(userList);
-    };
-
     const appendMessage = (e: any) => {
         let chatMessage = e.detail;
 
         let newMessage: IMessage = {
-            id: chatMessage.user.id,
-            from: chatMessage.user,
-            room: 'chat', //may be remove later
-            text: chatMessage.message
+            message: chatMessage.Message,
+            name: chatMessage.UserName,
+            id: chatMessage.UserId
         };
+
         let objDiv = document.getElementById('chat-messages');
-        if(objDiv)
-            objDiv.scrollTop = objDiv.scrollHeight;
+        if (objDiv) objDiv.scrollTop = objDiv.scrollHeight;
+
         setMessages(messages.concat(newMessage));
     };
 
-    const handleUserAction = (e: any) => {
-        const userAction = e.detail;
-        console.log('heyyasd');
-
-        if (userAction.user.id === user.id && userAction.status) {
-            setConnectionStatus(true); // setting chat connection status
-            return;
-        }
-
-        switch (userAction.status) {
-            case true:
-                setUsers(users.concat(userAction.user));
-                break;
-            case false:
-                setUsers(users.filter((u) => u.id !== userAction.user.id));
-                break;
-        }
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            if (textInput.trim().length !== 0) {
-                sendMessage({ message: textInput.trim() });
-                setTextInput('');
-            }
-        }
+    const handleConnectionStatus = () => {
+        setConnectionStatus(true);
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -137,17 +58,11 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
     };
 
     useEffect(() => {
-        document.addEventListener('ws-connected-users', setConnectedUsers);
         document.addEventListener('ws-chat-message', appendMessage);
-        document.addEventListener('ws-user-action', handleUserAction);
+        document.addEventListener('user-register', handleConnectionStatus);
 
         return () => {
-            document.removeEventListener(
-                'ws-connected-users',
-                setConnectedUsers
-            );
             document.removeEventListener('ws-chat-message', appendMessage);
-            document.removeEventListener('ws-user-action', handleUserAction);
         };
     });
 
@@ -195,16 +110,17 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
                                     <div className="px-4">
                                         {messages.map((message) => (
                                             <Message
-                                                key={message.id}
+                                                key={
+                                                    message.name +
+                                                    Date.now().toString()
+                                                }
                                                 message={message}
                                             />
                                         ))}
                                     </div>
                                 </>
                             ) : (
-                                <div className="">
-                                    Press Play to connect with chat
-                                </div>
+                                <div className="">loading...</div>
                             )}
                         </div>
                     </div>
@@ -277,7 +193,7 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
                         </form>
                     </div>
                 </Tab.Panel>
-                <Tab.Panel
+                {/* <Tab.Panel
                     className="overflow-y-scroll"
                     style={{ height: '100%' }}
                 >
@@ -329,7 +245,7 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
                             )}
                         </div>
                     </div>
-                </Tab.Panel>
+                </Tab.Panel>*/}
             </Tab.Panels>
         </div>
     );
