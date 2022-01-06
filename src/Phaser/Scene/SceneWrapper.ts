@@ -379,7 +379,7 @@ export class PhaserScene extends Scene {
 
     // TODO: try to re-connect to web socket
     displaySocketDisconnectedToast() {
-        console.log('socket has been disconnected', this);
+        // console.log('socket has been disconnected', this);
         const text = 'Lost connection to server,\nReload the page';
         if (!this?.player?.displaySpeechBox(text)) return;
         // the event keeps emmiting events, we only need to catch them once.
@@ -438,7 +438,7 @@ export class PhaserScene extends Scene {
         // this.cursors = this.input.keyboard.createCursorKeys();
 
         const userId = localStorage.getItem('userId') || 0;
-        console.log(this.userMap[userId]?.spriteType || 'male');
+        // console.log(this.userMap[userId]?.spriteType || 'male');
         // Set up the player character
         // @ts-ignore
         this.player = this.add.rpgcharacter({
@@ -514,7 +514,7 @@ export class PhaserScene extends Scene {
         let Markiplier = this.input.keyboard.addKey('e');
         Markiplier.on('down', () => {
             if (this.intractableData) {
-                console.log(this.intractableData);
+                // console.log(this.intractableData);
                 if (this.intractableData.type === 'minigame') {
                     const elm = this.openModal(
                         this.intractableData.type +
@@ -531,7 +531,7 @@ export class PhaserScene extends Scene {
             }
         });
 
-        console.log(this.player);
+        // console.log(this.player);
         document.addEventListener(
             'socket-disconnected',
             this.displaySocketDisconnectedToastBinded
