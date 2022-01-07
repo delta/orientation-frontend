@@ -24,13 +24,11 @@ export const MenuScene = (props: MenuSceneProps) => {
         const makeRequest = async () => {
             try {
                 const resp = await axiosInstance.get('/api/user/map');
-                console.log(resp.data);
                 const userMap = {};
                 resp.data.userMap.forEach((user: any) => {
                     //@ts-ignore
                     userMap[user.userId] = user;
                 });
-                console.log(userMap);
                 if (resp.data.success) {
                     localStorage.setItem('user-map', JSON.stringify(userMap));
                 }

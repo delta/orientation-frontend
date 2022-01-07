@@ -38,7 +38,7 @@ export const GamePage = () => {
 
     if (loading) return <></>;
 
-    if (!isLoggedIn) return <Redirect to="/auth/login" />;
+    // if (!isLoggedIn) return <Redirect to="/auth/login" />;
 
     return (
         <div>
