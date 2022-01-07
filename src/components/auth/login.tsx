@@ -69,10 +69,15 @@ const DAuthLogin = () => {
                         </p>
                         {config.isDev && (
                             <>
+                                <p className="text-text mb-2">
+                                    Enter a Fake Number to login :{' '}
+                                </p>
                                 <input
                                     type="number"
                                     onChange={(e) => setRollNo(e.target.value)}
+                                    className={styles.fakeNumberInput}
                                 />
+                                <br />
                                 <br />
                                 <button
                                     className="flex justify-between items-center bg-accent1 p-4 w-48 rounded-lg text-lg font-bold text-white mt-2 hover:bg-accent2"
