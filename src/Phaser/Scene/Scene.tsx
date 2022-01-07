@@ -83,6 +83,7 @@ const Scene = ({
                 console.log('removing the scene');
             game?.scene.remove(sceneKey);
         };
+        // eslint-disable-next-line
     }, [
         game,
         sceneKey,

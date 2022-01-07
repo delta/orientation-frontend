@@ -16,10 +16,10 @@ function Main() {
     const url = config.livekitUrl; //Livekit URL
     const [showVideo, setShowVideo] = useState(false);
     const [roomName, setRoomName] = useState('');
-    const [vcPanel, changePanel] = useState('');
+    // const [vcPanel, changePanel] = useState('');
     const toast = useToast();
     const joinParty = () => {
-        if (roomName == '') {
+        if (roomName === '') {
             toast?.pushError('Enter valid Meet ID');
             return;
         }
@@ -38,6 +38,7 @@ function Main() {
         inputRef.current?.addEventListener('blur', () =>
             document.dispatchEvent(addInput)
         );
+        // eslint-disable-next-line
     }, [inputRef.current]);
 
     const showRoomCode = (code: any) => {
@@ -45,7 +46,7 @@ function Main() {
             <h3 className="room-code-box">
                 Your room is{' '}
                 <strong
-                    className='room-code'
+                    className="room-code"
                     onClick={(e) => {
                         var textField = document.createElement('textarea');
                         textField.innerText = `${code}`;
@@ -129,7 +130,7 @@ function Main() {
         );
         updateVc(comp);
     };
-    if (showVideo && videoComp != <></>) {
+    if (showVideo && videoComp !== <></>) {
         return videoComp;
     } else
         return (

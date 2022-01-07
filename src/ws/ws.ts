@@ -6,10 +6,10 @@ interface position {
     direction: string; // we can use any syntax for this
 }
 
-interface WUser {
-    Id: string;
-    Position: position;
-}
+// interface WUser {
+//     Id: string;
+//     Position: position;
+// }
 
 interface upsertUser {
     room: string;

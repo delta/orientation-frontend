@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useCallback } from 'react';
+import { useEffect, useContext, useCallback } from 'react';
 import './register.css';
 import { Fragment, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
@@ -197,12 +197,10 @@ const SelectComponent = ({
             // console.log("adding event listener for select");
             window.addEventListener('keypress', listenForEnterKeyPress);
             return () => {
-                process.env.NODE_ENV === 'development' &&
-                    console.log('removing event listener', data);
                 window.removeEventListener('keypress', listenForEnterKeyPress);
             };
         } else window.removeEventListener('keypress', listenForEnterKeyPress);
-    }, [isActive, listenForEnterKeyPress]);
+    }, [isActive, listenForEnterKeyPress, data]);
 
     return (
         <div className="element p-4">
@@ -405,8 +403,6 @@ const TextComponent = ({
             // console.log("adding event listener for text component");
             window.addEventListener('keypress', listenForEnterKeyPress);
             return () => {
-                process.env.NODE_ENV === 'development' &&
-                    console.log('removing event listener for : ', textData);
                 window.removeEventListener('keypress', listenForEnterKeyPress);
             };
         } else window.removeEventListener('keypress', listenForEnterKeyPress);
@@ -550,7 +546,7 @@ export const Register = () => {
         return Array.from(x);
     };
 
-    const { isLoggedIn, user, saveUser } = useContext(UserContext) || {};
+    const { isLoggedIn, saveUser } = useContext(UserContext) || {};
 
     const history = useHistory();
 
@@ -596,10 +592,10 @@ export const Register = () => {
         // console.trace();
         moveToElement(currentActiveElement + 1);
         return;
-        allElements[currentActiveElement].classList.remove('active');
-        allElements[currentActiveElement + 1].classList.add('active');
-        allElements[currentActiveElement + 1].classList.remove('not-visited');
-        setCurrentActiveElement((prev) => prev + 1);
+        // allElements[currentActiveElement].classList.remove('active');
+        // allElements[currentActiveElement + 1].classList.add('active');
+        // allElements[currentActiveElement + 1].classList.remove('not-visited');
+        // setCurrentActiveElement((prev) => prev + 1);
     };
 
     // Moves to previous element
@@ -607,10 +603,10 @@ export const Register = () => {
         if (currentActiveElement === 0) return;
         moveToElement(currentActiveElement - 1);
         return;
-        allElements[currentActiveElement].classList.remove('active');
-        allElements[currentActiveElement].classList.add('not-visited');
-        allElements[currentActiveElement - 1].classList.add('active');
-        setCurrentActiveElement((prev) => prev - 1);
+        // allElements[currentActiveElement].classList.remove('active');
+        // allElements[currentActiveElement].classList.add('not-visited');
+        // allElements[currentActiveElement - 1].classList.add('active');
+        // setCurrentActiveElement((prev) => prev - 1);
     };
 
     const addEventListenerForKeyPress = (e: KeyboardEvent) => {

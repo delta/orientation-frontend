@@ -9,15 +9,8 @@ import Main from './components/videoCall/Main';
 import { ToastProvider } from './components/toast/ToastProvider';
 import { UserContextProvider } from './contexts/userContext';
 import { Portal } from './pages/portal';
-import styles from './components/videoCall/styles.module.css';
-import { useState } from 'react';
-import Chat from './components/chat/Chat';
-function App() {
-    const [width, change] = useState('20%');
 
-    function wchange() {
-        change('0%');
-    }
+function App() {
     return (
         <div className="min-h-screen bg-background">
             <ToastProvider variant={'top_right'}>
