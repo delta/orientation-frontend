@@ -4,11 +4,12 @@ import deltaLogo from '../../assets/images/deltaLogoWhite.png';
 import styles from './login.module.css';
 import { config } from '../../config/config';
 import { UserContext } from '../../contexts/userContext';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 
 const DAuthLogin = () => {
+    const history = useHistory();
     const [rollNo, setRollNo] = useState('');
-    const { loading, isLoggedIn } = useContext(UserContext) || {};
+    const { loading, isLoggedIn, saveUser } = useContext(UserContext) || {};
     const dummyLogin = async (r: string) => {
         console.log(r);
         const res = await fetch(`${config.backendOrigin}/api/auth/dummyLogin`, {
@@ -22,6 +23,18 @@ const DAuthLogin = () => {
         });
         const json = await res.json();
         console.log(json);
+        saveUser &&
+            saveUser({
+                department: '',
+                email: '',
+                gender: '',
+                isNewUser: true,
+                id: r as any,
+                name: '',
+                description: '',
+                username: ''
+            });
+        history.push('/auth/register');
     };
 
     if (loading) return <></>;
@@ -57,7 +70,7 @@ const DAuthLogin = () => {
                         {config.isDev && (
                             <>
                                 <input
-                                    type="text"
+                                    type="number"
                                     onChange={(e) => setRollNo(e.target.value)}
                                 />
                                 <br />
