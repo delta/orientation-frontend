@@ -68,6 +68,7 @@ export const UserContextProvider: React.FC = ({ children }) => {
     // logs in the user, and saves his data to context
     const saveUser = (userData: IUser) => {
         setUser(userData);
+        localStorage.setItem('userId', String(userData.id));
         setIsLoggedIn(true);
     };
 
