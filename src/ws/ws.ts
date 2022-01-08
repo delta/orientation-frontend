@@ -50,6 +50,7 @@ const socketDisconnectedEvent = new Event('socket-disconnected');
 export class WebsocketApi {
     readonly wsUrl = config.websocketUrl;
     socket: WebSocket;
+    isUserRegistered = false;
 
     //constructor will start the connection
     constructor() {
@@ -141,6 +142,7 @@ export class WebsocketApi {
                 data: req
             };
 
+            this.isUserRegistered = true;
             this.socket.send(JSON.stringify(requestMessage));
 
             const userRegisterEvent = new Event('user-register');
@@ -153,6 +155,8 @@ export class WebsocketApi {
 
     // method to update user postion in map
     moveUser = (req: upsertUser) => {
+        if(!this.isUserRegistered) return;
+
         if (this.socket.readyState === WebSocket.OPEN) {
             let requestMessage: requestMessageType = {
                 messageType: 'user-move',
@@ -169,6 +173,8 @@ export class WebsocketApi {
 
     // method to switch map
     changeRoom = (req: changeRoom) => {
+        if(!this.isUserRegistered) return;
+
         if (this.socket.readyState === WebSocket.OPEN) {
             let requestMessage: requestMessageType = {
                 messageType: 'change-room',
@@ -184,6 +190,8 @@ export class WebsocketApi {
     };
 
     sendChatMessage = (req: chatMessage) => {
+        if(!this.isUserRegistered) return;
+
         if (this.socket.readyState === WebSocket.OPEN) {
             let requestMessage: requestMessageType = {
                 messageType: 'chat-message',
