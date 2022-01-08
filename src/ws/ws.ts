@@ -142,8 +142,8 @@ export class WebsocketApi {
                 data: req
             };
 
-            this.isUserRegistered = true;
             this.socket.send(JSON.stringify(requestMessage));
+            this.isUserRegistered = true;
 
             const userRegisterEvent = new Event('user-register');
             document.dispatchEvent(userRegisterEvent);
