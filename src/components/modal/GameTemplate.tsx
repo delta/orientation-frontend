@@ -5,7 +5,6 @@ import { HighScoreTable } from './Highscore';
 import { clsx } from '../../utils/clsx';
 import { axiosInstance } from '../../utils/axios';
 import { useEffect, useState } from 'react';
-import { CONSTANTS } from '../../config/constants';
 interface GameTemplateProps {
     gameProps: {
         name: string;
@@ -69,7 +68,7 @@ export const GameTemplate = (props: GameTemplateProps) => {
 
     useEffect(() => {
         getLeaderboard(name);
-    }, []);
+    }, [name]);
 
     return (
         <div>

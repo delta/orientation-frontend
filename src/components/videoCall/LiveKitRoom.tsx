@@ -1,4 +1,4 @@
-import { ConnectOptions, Participant, Room, RoomState } from 'livekit-client';
+import { ConnectOptions, Participant, Room } from 'livekit-client';
 import React, { useEffect, useState } from 'react';
 import { ControlsProps } from './ControlsView';
 import { ParticipantProps } from './ParticipantView';
@@ -42,7 +42,7 @@ export const LiveKitRoom = ({
     controlRenderer,
     onConnected,
     onLeave,
-    queuefunc,
+    // queuefunc,
     adaptiveVideo,
     reRender
 }: RoomProps) => {
@@ -54,10 +54,10 @@ export const LiveKitRoom = ({
     if (adaptiveVideo) {
         connectOptions.autoManageVideo = true;
     }
-    const [value, setValue] = useState(0); // integer state
-    const forceUpdate = () => {
-        setValue((value) => value + 1);
-    };
+    const [value] = useState(0); // integer state
+    // const forceUpdate = () => {
+    //     setValue((value) => value + 1);
+    // };
     const toast = useToast();
 
     useEffect(() => {
@@ -79,6 +79,7 @@ export const LiveKitRoom = ({
                 room.disconnect();
             };
         });
+        // eslint-disable-next-line
     }, [value]);
 
     const selectedStageRenderer = stageRenderer ?? StageView;

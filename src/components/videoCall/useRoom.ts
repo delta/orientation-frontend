@@ -143,6 +143,7 @@ export function useRoom(optionsRoom?: RoomOptions): RoomState {
                 return undefined;
             }
         },
+        // eslint-disable-next-line
         [optionsRoom?.sortParticipants]
     );
 

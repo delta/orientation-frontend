@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { UserContext } from '../../contexts/userContext';
 import { axiosInstance } from '../../utils/axios';

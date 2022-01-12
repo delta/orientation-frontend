@@ -5,7 +5,6 @@ import { isEqual } from 'lodash';
 import { Renderer } from '../../renderer';
 import { GameContext } from './GameContext';
 import { GzRpgCharacterPlugin } from '../Plugins/GzRpgCharacter';
-import styles from '../../components/videoCall/styles.module.css';
 interface GameProps {
     children?: JSX.Element | JSX.Element[];
 }

@@ -10,7 +10,6 @@ import { AspectRatio } from 'react-aspect-ratio';
 import { useParticipant } from './useParticipant';
 import styles from './styles.module.css';
 import { VideoRenderer } from './VideoRenderer';
-import { AxiosInstance } from 'axios';
 import { axiosInstance } from '../../utils/axios';
 export interface ParticipantProps {
     participant: Participant;
@@ -58,13 +57,13 @@ export const ParticipantView = ({
             const resp = await axiosInstance.get('api/user/map');
 
             let user = resp.data.userMap.find(
-                (el: any) => el.userId.toString() == participant.identity
+                (el: any) => el.userId.toString() === participant.identity
             );
             changeName(user.name + (isLocal ? '(You)' : ''));
         };
         setName();
+        // eslint-disable-next-line
     }, []);
-    async function find() {}
     const containerStyles: CSSProperties = {
         width: width,
         height: height

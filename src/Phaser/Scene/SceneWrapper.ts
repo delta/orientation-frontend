@@ -5,7 +5,6 @@ import SpawnPoints from '../../utils/spawnPoints';
 import { WebsocketApi } from '../../ws/ws';
 import { phaserLoadingAnimation } from '../../utils/loadingAnimation';
 import { axiosInstance } from '../../utils/axios';
-import { textChangeRangeIsUnchanged } from 'typescript';
 
 interface ConstructorProps {
     config: string | Types.Scenes.SettingsConfig;
@@ -516,7 +515,7 @@ export class PhaserScene extends Scene {
             if (this.intractableData) {
                 // console.log(this.intractableData);
                 if (this.intractableData.type === 'minigame') {
-                    const elm = this.openModal(
+                    this.openModal(
                         this.intractableData.type +
                             '/' +
                             this.intractableData.data

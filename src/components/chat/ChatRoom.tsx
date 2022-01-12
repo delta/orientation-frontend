@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import IMessage from './interfaces/IMessage';
 import Message from './Message';
 import { IUser } from '../../contexts/userContext';
@@ -25,6 +25,7 @@ const ChatRoom: React.FC<{ user: IUser; sendMessage: any }> = ({
         inputRef.current?.addEventListener('blur', () =>
             document.dispatchEvent(addInput)
         );
+        // eslint-disable-next-line
     }, [inputRef.current]);
 
     const appendMessage = (e: any) => {

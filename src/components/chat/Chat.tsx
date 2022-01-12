@@ -11,7 +11,7 @@ const Chat: React.FC<{ ws: WebsocketApi | undefined }> = ({ ws }) => {
     // TODO: Hacky lines
     if (userContext == null || userContext.user == null) return <></>;
     const toggleVc = (option: string) => {
-        if (option == 'open') {
+        if (option === 'open') {
             changeDisp('');
         } else {
             changeDisp('hidden');
@@ -51,7 +51,7 @@ const Chat: React.FC<{ ws: WebsocketApi | undefined }> = ({ ws }) => {
 
     if (typeof ws === 'undefined') return <></>;
 
-    return showChat == '' ? (
+    return showChat === '' ? (
         <div className={'w-1/4 text-text relative' + showChat}>
             {showChat ? ToggleButton('open') : ToggleButton('hidden')}
             <div className={'h-screen flex flex-col' + showChat}>

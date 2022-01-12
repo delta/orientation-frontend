@@ -10,8 +10,8 @@ import { LoaderScene } from '../Phaser/Scene/Loader';
 import { MenuScene } from '../components/scenes/Menu';
 import { config } from '../config/config';
 import Chat from '../components/chat/Chat';
-import { UserContext, UserContextProvider } from '../contexts/userContext';
-import styles from '../components/videoCall/styles.module.css';
+import { UserContext } from '../contexts/userContext';
+// import styles from '../components/videoCall/styles.module.css';
 import Main from '../components/videoCall/Main';
 const imageAssets = [
     { key: 'bg', url: 'bg.png' },
@@ -38,7 +38,7 @@ export const GamePage = () => {
 
     if (loading) return <></>;
 
-    // if (!isLoggedIn) return <Redirect to="/auth/login" />;
+    if (!isLoggedIn) return <Redirect to="/auth/login" />;
 
     return (
         <div>

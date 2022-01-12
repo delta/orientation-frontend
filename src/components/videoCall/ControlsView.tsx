@@ -5,7 +5,6 @@ import { AudioSelectButton } from './AudioSelectButton';
 import { ControlButton } from './ControlButton';
 import styles from './styles.module.css';
 import { VideoSelectButton } from './VideoSelectButton';
-import { useHistory } from 'react-router-dom';
 
 export interface ControlsProps {
     room: Room;
@@ -26,7 +25,6 @@ export const ControlsView = ({
 }: ControlsProps) => {
     // const { unpublishTrack } = useParticipant(room.localParticipant);
 
-    const history = useHistory();
     if (enableScreenShare === undefined) {
         enableScreenShare = true;
     }

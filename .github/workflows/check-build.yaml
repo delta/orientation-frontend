@@ -20,6 +20,15 @@ jobs:
         with:
           node-version: 14
           cache: 'npm'
+      
+      - name: Setup WASM BUILD
+        uses: jetli/wasm-pack-action@v0.3.0
+        with:
+          # Optional version of wasm-pack to install(eg. 'v0.9.1', 'latest')
+          version: 'latest'
+
+      - name: Install WASM
+        run: npm run build-wasm
 
       - name: Install Dependencies
         run: npm i
