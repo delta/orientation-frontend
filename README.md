@@ -40,6 +40,7 @@ Frontend client for Utopia, a virtual campus of NITT built for the freshers of N
 
 -   [TypeScript](https://www.typescriptlang.org/)
 -   [NodeJS](https://nodejs.org)
+-   [React](https://reactjs.org/)
 -   [Phaser](https://phaser.io/phaser3)
 -   [TailwindCSS](https://tailwindcss.com/)
 -   [Dauth](https://auth.delta.nitt.edu)
